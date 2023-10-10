@@ -17,7 +17,45 @@
         </div>
 
         <div class="footer__row">
+          <div class="footer__col">
+            <p class="footer__title">
+              Меню
+            </p>
+            <ul class="footer__menu footer-menu footer-menu--double">
+              <li
+                v-for="(item, i) in menu"
+                :key="i"
+                class="footer-menu__item"
+              >
+                <a
+                  href="#"
+                  class="footer-menu__link"
+                >
+                  {{ item.name }}
+                </a>
+              </li>
+            </ul>
+          </div>
 
+          <div class="footer__col">
+            <p class="footer__title">
+              О компании
+            </p>
+            <ul class="footer__menu footer-menu">
+              <li
+                v-for="(item, i) in about"
+                :key="i"
+                class="footer-menu__item"
+              >
+                <NuxtLink
+                  :to="item.link"
+                  class="footer-menu__link"
+                >
+                  {{ item.name }}
+                </NuxtLink>
+              </li>
+            </ul>
+          </div>
         </div>
 
         <div class="footer__col">
@@ -127,6 +165,26 @@
 </template>
 
 <script setup>
+const menu = [
+  { link: '/', name: 'Акции' },
+  { link: '/', name: 'Новинки' },
+  { link: '/', name: 'Пицца' },
+  { link: '/', name: 'Роллы' },
+  { link: '/', name: 'Обед/ужин' },
+  { link: '/', name: 'Собери вок' },
+  { link: '/', name: 'Закуски' },
+  { link: '/', name: 'Десерты' },
+  { link: '/', name: 'Напитки' },
+  { link: '/', name: 'Бронь столов' },
+]
+
+const about = [
+  { link: '/', name: 'Оплата' },
+  { link: '/', name: 'Политика конфиденциальности' },
+  { link: '/', name: 'Условия доставки' },
+  { link: '/', name: 'Возврат' },
+  { link: '/', name: 'Реквизиты' },
+]
 </script>
 
 <style lang="scss" scoped>
@@ -146,6 +204,12 @@
     justify-content: space-between;
   }
 
+  &__row {
+    display: flex;
+    align-items: flex-start;
+    grid-gap: 120px;
+  }
+
   &__col {
     display: flex;
     flex-direction: column;
@@ -154,10 +218,7 @@
   &__phone {
     margin-bottom: 9px;
 
-    font-size: 36px;
-    font-weight: 700;
-    line-height: 41.4px;
-    letter-spacing: 0.36px;
+    @include h2;
   }
 
   &__time {
@@ -168,16 +229,14 @@
     padding-left: 4px;
 
     color: $grayText;
-    font-size: 20px;
+
+    @include text_big;
     font-weight: 600;
-    line-height: 23px;
-    letter-spacing: 0.2px;
   }
 
   &__block {
     display: flex;
     flex-direction: column;
-    grid-gap: 20px;
 
     margin-bottom: 40px;
 
@@ -187,11 +246,12 @@
   }
 
   &__title {
+    margin-bottom: 20px;
+
     color: $grayText2;
-    font-size: 24px;
+
+    @include text_large;
     font-weight: 700;
-    line-height: 27.6px;
-    letter-spacing: 0.24px;
   }
 
   &__apps {
@@ -219,9 +279,8 @@
 
   &__copy {
     color: $grayText;
-    font-size: 20px;
-    line-height: 23px;
-    letter-spacing: 0.2px;
+
+    @include text_big;
   }
 
   &__to-top {
@@ -240,6 +299,22 @@
         fill: $white;
       }
     }
+  }
+}
+
+.footer-menu {
+  display: grid;
+  grid-gap: 15px 60px;
+
+  &--double {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  &__link {
+    display: block;
+
+    @include text_small;
+    font-weight: 500;
   }
 }
 
@@ -262,7 +337,6 @@
 
   &__label {
     @include text_mini;
-    font-weight: 400;
   }
 
   &__value {

@@ -1,6 +1,7 @@
 @mixin overflow-text {
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 @mixin h2 {
@@ -10,23 +11,37 @@
   letter-spacing: 0.36px;
 }
 
+@mixin text_large {
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 27.6px;
+  letter-spacing: 0.24px;
+}
+
+@mixin text_big {
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 23px;
+  letter-spacing: 0.2px;
+}
+
 @mixin text_normal {
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 18.4px;
   letter-spacing: 0.16px;
 }
 
 @mixin text_small {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   line-height: 16.1px;
   letter-spacing: 0.14px;
 }
 
 @mixin text_mini {
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 13.8px;
   letter-spacing: 0.12px;
 }

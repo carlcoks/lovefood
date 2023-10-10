@@ -33,9 +33,8 @@
 
     padding-left: 49px;
 
+    @include text_normal;
     font-weight: 500;
-    line-height: 18px;
-    letter-spacing: 0.16px;
 
     background: $grayBg;
     border-radius: 14px;

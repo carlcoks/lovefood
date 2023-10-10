@@ -41,13 +41,14 @@ const tabs = ['Акции', 'Новинки', 'Пицца', 'Роллы', 'Об�
 }
 
 .index-menu-categories-tab {
-  @include text_normal;
-
   display: flex;
   align-items: center;
   justify-content: center;
 
   padding: 12px 15px;
+
+  @include text_normal;
+  font-weight: 500;
 
   border-radius: 14px;
 

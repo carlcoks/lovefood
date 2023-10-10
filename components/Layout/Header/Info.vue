@@ -25,6 +25,7 @@
 
   &__phone {
     @include text_small;
+    font-weight: 600;
   }
 
   &__time {

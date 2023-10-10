@@ -83,14 +83,13 @@ const isFavorite = ref(false)
   }
 
   &__discount {
-    @include text_mini;
-
     position: absolute;
     top: 16px;
     left: 16px;
 
     padding: 4px 12px;
 
+    @include text_mini;
     font-weight: 600;
 
     background: $grayBg;
@@ -125,14 +124,11 @@ const isFavorite = ref(false)
 
   &__name {
     @include overflow-text;
-    white-space: nowrap;
 
     margin-bottom: 20px;
 
-    font-size: 20px;
+    @include text_big;
     font-weight: 600;
-    line-height: 23px;
-    letter-spacing: 0.2px;
   }
 
   &__description {
@@ -142,12 +138,11 @@ const isFavorite = ref(false)
   }
 
   &__info {
-    @include text_mini;
-    font-weight: 400;
-    color: $grayText;
-
     display: flex;
     align-items: center;
+
+    color: $grayText;
+    @include text_mini;
 
     span {
       display: flex;
@@ -169,13 +164,14 @@ const isFavorite = ref(false)
   }
 
   &__price {
-    @include text_normal;
-    font-weight: 600;
-    color: $orange;
-
     display: flex;
     align-items: center;
     grid-gap: 6px;
+
+    color: $orange;
+
+    @include text_normal;
+    font-weight: 600;
 
     small {
       color: $grayText;

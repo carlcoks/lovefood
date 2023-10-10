@@ -80,11 +80,9 @@
 
   &__name {
     @include overflow-text;
-    white-space: nowrap;
 
-    font-size: 20px;
+    @include text_big;
     font-weight: 600;
-    line-height: 23px;
   }
 }
 </style>

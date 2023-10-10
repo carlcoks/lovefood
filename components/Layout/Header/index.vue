@@ -110,8 +110,6 @@
 }
 
 .header-action {
-  @include text_mini;
-
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -120,5 +118,8 @@
   padding: 0 4px;
 
   color: $grayText;
+  
+  font-weight: 500;
+  @include text_mini;
 }
 </style>

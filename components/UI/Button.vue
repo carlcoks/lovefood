@@ -25,8 +25,6 @@ defineProps({
 
 <style lang="scss" scoped>
 .button {
-  @include text_normal;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -36,6 +34,9 @@ defineProps({
   height: 48px;
 
   padding: 12px 15px;
+
+  @include text_normal;
+  font-weight: 500;
 
   background: none;
   border: 0;
