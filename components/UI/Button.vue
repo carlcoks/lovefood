@@ -1,17 +1,22 @@
 <template>
-  <button
+  <component
+    :is="component"
+    :to="to"
     :type="type"
     :class="[
       'button',
-      color ? `button--${color}` : ''
+      color ? `button--${color}` : '',
+      size ? `button--${size}` : '',
     ]"
   >
     <slot />
-  </button>
+  </component>
 </template>
 
 <script setup>
-defineProps({
+import { NuxtLink } from '#components'
+
+const props = defineProps({
   type: {
     type: String,
     default: 'button',
@@ -20,6 +25,22 @@ defineProps({
     type: String,
     default: '',
   },
+  size: {
+    type: String,
+    default: '',
+  },
+  to: {
+    type: String,
+    default: '',
+  },
+})
+
+const component = computed(() => {
+  if (props.to) {
+    return NuxtLink
+  }
+
+  return 'button'
 })
 </script>
 
@@ -36,11 +57,20 @@ defineProps({
   padding: 12px 15px;
 
   @include text_normal;
-  font-weight: 500;
 
   background: none;
   border: 0;
   border-radius: 14px;
+
+  transition: background-color 0.3s;
+
+  &--small {
+    height: 32px;
+
+    font-size: 14px;
+
+    padding: 6px 15px;
+  }
 
   &--yellow {
     background: $yellow;
@@ -48,6 +78,10 @@ defineProps({
 
   &--gray {
     background: $grayBg;
+
+    &:hover {
+      background: $grayBg2;
+    }
   }
 }
 </style>

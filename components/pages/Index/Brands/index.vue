@@ -6,24 +6,50 @@
           Бренды
         </h2>
 
-        <UIButton color="gray">
+        <UIButton
+          to="/brands"
+          color="gray"
+          class="index-brands__button"
+        >
           Все бренды
           <UIIcon name="arrow" />
         </UIButton>
       </div>
 
-      <div class="index-brands__list">
-        <div
-          v-for="i in 10"
-          :key="i"
-          class="index-brands-brand"
+      <div class="index-brands__slider index-brands-slider">
+        <Swiper
+          :modules="[Navigation]"
+          :slides-per-view="'auto'"
+          :space-between="40"
+          :navigation="{
+            prevEl: prev,
+            nextEl: next,
+          }"
         >
-          <div class="index-brands-brand__image">
-            <img src="@/assets/images/brand-example.png" alt="">
-          </div>
-          <p class="index-brands-brand__name">
-            Название магазина
-          </p>
+          <SwiperSlide
+            v-for="i in 10"
+            :key="i"
+            class="index-brands-slider__slide"
+          >
+            <NuxtLink
+              to="/brands/1"
+              class="index-brands-brand"
+            >
+              <div class="index-brands-brand__image">
+                <img src="@/assets/images/brand-example.png" alt="">
+              </div>
+              <p class="index-brands-brand__name">
+                Название магазина
+              </p>
+            </NuxtLink>
+          </SwiperSlide>
+        </Swiper>
+
+        <div ref="prev" class="index-brands-slider__arrow index-brands-slider__arrow--prev">
+          <UIIcon name="arrow" />
+        </div>
+        <div ref="next" class="index-brands-slider__arrow index-brands-slider__arrow--next">
+          <UIIcon name="arrow" />
         </div>
       </div>
     </div>
@@ -31,6 +57,12 @@
 </template>
 
 <script setup>
+import { Navigation } from 'swiper/modules'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+
+const prev = ref(null)
+const next = ref(null)
+
 </script>
 
 <style lang="scss" scoped>
@@ -47,12 +79,63 @@
     @include h2;
   }
 
-  &__list {
-    display: flex;
-    align-items: flex-start;
-    grid-gap: 40px;
+  &__button {
+    font-weight: 500;
+  }
+}
 
-    overflow: hidden;
+.index-brands-slider {
+  position: relative;
+
+  &:hover {
+    .index-brands-slider {
+      &__arrow {
+        opacity: 1;
+      }
+    }
+  }
+
+  &__slide {
+    width: auto;
+  }
+
+  &__arrow {
+    position: absolute;
+    top: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 60px;
+    height: 60px;
+
+    background: $white;
+    border-radius: 50%;
+    box-shadow: 1px 0px 10px 0px rgba(0, 0, 0, 0.05);
+
+    opacity: 0;
+
+    transition: opacity 0.3s;
+    cursor: pointer;
+    z-index: 1;
+
+    ::v-deep(.ui-icon) svg {
+      width: 40px;
+      height: 40px;
+    }
+
+    &--prev {
+      left: -30px;
+
+      .ui-icon {
+        transform: rotate(180deg);
+      }
+    }
+
+    &--next {
+      right: -30px;
+    }
   }
 }
 

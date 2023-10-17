@@ -1,9 +1,11 @@
 <template>
-  <main class="main">
-    <PagesIndexSlider />
+  <main class="index">
+    <PagesIndexBanners
+      class="index__banners"
+    />
 
     <PagesIndexBrands
-      class="main__brands"
+      class="index__brands"
     />
 
     <PagesIndexMenu />
@@ -14,10 +16,10 @@
 </script>
 
 <style lang="scss" scoped>
-.main {
+.index {
   padding: 40px 0;
 
-  &__brands {
+  &__banners, &__brands {
     margin-bottom: 60px;
   }
 }

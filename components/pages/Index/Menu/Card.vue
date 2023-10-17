@@ -1,6 +1,11 @@
 <template>
   <div class="index-menu-card">
-    <div class="index-menu-card__image">
+    <div
+      class="index-menu-card__image"
+      @click.prevent="isShowModal = true"
+    >
+      <img src="@/assets/images/menu-card-example.png" alt="">
+
       <span class="index-menu-card__discount">
         -25%
       </span>
@@ -12,13 +17,27 @@
         <UIIcon name="heart" />
       </button>
 
-      <img src="@/assets/images/menu-card-example.png" alt="">
-
-      <!-- <div class="index-menu-card__types"></div> -->
+      <div class="index-menu-card__types">
+        <div class="index-menu-card-type">
+          <UIIcon name="icon-halal" />
+        </div>
+        <div class="index-menu-card-type">
+          <UIIcon name="icon-hit" />
+        </div>
+        <div class="index-menu-card-type">
+          <UIIcon name="icon-vegan" />
+        </div>
+        <div class="index-menu-card-type">
+          <UIIcon name="icon-hot" />
+        </div>
+      </div>
     </div>
 
     <div class="index-menu-card__content">
-      <p class="index-menu-card__name">
+      <p
+        class="index-menu-card__name"
+        @click.prevent="isShowModal = true"
+      >
         Желтохвост
       </p>
 
@@ -42,17 +61,23 @@
 
       <UIButton
         color="gray"
-        class="index-menu-card__add"
+        class="index-menu-card__button"
       >
         <UIIcon name="add" />
         В корзину
       </UIButton>
     </div>
+
+    <ModalsProduct
+      v-if="isShowModal"
+      @close="isShowModal = false"
+    />
   </div>
 </template>
 
 <script setup>
 const isFavorite = ref(false)
+const isShowModal = ref(false)
 </script>
 
 <style lang="scss" scoped>
@@ -74,6 +99,8 @@ const isFavorite = ref(false)
     border-radius: 20px;
     border: 1px solid $grayBg;
     overflow: hidden;
+
+    cursor: pointer;
 
     img {
       width: 100%;
@@ -114,6 +141,10 @@ const isFavorite = ref(false)
     position: absolute;
     left: 16px;
     bottom: 16px;
+
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
   }
 
   &__content {
@@ -123,12 +154,13 @@ const isFavorite = ref(false)
   }
 
   &__name {
-    @include overflow-text;
-
     margin-bottom: 20px;
 
+    @include overflow-text;
     @include text_big;
     font-weight: 600;
+
+    cursor: pointer;
   }
 
   &__description {
@@ -174,16 +206,40 @@ const isFavorite = ref(false)
     font-weight: 600;
 
     small {
+      @include extra_small;
       color: $grayText;
-      font-weight: 400;
-      font-size: 10px;
-      line-height: 11.5px;
       text-decoration: line-through;
     }
   }
 
-  &__add {
+  &__button {
     margin-top: 15px;
+
+    font-weight: 500;
+  }
+}
+
+.index-menu-card-type {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 24px;
+  height: 24px;
+
+  margin-left: -7px;
+
+  background: $white;
+  border-radius: 50%;
+  box-shadow: 1px 0px 10px 0px rgba(0, 0, 0, 0.05);
+
+  &:last-child {
+    margin-left: 0;
+  }
+
+  .ui-icon {
+    width: 20px;
+    height: 20px;
   }
 }
 </style>

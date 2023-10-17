@@ -24,16 +24,26 @@
         </div>
 
         <div class="header__side header__side--right">
-          <UIButton>
+          <UIButton
+            class="header__button"
+          >
             <UIIcon name="menu" />
             Бронь столов
           </UIButton>
 
-          <UIButton color="yellow">
+          <UIButton
+            class="header__button"
+            color="yellow"
+            @click.prevent="isShowCart = true"
+          >
             Корзина
           </UIButton>
 
-          <UIButton color="gray">
+          <UIButton
+            class="header__button"
+            color="gray"
+            @click.prevent="isShowAuth = true"
+          >
             <UIIcon name="person" />
             Войти
           </UIButton>
@@ -50,10 +60,22 @@
         </div>
       </div>
     </div>
+
+    <ModalsCart
+      v-if="isShowCart"
+      @close="isShowCart = false"
+    />
+
+    <ModalsAuth
+      v-if="isShowAuth"
+      @close="isShowAuth = false"
+    />
   </header>
 </template>
 
-<script setup>
+<script setup lang="ts">
+const isShowCart = ref<true | false>(false)
+const isShowAuth = ref<true | false>(false)
 </script>
 
 <style lang="scss" scoped>
@@ -106,6 +128,10 @@
 
   &__restaurant {
     max-width: 380px;
+  }
+
+  &__button {
+    font-weight: 500;
   }
 }
 
