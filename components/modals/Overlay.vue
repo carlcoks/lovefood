@@ -39,6 +39,14 @@ const emits = defineEmits(['close'])
 const onClickOverlay = () => {
   emits('close')
 }
+
+onMounted(() => {
+  document.body.style = 'overflow: hidden'
+})
+
+onBeforeUnmount(() => {
+  document.body.style = ''
+})
 </script>
 
 <style lang="scss" scoped>

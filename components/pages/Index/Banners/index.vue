@@ -1,35 +1,28 @@
 <template>
   <section class="index-banners">
     <div class="container">
-      <Swiper
-        :modules="[Pagination]"
-        pagination
-        loop
-        :slides-per-view="2"
-        :space-between="20"
-        class="index-banners__slider"
-      >
-        <SwiperSlide class="index-banners-banner">
-          <img src="@/assets/images/banners/1.jpg" alt="">
-        </SwiperSlide>
-        <SwiperSlide class="index-banners-banner">
-          <img src="@/assets/images/banners/2.jpg" alt="">
-        </SwiperSlide>
-        <SwiperSlide class="index-banners-banner">
+      <div class="index-banners__box">
+        <Swiper
+          :modules="[Pagination]"
+          pagination
+          loop
+          :slides-per-view="1"
+          :space-between="20"
+          class="index-banners__slider"
+        >
+          <SwiperSlide class="index-banners-banner">
+            <img src="@/assets/images/banners/1.jpg" alt="">
+          </SwiperSlide>
+          <SwiperSlide class="index-banners-banner">
+            <img src="@/assets/images/banners/2.jpg" alt="">
+          </SwiperSlide>
+        </Swiper>
+
+        <div class="index-banners__banners">
           <img src="@/assets/images/banners/3.jpg" alt="">
           <img src="@/assets/images/banners/4.jpg" alt="">
-        </SwiperSlide>
-        <SwiperSlide class="index-banners-banner">
-          <img src="@/assets/images/banners/1.jpg" alt="">
-        </SwiperSlide>
-        <SwiperSlide class="index-banners-banner">
-          <img src="@/assets/images/banners/2.jpg" alt="">
-        </SwiperSlide>
-        <SwiperSlide class="index-banners-banner">
-          <img src="@/assets/images/banners/3.jpg" alt="">
-          <img src="@/assets/images/banners/4.jpg" alt="">
-        </SwiperSlide>
-      </Swiper>
+        </div>
+      </div>
     </div>
   </section>
 </template>
@@ -43,7 +36,15 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
 @import 'swiper/css';
 
 .index-banners {
+  &__box {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
+  }
+
   &__slider {
+    width: 100%;
+
     padding-bottom: 23px;
   }
 
@@ -74,13 +75,15 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
       }
     }
   }
+
+  &__banners {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
+  }
 }
 
 .index-banners-banner {
-  display: flex;
-  align-items: flex-start;
-  grid-gap: 20px;
-
   border-radius: 40px;
   overflow: hidden;
 }

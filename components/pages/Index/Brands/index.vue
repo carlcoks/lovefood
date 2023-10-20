@@ -101,7 +101,7 @@ const next = ref(null)
 
   &__arrow {
     position: absolute;
-    top: 32px;
+    top: 50px;
 
     display: flex;
     align-items: center;
