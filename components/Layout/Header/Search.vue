@@ -4,11 +4,10 @@
       <UIIcon name="loop" />
     </span>
 
-    <input
-      type="text"
+    <UIInput
       placeholder="Поиск"
-      class="header-search__input"
-    >
+      class="header-search__field"
+    />
   </div>
 </template>
 
@@ -27,37 +26,13 @@
     transform: translateY(-50%);
   }
 
-  &__input {
-    width: 100%;
-    height: 48px;
-
-    padding-left: 49px;
-
-    @include text_normal;
+  &__field {
     font-weight: 500;
 
-    background: $grayBg;
-    border-radius: 14px;
+    ::v-deep input {
+      padding-left: 49px;
 
-    &::-webkit-input-placeholder {
-      color: $grayText;
-    }
-    &:-moz-placeholder {
-      color: $grayText;
-      opacity:  1;
-    }
-    &::-moz-placeholder {
-      color: $grayText;
-      opacity:  1;
-    }
-    &:-ms-input-placeholder {
-      color: $grayText;
-    }
-    &::-ms-input-placeholder {
-      color: $grayText;
-    }
-    &::placeholder {
-      color: $grayText;
+      background: $grayBg;
     }
   }
 }
