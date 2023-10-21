@@ -76,12 +76,21 @@ const component = computed(() => {
     background: $yellow;
   }
 
+  &--yellow-light {
+    background: $yellowLight;
+  }
+
   &--gray {
     background: $grayBg;
 
     &:hover {
       background: $grayBg2;
     }
+  }
+
+  &--orange {
+    color: $white;
+    background: $orange;
   }
 }
 </style>
