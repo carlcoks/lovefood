@@ -43,7 +43,7 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
   }
 
   &__slider {
-    width: 100%;
+    overflow: hidden;
 
     padding-bottom: 23px;
   }
