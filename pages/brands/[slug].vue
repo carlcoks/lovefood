@@ -18,11 +18,14 @@
                 Меню
               </p>
 
-              <div class="menu__filter">
+              <button
+                class="menu__filter"
+                @click.prevent="isShowFilters = true"
+              >
                 <UIIcon name="filter" />
                 <span class="menu__filter-line" />
                 3
-              </div>
+              </button>
             </div>
 
             <ul class="menu__list">
@@ -73,10 +76,17 @@
         </section>
       </div>
     </div>
+
+    <ModalsFilters
+      v-if="isShowFilters"
+      @close="isShowFilters = false"
+    />
   </main>
 </template>
 
 <script setup>
+const isShowFilters = ref(false)
+
 const menu = [
   { name: 'Новинки' },
   { name: 'Акции' },

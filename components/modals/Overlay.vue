@@ -1,29 +1,47 @@
 <template>
   <div class="modal">
-    <div class="modal__overlay" />
+    <transition
+      name="fade"
+      mode="out-in"
+    >
+      <div
+        v-if="isVisible"
+        class="modal__overlay"
+      />
+    </transition>
 
     <div
       :class="`modal__box modal__box--${position}`"
-      @click.self="onClickOverlay()"
+      @click.self="onClose()"
     >
       <div
         class="modal__wrap"
-        @click.self="onClickOverlay()"
+        @click.self="onClose()"
       >
-        <div
-          class="modal__content"
-          :style="offset ? `margin: ${offset}px auto` : ''"
-          @click.self="onClickOverlay()"
+        <transition
+          :name="name === 'cart' ? 'cart' : 'slide-top'"
+          mode="out-in"
         >
-          <slot />
-        </div>
+          <div
+            v-if="isVisible"
+            class="modal__content"
+            :style="offset ? `margin: ${offset}px auto` : ''"
+            @click.self="onClose()"
+          >
+            <slot />
+          </div>
+        </transition>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
+  name: {
+    type: String,
+    default: '',
+  },
   position: {
     type: String,
     default: 'center',
@@ -32,15 +50,32 @@ defineProps({
     type: Number,
     default: 20,
   },
+  isShow: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const emits = defineEmits(['close'])
 
-const onClickOverlay = () => {
-  emits('close')
+const isVisible = ref(false)
+
+watch(() => props.isShow, (data) => {
+  if (!data) {
+    onClose()
+  }
+})
+
+const onClose = () => {
+  isVisible.value = false
+
+  setTimeout(() => {
+    emits('close')
+  }, 300)
 }
 
 onMounted(() => {
+  isVisible.value = true
   document.body.style = 'overflow: hidden'
 })
 

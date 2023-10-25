@@ -51,7 +51,7 @@ const component = computed(() => {
   justify-content: center;
   grid-gap: 10px;
 
-  min-width: 105px;
+  min-width: 80px;
   height: 48px;
 
   padding: 12px 15px;

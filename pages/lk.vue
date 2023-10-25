@@ -4,6 +4,7 @@
       <div class="page-lk__box">
         <aside class="page-lk-aside page-lk__aside">
           <UIButton
+            to="/"
             color="yellow"
             class="page-lk-aside__button"
           >
@@ -59,7 +60,7 @@
 const nav = [
   { label: 'Личная информация', link: '/lk', icon: 'person' },
   { label: 'Избранное', link: '/lk/favorite', icon: 'heart' },
-  { label: 'Доступные купоны', link: '/lk/coupons', icon: 'gift' },
+  { label: 'Доступные купоны', link: '/lk/promocodes', icon: 'gift' },
   { label: 'Бонусная система', link: '/lk/bonuses', icon: 'bonuses' },
   { label: 'Реферальная система', link: '/lk/referals', icon: 'referals' },
   { label: 'Предпочтения', link: '/lk/preferences', icon: 'preferences' },
@@ -116,6 +117,7 @@ const nav = [
 .page-lk-aside {
   &__button {
     width: 100%;
+    justify-content: flex-start;
     font-weight: 500;
 
     .ui-icon {

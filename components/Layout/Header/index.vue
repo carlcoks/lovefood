@@ -14,28 +14,22 @@
             class="header__info"
           />
 
-          <LayoutHeaderSearch
-            class="header__search"
-          />
-
           <LayoutHeaderRestaurant
             class="header__restaurant"
+          />
+
+          <LayoutHeaderSearch
+            class="header__search"
           />
         </div>
 
         <div class="header__side header__side--right">
           <UIButton
             class="header__button"
-          >
-            <UIIcon name="menu" />
-            Бронь столов
-          </UIButton>
-
-          <UIButton
-            class="header__button"
             color="yellow"
             @click.prevent="isShowCart = true"
           >
+            <UIIcon name="cart" />
             Корзина
           </UIButton>
 
@@ -44,19 +38,13 @@
             color="gray"
             @click.prevent="isShowAuth = true"
           >
-            <UIIcon name="person" />
+            <UIIcon name="person-outline" />
             Войти
           </UIButton>
 
-          <div class="header-action">
-            <UIIcon name="ruble" />
-            Рубль
-          </div>
+          <div />
 
-          <div class="header-action">
-            <UIIcon name="world" />
-            Русский
-          </div>
+          <LayoutHeaderLang />
         </div>
       </div>
     </div>
@@ -120,10 +108,6 @@ const isShowAuth = ref<true | false>(false)
 
   &__info {
     flex: 0 0 auto;
-  }
-
-  &__search {
-    max-width: 390px;
   }
 
   &__restaurant {

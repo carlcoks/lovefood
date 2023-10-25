@@ -1,6 +1,7 @@
 <template>
   <ModalsOverlay
-    @close="closeModal()"
+    :is-show="isShow"
+    @close="emits('close')"
   >
     <div class="modal-product">
       <a
@@ -171,8 +172,10 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
 
 const emits = defineEmits(['close'])
 
+const isShow = ref(true)
+
 const closeModal = () => {
-  emits('close')
+  isShow.value = false
 }
 </script>
 

@@ -17,3 +17,25 @@
 .page-leave-to {
   opacity: 0;
 }
+
+.slide-top-enter-active,
+.slide-top-leave-active {
+  transition: opacity 0.3s linear, transform 0.3s ease;
+}
+
+.slide-top-enter-from,
+.slide-top-leave-to {
+	transform: translateY(30px);
+  opacity: 0;
+}
+
+.cart-enter-active,
+.cart-leave-active {
+  transition: opacity 0.3s linear, transform 0.3s ease;
+}
+
+.cart-enter-from,
+.cart-leave-to {
+	transform: translateX(512px);
+  opacity: 0;
+}

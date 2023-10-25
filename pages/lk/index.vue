@@ -4,6 +4,25 @@
       Личная информация
     </h2>
 
+    <div class="page-lk-personal-user">
+      <div class="page-lk-personal-user__info">
+        <div class="page-lk-personal-user__image">
+          C
+        </div>
+        <p class="page-lk-personal-user__name">
+          Светлана Длиннаяфамилия
+        </p>
+      </div>
+
+      <button
+        class="page-lk-personal-user__button"
+        @click.prevent="logout()"
+      >
+        <UIIcon name="logout" />
+        Выйти
+      </button>
+    </div>
+
     <form class="page-lk-personal__form">
       <div class="page-lk-personal__line">
         <p class="page-lk-personal__label">
@@ -74,15 +93,6 @@
         </div>
       </div>
     </form>
-
-    <div class="page-lk-personal__buttons">
-      <UIButton
-        color="orange"
-        class="page-lk-personal__button"
-      >
-        Выйти из аккаунта
-      </UIButton>
-    </div>
   </div>
 </template>
 
@@ -141,15 +151,56 @@
     top: 16px;
     right: 15px;
   }
+}
 
-  &__buttons {
+.page-lk-personal-user {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 20px 30px;
+
+  @include text_normal;
+
+  background: $grayBg2;
+  border-radius: 20px;
+
+  &__info {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    grid-gap: 12px;
+  }
+
+  &__image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 48px;
+    height: 48px;
+
+    @include text_large;
+    font-weight: 700;
+    color: $blue;
+
+    background: $white;
+    border: 2px solid $blue;
+    border-radius: 50%;
+  }
+
+  &__name {
+    @include overflow-text;
+    font-weight: 600;
   }
 
   &__button {
+    display: flex;
+    align-items: center;
+    grid-gap: 10px;
+    
     font-weight: 500;
+
+    color: $grayText;
   }
 }
 </style>

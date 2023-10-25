@@ -2953,6 +2953,11 @@ lazystream@^1.0.0:
   dependencies:
     readable-stream "^2.0.5"
 
+libphonenumber-js@^1.10.12:
+  version "1.10.48"
+  resolved "https://registry.npmjs.org/libphonenumber-js/-/libphonenumber-js-1.10.48.tgz"
+  integrity sha512-Vvcgt4+o8+puIBJZLdMshPYx9nRN3/kTT7HPtOyfYrSQuN9PGBF1KUv0g07fjNzt4E4GuA7FnsLb+WeAMzyRQg==
+
 lilconfig@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/lilconfig/-/lilconfig-2.1.0.tgz"
@@ -5240,7 +5245,15 @@ vue-router@^4.1.0, vue-router@^4.2.5:
   dependencies:
     "@vue/devtools-api" "^6.5.0"
 
-"vue@^2.7.0 || ^3.2.25", vue@^3.0.0, vue@^3.2.0, vue@^3.2.25, vue@^3.3.4, "vue@>=2.7 || >=3", vue@3.3.4:
+vue-tel-input@^8.1.4:
+  version "8.1.4"
+  resolved "https://registry.npmjs.org/vue-tel-input/-/vue-tel-input-8.1.4.tgz"
+  integrity sha512-gx+hX9VsYrfGj2mwT84xkpTu9mokFZZqpyymIYZs6XwKL+O63P1x7lcu0nyySDUycHkBXzYmHtvgYfBgDZ9J1w==
+  dependencies:
+    libphonenumber-js "^1.10.12"
+    vue "^3.2.47"
+
+"vue@^2.7.0 || ^3.2.25", vue@^3.0.0, vue@^3.2.0, vue@^3.2.25, vue@^3.2.47, vue@^3.3.4, "vue@>=2.7 || >=3", vue@3.3.4:
   version "3.3.4"
   resolved "https://registry.npmjs.org/vue/-/vue-3.3.4.tgz"
   integrity sha512-VTyEYn3yvIeY1Py0WaYGZsXnz3y5UnGi62GjVEqvEGPl6nxbOrCXbVOTQWBEJUqAyTUk2uJ5JLVnYJ6ZzGbrSw==

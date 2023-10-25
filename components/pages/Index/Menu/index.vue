@@ -2,6 +2,7 @@
   <section class="index-menu">
     <div class="container">
       <PagesIndexMenuCategories
+        @show-filters="isShowFilters = true"
         class="index-menu__categories"
       />
 
@@ -31,10 +32,16 @@
         </div>
       </div>
     </div>
+
+    <ModalsFilters
+      v-if="isShowFilters"
+      @close="isShowFilters = false"
+    />
   </section>
 </template>
 
 <script setup>
+const isShowFilters = ref(false)
 </script>
 
 <style lang="scss" scoped>

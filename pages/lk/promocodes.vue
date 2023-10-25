@@ -1,6 +1,6 @@
 <template>
-  <div class="page-lk-coupons">
-    <h2 class="page-lk-coupons__title">
+  <div class="page-lk-promocodes">
+    <h2 class="page-lk-promocodes__title">
       Мои промокоды
     </h2>
   </div>
@@ -10,7 +10,7 @@
 </script>
 
 <style lang="scss" scoped>
-.page-lk-coupons {
+.page-lk-promocodes {
   display: grid;
   grid-gap: 40px;
 

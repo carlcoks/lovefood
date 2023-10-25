@@ -12,7 +12,7 @@
       
       <button
         :class="['index-menu-card__favorite', { 'active' : isFavorite }]"
-        @click.prevent="isFavorite = !isFavorite"
+        @click.stop.prevent="isFavorite = !isFavorite"
       >
         <UIIcon name="heart" />
       </button>
