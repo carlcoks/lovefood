@@ -59,6 +59,10 @@ defineProps({
       border: 1px solid $grayText2;
     }
 
+    &--gray {
+      background: $grayBg;
+    }
+
     &:disabled {
       background: $grayBg2;
     }

@@ -11,6 +11,7 @@
 
         <a
           href="#"
+          rel="nofollow"
           class="modal-auth__close"
           @click.prevent="closeModal()"
         >
@@ -130,7 +131,9 @@ const sendSms = () => {
 }
 
 const checkCode = () => {
-  isCodeError.value = true
+  navigateTo('/lk')
+  closeModal()
+  // isCodeError.value = true
 }
 
 const onSubmit = () => {

@@ -20,50 +20,56 @@
         </div>
 
         <div class="modal-filters__list">
-          <div class="modal-filters__item modal-filters-item">
-            <div class="modal-filters-item__header">
-              <p class="modal-filters-item__title">
-                Цена
-              </p>
-              <UIIcon
-                name="arrow"
-                class="modal-filters-item__arrow"
-              />
-            </div>
-          </div>
+          <ModalsFiltersBlock
+            title="Цена"
+            class="modal-filters__item"
+          >
+            <UICheckbox>
+              Вариант 1
+            </UICheckbox>
+            <UICheckbox>
+              Вариант 2
+            </UICheckbox>
+            <UICheckbox>
+              Вариант 3
+            </UICheckbox>
+          </ModalsFiltersBlock>
 
-          <div class="modal-filters__item modal-filters-item">
-            <div class="modal-filters-item__header">
-              <p class="modal-filters-item__title">
-                Цена
-              </p>
-              <UIIcon
-                name="arrow"
-                class="modal-filters-item__arrow"
-              />
-            </div>
-          </div>
+          <ModalsFiltersBlock
+            title="Название фильтра"
+            class="modal-filters__item"
+          >
+            <UICheckbox>
+              Вариант 1
+            </UICheckbox>
+            <UICheckbox>
+              Вариант 2
+            </UICheckbox>
+            <UICheckbox>
+              Вариант 3
+            </UICheckbox>
+          </ModalsFiltersBlock>
 
-          <div class="modal-filters__item modal-filters-item">
-            <div class="modal-filters-item__header">
-              <p class="modal-filters-item__title">
-                Название фильтра
-              </p>
-              <UIIcon
-                name="arrow"
-                class="modal-filters-item__arrow"
-              />
-            </div>
-          </div>
+          <ModalsFiltersBlock
+            title="Цена"
+            class="modal-filters__item"
+          >
+            <UICheckbox>
+              Вариант 1
+            </UICheckbox>
+            <UICheckbox>
+              Вариант 2
+            </UICheckbox>
+            <UICheckbox>
+              Вариант 3
+            </UICheckbox>
+          </ModalsFiltersBlock>
 
-          <div class="modal-filters__item modal-filters-item">
-            <div class="modal-filters-item__header">
-              <p class="modal-filters-item__title">
-                Бесплатная доставка
-              </p>
-              <UISwitcher />
-            </div>
-          </div>
+          <ModalsFiltersBlock
+            title="Бесплатная доставка"
+            switcher
+            class="modal-filters__item"
+          />
         </div>
       </div>
 
@@ -97,6 +103,10 @@ const isShow = ref(true)
 
 const closeModal = () => {
   isShow.value = false
+}
+
+const toggleFilter = (e) => {
+  console.log('e', e)
 }
 </script>
 
@@ -166,42 +176,6 @@ const closeModal = () => {
 
   &__button {
     font-weight: 500;
-  }
-}
-
-.modal-filters-item {
-  display: flex;
-  flex-direction: column;
-
-  border-bottom: 1px solid $grayBg;
-
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 15px 0;
-
-    cursor: pointer;
-  }
-
-  &__title {
-    @include text_large;
-    font-weight: 700;
-  }
-
-  &__arrow {
-    transform: rotate(90deg);
-  }
-
-  &__block {
-    height: 0;
-    overflow: hidden;
-    transition: height 0.3s;
-  }
-
-  &__content {
-    padding-top: 5px;
   }
 }
 </style>

@@ -5,7 +5,7 @@
         <div class="header__side">
           <NuxtLink
             to="/"
-            class="logo"
+            class="header__logo logo"
           >
             <UIIcon name="logo" />
           </NuxtLink>
@@ -16,6 +16,7 @@
 
           <LayoutHeaderRestaurant
             class="header__restaurant"
+            @click="isShowReceipt = true"
           />
 
           <LayoutHeaderSearch
@@ -44,10 +45,17 @@
 
           <div />
 
-          <LayoutHeaderLang />
+          <LayoutHeaderLang
+            @click="isShowSettings = true"
+          />
         </div>
       </div>
     </div>
+
+    <ModalsReceipt
+      v-if="isShowReceipt"
+      @close="isShowReceipt = false"
+    />
 
     <ModalsCart
       v-if="isShowCart"
@@ -58,12 +66,31 @@
       v-if="isShowAuth"
       @close="isShowAuth = false"
     />
+
+    <ModalsSettings
+      v-if="isShowSettings"
+      @close="isShowSettings = false"
+    />
+
+    <ModalsAcceptCity
+      v-if="isShowAcceptCity"
+      @close="isShowAcceptCity = false"
+    />
   </header>
 </template>
 
 <script setup lang="ts">
 const isShowCart = ref<true | false>(false)
 const isShowAuth = ref<true | false>(false)
+const isShowAcceptCity = ref<true | false>(false)
+const isShowSettings = ref<true | false>(false)
+const isShowReceipt = ref<true | false>(false)
+
+onMounted(() => {
+  // setTimeout(() => {
+  //   isShowAcceptCity.value = true
+  // }, 2000)
+})
 </script>
 
 <style lang="scss" scoped>
@@ -106,12 +133,21 @@ const isShowAuth = ref<true | false>(false)
     }
   }
 
+  &__logo {
+    flex: 0 0 auto;
+  }
+
   &__info {
     flex: 0 0 auto;
   }
 
   &__restaurant {
+    flex: 0 0 auto;
     max-width: 380px;
+  }
+
+  &__search {
+    flex: 1 1 auto;
   }
 
   &__button {

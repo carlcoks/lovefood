@@ -43,9 +43,11 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
   }
 
   &__slider {
-    overflow: hidden;
-
+    width: 100%;
+    
     padding-bottom: 23px;
+
+    overflow: hidden;
   }
 
   ::v-deep .swiper-pagination {

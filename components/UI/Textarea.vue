@@ -51,7 +51,7 @@ defineProps({
     @include text_normal;
     font-weight: inherit;
 
-    background: $grayBg;
+    background: $grayBg2;
     border-radius: 14px;
 
     resize: none;
@@ -59,6 +59,10 @@ defineProps({
     &--white {
       background: $white;
       border: 1px solid $grayText2;
+    }
+
+    &--gray {
+      background: $grayBg;
     }
 
     &:disabled {

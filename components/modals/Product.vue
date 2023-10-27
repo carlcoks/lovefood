@@ -45,21 +45,118 @@
             <p class="modal-product__description">
               Описание блюда Описание блюда Описание блюда Описание блюда Описание блюда в три строки
             </p>
+          </div>
 
-            <div class="modal-product__weight modal-product-weight">
-              <span>
-                Вес продукта
-              </span>
-              <span>
-                324 гр
-              </span>
-              <span>
-                1680 ₽/шт
-              </span>
+          <div class="modal-product-variants">
+            <div class="modal-product-variants__line">
+              <button
+              :class="['modal-product-variants__button', { 'active' : size === 0 }]"
+                @click.prevent="size = 0"
+              >
+                Маленький
+              </button>
+              <button
+                :class="['modal-product-variants__button', { 'active' : size === 1 }]"
+                @click.prevent="size = 1"
+              >
+                Средний
+              </button>
+              <button
+              :class="['modal-product-variants__button', { 'active' : size === 2 }]"
+                @click.prevent="size = 2"
+              >
+                Большой
+              </button>
+            </div>
+            <div class="modal-product-variants__line">
+              <button
+                :class="['modal-product-variants__button', { 'active' : type === 0 }]"
+                @click.prevent="type = 0"
+              >
+                Традиционное тесто
+              </button>
+              <button
+                :class="['modal-product-variants__button', { 'active' : type === 1 }]"
+                @click.prevent="type = 1"
+              >
+                Тонкое тесто
+              </button>
             </div>
           </div>
 
-          <div class="modal-product__structure modal-product-structure">
+          <div class="modal-product-add">
+            <p class="modal-product-add__title">
+              Добавить к блюду
+            </p>
+            <div class="modal-product-add__content">
+              <div class="modal-product-add-item">
+                <div class="modal-product-add-item__image">
+                  <img src="@/assets/images/souce.png" alt="">
+                </div>
+                <div class="modal-product-add-item__box">
+                  Соусы
+                </div>
+              </div>
+              <div class="modal-product-add-item">
+                <div class="modal-product-add-item__image">
+                  <img src="@/assets/images/cheese.png" alt="">
+                </div>
+                <div class="modal-product-add-item__box">
+                  Сыр
+                </div>
+              </div>
+              <div class="modal-product-add-item">
+                <div class="modal-product-add-item__image">
+                  <img src="@/assets/images/souce.png" alt="">
+                </div>
+                <div class="modal-product-add-item__box">
+                  Соусы
+                </div>
+              </div>
+              <div class="modal-product-add-item">
+                <div class="modal-product-add-item__image">
+                  <img src="@/assets/images/cheese.png" alt="">
+                </div>
+                <div class="modal-product-add-item__box">
+                  Сыр
+                </div>
+              </div>
+              <div class="modal-product-add-item">
+                <div class="modal-product-add-item__image">
+                  <img src="@/assets/images/souce.png" alt="">
+                </div>
+                <div class="modal-product-add-item__box">
+                  Соусы
+                </div>
+              </div>
+              <div class="modal-product-add-item">
+                <div class="modal-product-add-item__image">
+                  <img src="@/assets/images/cheese.png" alt="">
+                </div>
+                <div class="modal-product-add-item__box">
+                  Сыр
+                </div>
+              </div>
+              <div class="modal-product-add-item">
+                <div class="modal-product-add-item__image">
+                  <img src="@/assets/images/souce.png" alt="">
+                </div>
+                <div class="modal-product-add-item__box">
+                  Соусы
+                </div>
+              </div>
+              <div class="modal-product-add-item">
+                <div class="modal-product-add-item__image">
+                  <img src="@/assets/images/cheese.png" alt="">
+                </div>
+                <div class="modal-product-add-item__box">
+                  Сыр
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- <div class="modal-product__structure modal-product-structure">
             <p class="modal-product-structure__title">
               Пищевая ценность на 100г
             </p>
@@ -97,23 +194,37 @@
                 </p>
               </div>
             </div>
-          </div>
+          </div> -->
 
           <div class="modal-product__footer">
-            <p class="modal-product__price">
-              1 680 ₽
-              <small>
-                1 880 ₽
-              </small>
-            </p>
+            <div class="modal-product-weight">
+              <span>
+                Вес продукта
+              </span>
+              <span>
+                324 гр
+              </span>
+              <span>
+                1680 ₽/шт
+              </span>
+            </div>
 
-            <UIButton
-              color="gray"
-              class="modal-product__button"
-            >
-              <UIIcon name="add" />
-              В корзину
-            </UIButton>
+            <div class="modal-product__buttons">
+              <p class="modal-product__price">
+                1 680 ₽
+                <small>
+                  1 880 ₽
+                </small>
+              </p>
+
+              <UIButton
+                color="gray"
+                class="modal-product__button"
+              >
+                <UIIcon name="add" />
+                В корзину
+              </UIButton>
+            </div>
           </div>
         </div>
       </div>
@@ -173,6 +284,9 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
 const emits = defineEmits(['close'])
 
 const isShow = ref(true)
+
+const size = ref(0)
+const type = ref(1)
 
 const closeModal = () => {
   isShow.value = false
@@ -293,8 +407,8 @@ const closeModal = () => {
   &__content {
     display: flex;
     flex-direction: column;
-
-    padding: 10px;
+    
+    grid-gap: 20px;
   }
 
   &__header {
@@ -319,16 +433,20 @@ const closeModal = () => {
     font-weight: 500;
   }
 
-  &__structure {
-    margin-top: 27px;
+  &__footer {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 10px;
+
+    padding-top: 20px;
+
+    border-top: 1px solid $grayBg;
   }
 
-  &__footer {
+  &__buttons {
     display: flex;
     align-items: center;
     justify-content: space-between;
-
-    margin-top: 27px;
   }
 
   &__price {
@@ -362,6 +480,41 @@ const closeModal = () => {
   }
 }
 
+.modal-product-variants {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  grid-gap: 15px;
+
+  &__line {
+    display: flex;
+    align-items: center;
+    grid-gap: 3px;
+
+    padding: 3px;
+
+    border-radius: 117px;
+    background: $grayBg2;
+  }
+
+  &__button {
+    padding: 8px 25px;
+
+    @include text_normal;
+    font-weight: 600;
+
+    background: $grayBg;
+    border-radius: 40px;
+    border: 0;
+
+    transition: background-color 0.3s;
+
+    &.active {
+      background: $white;
+    }
+  }
+}
+
 .modal-product-weight {
   display: flex;
   align-items: center;
@@ -390,6 +543,68 @@ const closeModal = () => {
         display: none;
       }
     }
+  }
+}
+
+.modal-product-add {
+  display: flex;
+  flex-direction: column;
+  grid-gap: 20px;
+
+  &__title {
+    @include text_large;
+    font-weight: 700;
+  }
+
+  &__content {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 20px 10px;
+  }
+}
+
+.modal-product-add-item {
+  display: flex;
+  flex-direction: column;
+
+  background: $white;
+  border-radius: 20px;
+  border: 1px solid $grayBg;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
+
+  overflow: hidden;
+
+  &__image {
+    width: 100%;
+    height: 120px;
+
+    border: 1px solid $grayBg;
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 50px;
+
+    padding: 8px;
+
+    // @include overflow-multi-text(2);
+    @include text_small;
+    font-weight: 600;
+    text-align: center;
+
+    overflow: hidden;
   }
 }
 

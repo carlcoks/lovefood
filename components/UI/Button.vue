@@ -3,6 +3,7 @@
     :is="component"
     :to="to"
     :type="type"
+    :disabled="disabled"
     :class="[
       'button',
       color ? `button--${color}` : '',
@@ -32,6 +33,10 @@ const props = defineProps({
   to: {
     type: String,
     default: '',
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
   },
 })
 
@@ -74,6 +79,15 @@ const component = computed(() => {
 
   &--yellow {
     background: $yellow;
+
+    &:disabled {
+      color: rgba(0, 0, 0, 0.30);
+      background: $yellowLight;
+    }
+  }
+
+  &--yellow-outline {
+    border: 2px solid $yellow;
   }
 
   &--yellow-light {
