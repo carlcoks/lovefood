@@ -100,12 +100,18 @@ const menu = [
 
 <style lang="scss" scoped>
 .brand {
-  padding: 40px 0;
+  padding: 15px 0 40px;
+
+  @include mq($bp-small) {
+    padding: 40px 0;
+  }
 
   &__box {
-    display: grid;
-    grid-template-columns: 291px minmax(500px, 978px);
-    grid-gap: 60px;
+    @include mq($bp-small) {
+      display: grid;
+      grid-template-columns: 291px minmax(500px, 978px);
+      grid-gap: 60px;
+    }
   }
 
   &__banner {
@@ -117,14 +123,20 @@ const menu = [
     align-items: flex-start;
 
     width: 100%;
-    height: 300px;
+    height: 220px;
 
     margin-bottom: 40px;
-    padding: 40px 50px;
+    padding: 40px;
 
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.40) 0%, rgba(0, 0, 0, 0.40) 100%), url('@/assets/images/brand-banner-bg.jpg')no-repeat 50% / cover, lightgray 50% / cover no-repeat;
     border-radius: 40px;
     overflow: hidden;
+
+    @include mq($bp-small) {
+      height: 300px;
+
+      padding: 40px 50px;
+    }
   }
 
   &__content {
@@ -136,7 +148,13 @@ const menu = [
   }
 
   &__title {
-    @include h2;
+    display: none;
+
+    @include mq($bp-small) {
+      display: block;
+
+      @include h2;
+    }
   }
 
   &__description {
@@ -162,19 +180,37 @@ const menu = [
   }
 
   &__subtitle {
-    @include h2;
+    margin-bottom: 20px;
 
-    margin-bottom: 30px;
+    @include text_large;
+    font-weight: 700;
+
+    @include mq($bp-small) {
+      margin-bottom: 30px;
+
+      @include h2;
+    }
   }
 
   &__list {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-gap: 30px 14px;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 16px;
+
+    @include mq($bp-small) {
+      grid-template-columns: repeat(3, 1fr);
+      grid-gap: 30px 14px;
+    }
   }
 }
 
 .aside {
+  display: none;
+
+  @include mq($bp-small) {
+    display: block;
+  }
+
   &__back {
     width: 100%;
     justify-content: flex-start;

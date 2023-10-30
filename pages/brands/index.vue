@@ -35,28 +35,52 @@
 
 <style lang="scss" scoped>
 .brands {
-  padding: 40px 0;
+  padding: 15px 0 40px;
+
+  @include mq($bp-small) {
+    padding: 40px 0;
+  }
 
   &__box {
     display: grid;
-    grid-template-columns: 291px minmax(500px, 978px);
-    grid-gap: 60px;
+
+    @include mq($bp-small) {
+      grid-template-columns: 291px minmax(500px, 978px);
+      grid-gap: 60px;
+    }
   }
 
   &__title {
-    @include h2;
+    display: none;
 
-    margin-bottom: 50px;
+    @include mq($bp-small) {
+      display: block;
+
+      @include h2;
+
+      margin-bottom: 50px;
+    }
   }
 
   &__list {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-gap: 60px;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px 40px;
+
+    @include mq($bp-small) {
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: 60px;
+    }
   }
 }
 
 .aside {
+  display: none;
+
+  @include mq($bp-small) {
+    display: block;
+  }
+
   &__back {
     width: 100%;
     justify-content: flex-start;

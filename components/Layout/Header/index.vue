@@ -16,9 +16,18 @@
 
           <div class="header__top">
             <LayoutHeaderRestaurant
+              v-if="route.fullPath === '/'"
               class="header__restaurant"
               @click="isShowReceipt = true"
             />
+            <NuxtLink
+              v-else
+              to="/"
+              class="header__back"
+            >
+              <UIIcon name="arrow" />
+              {{ pageTitle }}
+            </NuxtLink>
 
             <button
               type="button"
@@ -30,6 +39,7 @@
           </div>
 
           <LayoutHeaderSearch
+            v-if="route.fullPath === '/'"
             class="header__search"
           />
         </div>
@@ -98,12 +108,18 @@
 </template>
 
 <script setup lang="ts">
+const route = useRoute()
+
 const isShowCart = ref<true | false>(false)
 const isShowAuth = ref<true | false>(false)
 const isShowAcceptCity = ref<true | false>(false)
 const isShowSettings = ref<true | false>(false)
 const isShowReceipt = ref<true | false>(false)
 const isShowMobileMenu = ref<true | false>(false)
+
+const pageTitle = computed(() => {
+  return 'Рестораны'
+})
 
 onMounted(() => {
   // setTimeout(() => {
@@ -192,6 +208,19 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: space-between;
+  }
+
+  &__back {
+    display: flex;
+    align-items: center;
+    grid-gap: 10px;
+
+    @include text_large;
+    font-weight: 700;
+
+    .ui-icon {
+      transform: rotate(180deg);
+    }
   }
 
   &__restaurant {

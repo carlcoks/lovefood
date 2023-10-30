@@ -9,7 +9,7 @@
 
     <div class="brands-card__content">
       <p class="brands-card__title">
-
+        Назание магазина
       </p>
       <p class="brands-card__description">
         Описание бренда Описание бренда Описание бренда Описание бренда Описание бренда Описание бренда
