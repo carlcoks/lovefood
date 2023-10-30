@@ -25,7 +25,7 @@
               class="header__burger burger"
               @click.prevent="isShowMobileMenu = true"
             >
-              <span />
+              <UIIcon name="burger" />
             </button>
           </div>
 
@@ -86,6 +86,14 @@
       v-if="isShowAcceptCity"
       @close="isShowAcceptCity = false"
     />
+
+    <transition name="mobile-menu" mode="out-in">
+      <LayoutHeaderMobileMenu
+        v-if="isShowMobileMenu"
+        @auth="isShowAuth = true"
+        @close="isShowMobileMenu = false"
+      />
+    </transition>
   </header>
 </template>
 
@@ -209,28 +217,5 @@ onMounted(() => {
 }
 
 .burger {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  grid-gap: 5px;
-
-  width: 40px;
-  height: 40px;
-
-  &:before,
-  &:after {
-    content: '';
-  }
-
-  &:before,
-  &:after,
-  span {
-    width: 30px;
-    height: 3px;
-
-    background: #262626;
-    border-radius: 50px;
-  }
 }
 </style>

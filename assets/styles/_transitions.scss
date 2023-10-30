@@ -39,3 +39,14 @@
 	transform: translateX(512px);
   opacity: 0;
 }
+
+.mobile-menu-active,
+.mobile-menu-active {
+  transition: opacity 0.3s linear, transform 0.3s ease;
+}
+
+.mobile-menu-from,
+.mobile-menu-to {
+	transform: translateX(320px);
+  opacity: 0;
+}
