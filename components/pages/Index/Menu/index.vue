@@ -47,29 +47,51 @@ const isShowFilters = ref(false)
 <style lang="scss" scoped>
 .index-menu {
   &__categories {
-    margin-bottom: 40px;
+    margin-bottom: 30px;
+
+    @include mq($bp-small) {
+      margin-bottom: 40px;
+    }
   }
 
   &__content {
     display: flex;
     flex-direction: column;
-    grid-gap: 30px;
+    grid-gap: 20px;
+
+    @include mq($bp-small) {
+      grid-gap: 30px;
+    }
   }
 
   &__block {
     display: flex;
     flex-direction: column;
-    grid-gap: 30px;
+    grid-gap: 20px;
+
+    @include mq($bp-small) {
+      grid-gap: 30px;
+    }
   }
 
   &__title {
-    @include h2;
+    @include text_large;
+    font-weight: 700;
+
+    @include mq($bp-small) {
+      @include h2;
+    }
   }
 
   &__list {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-gap: 30px 17px;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 16px;
+
+    @include mq($bp-small) {
+      grid-template-columns: repeat(5, 1fr);
+      grid-gap: 30px 17px;
+    }
   }
 }
 </style>

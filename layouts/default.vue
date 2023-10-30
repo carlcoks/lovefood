@@ -13,6 +13,6 @@
 
 <style lang="scss" scoped>
 .layout-default {
-  padding-top: 80px;
+  // padding-top: 80px;
 }
 </style>

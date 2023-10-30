@@ -84,23 +84,31 @@ const isShowModal = ref(false)
 .index-menu-card {
   display: flex;
   flex-direction: column;
-  grid-gap: 20px;
+  grid-gap: 12px;
 
   padding-bottom: 10px;
 
   background: $white;
   border-radius: 20px;
 
+  @include mq($bp-small) {
+    grid-gap: 20px;
+  }
+
   &__image {
     position: relative;
     width: 100%;
-    height: 316px;
+    height: 212px;
 
     border-radius: 20px;
     border: 1px solid $grayBg;
     overflow: hidden;
 
     cursor: pointer;
+
+    @include mq($bp-small) {
+      height: 316px;
+    }
 
     img {
       width: 100%;
@@ -154,13 +162,17 @@ const isShowModal = ref(false)
   }
 
   &__name {
-    margin-bottom: 20px;
+    margin-bottom: 12px;
 
     @include overflow-text;
     @include text_big;
     font-weight: 600;
 
     cursor: pointer;
+
+    @include mq($bp-small) {
+      margin-bottom: 20px;
+    }
   }
 
   &__description {
@@ -170,26 +182,30 @@ const isShowModal = ref(false)
   }
 
   &__info {
-    display: flex;
-    align-items: center;
+    display: none;
 
-    color: $grayText;
-    @include text_mini;
-
-    span {
+    @include mq($bp-small) {
       display: flex;
       align-items: center;
 
-      &:after {
-        content: url('@/assets/svg/dot-middle.svg');
+      color: $grayText;
+      @include text_mini;
+
+      span {
         display: flex;
         align-items: center;
-        margin: 0 10px;
-      }
 
-      &:last-child {
         &:after {
-          display: none;
+          content: url('@/assets/svg/dot-middle.svg');
+          display: flex;
+          align-items: center;
+          margin: 0 10px;
+        }
+
+        &:last-child {
+          &:after {
+            display: none;
+          }
         }
       }
     }

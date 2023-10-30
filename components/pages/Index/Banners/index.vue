@@ -38,32 +38,46 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
 .index-banners {
   &__box {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 20px;
+    grid-gap: 16px;
+
+    @include mq($bp-small) {
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 20px;
+    }
   }
 
   &__slider {
     width: 100%;
     
-    padding-bottom: 23px;
+    padding-bottom: 13px;
 
     overflow: hidden;
+
+    @include mq($bp-small) {
+      padding-bottom: 23px;
+    }
   }
 
   ::v-deep .swiper-pagination {
     top: unset;
     bottom: 0;
-    left: 39px;
+    left: 21px;
 
     display: flex;
     align-items: center;
-    grid-gap: 10px;
+    grid-gap: 5px;
 
     width: auto;
 
+    @include mq($bp-small) {
+      left: 39px;
+
+      grid-gap: 10px;
+    }
+
     .swiper-pagination-bullet {
-      width: 16px;
-      height: 3px;
+      width: 9px;
+      height: 2px;
 
       margin: 0;
 
@@ -71,6 +85,11 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
       border-radius: 2px;
 
       opacity: 1;
+
+      @include mq($bp-small) {
+        width: 16px;
+        height: 3px;
+      }
 
       &.swiper-pagination-bullet-active {
         background: $blackText;
@@ -81,12 +100,20 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
   &__banners {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    grid-gap: 20px;
+    grid-gap: 16px;
+
+    @include mq($bp-small) {
+      grid-gap: 20px;
+    }
   }
 }
 
 .index-banners-banner {
-  border-radius: 40px;
+  border-radius: 21px;
   overflow: hidden;
+
+  @include mq($bp-small) {
+    border-radius: 40px;
+  }
 }
 </style>

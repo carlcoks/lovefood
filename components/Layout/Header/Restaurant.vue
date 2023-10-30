@@ -24,7 +24,10 @@
         v-if="!isClose && !deliveryType"
         class="header-restaurant__value"
       >
-        Как хотите получить заказ?
+        <span>
+          Как хотите получить заказ?
+          <UIIcon name="arrow" />
+        </span>
         <small>
           Выберите способ получения
         </small>
@@ -85,9 +88,6 @@ const valueText = computed(() => {
   justify-content: space-between;
   grid-gap: 30px;
 
-  min-width: 300px;
-  height: 48px;
-
   padding: 0 15px;
 
   @include text_normal;
@@ -99,11 +99,19 @@ const valueText = computed(() => {
 
   cursor: pointer;
 
+  @include mq($bp-small) {
+    min-width: 300px;
+    height: 48px;
+  }
+
   &--close {
     color: $orange;
 
-    background: rgba(255, 102, 0, 0.11);
     border-color: $orange;
+
+    @include mq($bp-small) {
+      background: rgba(255, 102, 0, 0.11);
+    }
 
     .header-restaurant {
       &__arrow {
@@ -115,8 +123,16 @@ const valueText = computed(() => {
   }
 
   &--location {
-    background: $yellowLight;
-    border-color: $yellow;
+    padding: 0;
+
+    border: 0;
+
+    @include mq($bp-small) {
+      padding: 0 15px;
+
+      background: $yellowLight;
+      border: 1px solid $yellow;
+    }
 
     .header-restaurant {
       &__box {
@@ -124,21 +140,53 @@ const valueText = computed(() => {
       }
 
       &__label {
-        @include text_mini;
-        font-weight: 600;
+        display: none;
+
+        @include mq($bp-small) {
+          display: flex;
+
+          @include text_mini;
+          font-weight: 600;
+        }
       }
 
       &__divider {
-        background: $yellow;
+        display: none;
+
+        @include mq($bp-small) {
+          display: block;
+          background: $yellow;
+        }
       }
 
       &__value {
         @include text_small;
         font-weight: 600;
 
+        & > span {
+          .ui-icon {
+            display: flex;
+            grid-gap: 4px;
+
+            transform: rotate(90deg);
+
+            @include mq($bp-small) {
+              display: none;
+            }
+          }
+        }
+
         small {
           @include text_mini;
           font-weight: 400;
+        }
+      }
+
+      &__arrow {
+        display: none;
+
+        @include mq($bp-small) {
+          display: block;
         }
       }
     }
@@ -173,6 +221,15 @@ const valueText = computed(() => {
     grid-gap: 2px;
 
     @include overflow-text;
+
+    & > span {
+      display: flex;
+      align-items: center;
+
+      .ui-icon {
+        display: none;
+      }
+    }
   }
 }
 </style>

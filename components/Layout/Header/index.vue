@@ -14,10 +14,20 @@
             class="header__info"
           />
 
-          <LayoutHeaderRestaurant
-            class="header__restaurant"
-            @click="isShowReceipt = true"
-          />
+          <div class="header__top">
+            <LayoutHeaderRestaurant
+              class="header__restaurant"
+              @click="isShowReceipt = true"
+            />
+
+            <button
+              type="button"
+              class="header__burger burger"
+              @click.prevent="isShowMobileMenu = true"
+            >
+              <span />
+            </button>
+          </div>
 
           <LayoutHeaderSearch
             class="header__search"
@@ -85,6 +95,7 @@ const isShowAuth = ref<true | false>(false)
 const isShowAcceptCity = ref<true | false>(false)
 const isShowSettings = ref<true | false>(false)
 const isShowReceipt = ref<true | false>(false)
+const isShowMobileMenu = ref<true | false>(false)
 
 onMounted(() => {
   // setTimeout(() => {
@@ -95,19 +106,23 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .header {
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
+  // position: fixed;
+  // top: 0;
+  // right: 0;
+  // left: 0;
 
   display: flex;
   align-items: center;
-  height: 80px;
 
   background: $white;
-  border-bottom: 1px solid $grayBg;
 
   z-index: 1000;
+
+  @include mq($bp-small) {
+    height: 80px;
+
+    border-bottom: 1px solid $grayBg;
+  }
 
   &__box {
     display: flex;
@@ -115,35 +130,73 @@ onMounted(() => {
     justify-content: space-between;
     grid-gap: 40px;
 
-    padding: 14px 0;
+    padding: 15px 0;
+
+    @include mq($bp-small) {
+      padding: 14px 0;
+    }
   }
 
   &__side {
     flex: 1 1 auto;
 
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    grid-gap: 40px;
+    flex-direction: column;
+    grid-gap: 20px;
+    
+
+    @include mq($bp-small) {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+
+      grid-gap: 40px;
+    }
 
     &--right {
-      flex: 0 0 auto;
+      display: none;
 
-      grid-gap: 12px;
+      @include mq($bp-small) {
+        display: flex;
+
+        flex: 0 0 auto;
+
+        grid-gap: 12px;
+      }
     }
   }
 
   &__logo {
     flex: 0 0 auto;
+
+    display: none;
   }
 
   &__info {
     flex: 0 0 auto;
+
+    display: none;
+  }
+
+  &__top {
+    flex: 0 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
   &__restaurant {
     flex: 0 0 auto;
     max-width: 380px;
+  }
+
+  &__burger {
+    display: flex;
+
+    @include mq($bp-small) {
+      display: none;
+    }
   }
 
   &__search {
@@ -155,17 +208,29 @@ onMounted(() => {
   }
 }
 
-.header-action {
+.burger {
   display: flex;
   flex-direction: column;
   align-items: center;
-  grid-gap: 4px;
+  justify-content: center;
+  grid-gap: 5px;
 
-  padding: 0 4px;
+  width: 40px;
+  height: 40px;
 
-  color: $grayText;
-  
-  font-weight: 500;
-  @include text_mini;
+  &:before,
+  &:after {
+    content: '';
+  }
+
+  &:before,
+  &:after,
+  span {
+    width: 30px;
+    height: 3px;
+
+    background: #262626;
+    border-radius: 50px;
+  }
 }
 </style>

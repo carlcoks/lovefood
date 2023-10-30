@@ -17,10 +17,18 @@
 
 <style lang="scss" scoped>
 .index {
-  padding: 40px 0;
+  padding: 15px 0 60px;
+
+  @include mq($bp-small) {
+    padding: 40px 0;
+  }
 
   &__banners, &__brands {
-    margin-bottom: 60px;
+    margin-bottom: 30px;
+
+    @include mq($bp-small) {
+      margin-bottom: 60px;
+    }
   }
 }
 </style>

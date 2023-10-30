@@ -20,10 +20,17 @@
         <Swiper
           :modules="[Navigation]"
           :slides-per-view="'auto'"
-          :space-between="40"
           :navigation="{
             prevEl: prev,
             nextEl: next,
+          }"
+          :breakpoints="{
+            0: {
+              spaceBetween: 10,
+            },
+            767: {
+              spaceBetween: 40,
+            }
           }"
         >
           <SwiperSlide
@@ -72,15 +79,39 @@ const next = ref(null)
     align-items: center;
     justify-content: space-between;
 
-    margin-bottom: 30px;
+    margin-bottom: 23px;
+
+    @include mq($bp-small) {
+      margin-bottom: 30px;
+    }
   }
 
   &__title {
-    @include h2;
+    @include text_large;
+    font-weight: 700;
+
+    @include mq($bp-small) {
+      @include h2;
+    }
   }
 
   &__button {
+    grid-gap: 6px;
+    
+    padding: 0;
+
     font-weight: 500;
+    color: $grayText;
+
+    background: none;
+
+    @include mq(0, $bp-small) {
+      
+    }
+
+    ::v-deep(.ui-icon) svg path {
+      fill: $grayText;
+    }
   }
 }
 
@@ -95,46 +126,60 @@ const next = ref(null)
     }
   }
 
+  .swiper {
+    margin: 0 -20px;
+    padding: 0 20px;
+
+    @include mq($bp-small) {
+      margin: 0;
+      padding: 0;
+    }
+  }
+
   &__slide {
     width: auto;
   }
 
   &__arrow {
-    position: absolute;
-    top: 50px;
+    display: none;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @include mq($bp-small) {
+      position: absolute;
+      top: 50px;
 
-    width: 60px;
-    height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-    background: $white;
-    border-radius: 50%;
-    box-shadow: 1px 0px 10px 0px rgba(0, 0, 0, 0.05);
+      width: 60px;
+      height: 60px;
 
-    opacity: 0;
+      background: $white;
+      border-radius: 50%;
+      box-shadow: 1px 0px 10px 0px rgba(0, 0, 0, 0.05);
 
-    transition: opacity 0.3s;
-    cursor: pointer;
-    z-index: 1;
+      opacity: 0;
 
-    ::v-deep(.ui-icon) svg {
-      width: 40px;
-      height: 40px;
-    }
+      transition: opacity 0.3s;
+      cursor: pointer;
+      z-index: 1;
 
-    &--prev {
-      left: -30px;
-
-      .ui-icon {
-        transform: rotate(180deg);
+      ::v-deep(.ui-icon) svg {
+        width: 40px;
+        height: 40px;
       }
-    }
 
-    &--next {
-      right: -30px;
+      &--prev {
+        left: -30px;
+
+        .ui-icon {
+          transform: rotate(180deg);
+        }
+      }
+
+      &--next {
+        right: -30px;
+      }
     }
   }
 }
@@ -162,10 +207,16 @@ const next = ref(null)
   }
 
   &__name {
-    @include overflow-text;
+    display: none;
 
-    @include text_big;
-    font-weight: 600;
+    @include mq($bp-small) {
+      display: block;
+
+      @include overflow-text;
+
+      @include text_big;
+      font-weight: 600;
+    }
   }
 }
 </style>

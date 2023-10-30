@@ -189,9 +189,13 @@ const about = [
 
 <style lang="scss" scoped>
 .footer {
-  padding: 70px 0 40px;
+  padding: 40px 0;
 
   background: $grayBg2;
+
+  @include mq($bp-small) {
+    padding: 70px 0 40px;
+  }
 
   &__box {
     display: flex;
@@ -200,14 +204,26 @@ const about = [
 
   &__top {
     display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
+    flex-direction: column;
+    grid-gap: 30px;
+
+    @include mq($bp-small) {
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: space-between;
+      grid-gap: 0;
+    }
   }
 
   &__row {
     display: flex;
     align-items: flex-start;
-    grid-gap: 120px;
+    justify-content: space-between;
+    grid-gap: 30px;
+
+    @include mq($bp-small) {
+      grid-gap: 120px;
+    }
   }
 
   &__col {
@@ -218,7 +234,12 @@ const about = [
   &__phone {
     margin-bottom: 9px;
 
-    @include h2;
+    @include text_large;
+    font-weight: 700;
+
+    @include mq($bp-small) {
+      @include h2;
+    }
   }
 
   &__time {
@@ -226,12 +247,15 @@ const about = [
     align-items: center;
     grid-gap: 10px;
 
-    padding-left: 4px;
-
     color: $grayText;
-
-    @include text_big;
+    @include text_normal;
     font-weight: 600;
+
+    @include mq($bp-small) {
+      @include text_big;
+
+      padding-left: 4px;
+    }
   }
 
   &__block {
@@ -250,8 +274,13 @@ const about = [
 
     color: $grayText2;
 
-    @include text_large;
-    font-weight: 700;
+    @include text_big;
+    font-weight: 600;
+
+    @include mq($bp-small) {
+      @include text_large;
+      font-weight: 700;
+    }
   }
 
   &__apps {
@@ -271,16 +300,25 @@ const about = [
     align-items: center;
     justify-content: space-between;
 
-    margin-top: 50px;
-    padding-top: 22px;
+    margin-top: 30px;
+    padding-top: 16px;
 
     border-top: 1px solid #D9D9D9;
+
+    @include mq($bp-small) {
+      margin-top: 50px;
+      padding-top: 22px;
+    }
   }
 
   &__copy {
     color: $grayText;
 
-    @include text_big;
+    @include text_small;
+
+    @include mq($bp-small) {
+      @include text_big;
+    }
   }
 
   &__to-top {
@@ -304,7 +342,11 @@ const about = [
 
 .footer-menu {
   display: grid;
-  grid-gap: 15px 60px;
+  grid-gap: 16px 30px;
+
+  @include mq($bp-small) {
+    grid-gap: 15px 60px;
+  }
 
   &--double {
     grid-template-columns: repeat(2, 1fr);
@@ -342,6 +384,8 @@ const about = [
   &__value {
     @include text_normal;
     font-weight: 600;
+
+    white-space: nowrap;
   }
 }
 </style>
