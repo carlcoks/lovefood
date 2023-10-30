@@ -113,20 +113,31 @@ const toggleFilter = (e) => {
 <style lang="scss" scoped>
 .modal-filters {
   width: 100vw;
-  max-width: 640px;
+  min-height: 100vh;
 
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
 
   background: $white;
-  border-radius: 40px;
+
+  @include mq($bp-small) {
+    max-width: 640px;
+    min-height: auto;
+
+    border-radius: 40px;
+  }
 
   &__main {
     display: flex;
     flex-direction: column;
     grid-gap: 15px;
 
-    padding: 50px 60px 145px;
+    padding: 20px 20px 145px;
+
+    @include mq($bp-small) {
+      padding: 50px 60px 145px;
+    }
   }
 
   &__header {
@@ -162,15 +173,20 @@ const toggleFilter = (e) => {
     flex-direction: column;
     grid-gap: 20px;
 
-    padding: 40px 60px 50px;
+    padding: 40px 20px 20px;
 
     border-top: 1px solid $grayBg2;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
+
+    @include mq($bp-small) {
+      padding: 40px 60px 50px;
+    }
   }
 
   &__buttons {
     display: flex;
     align-items: center;
+    justify-content: center;
     grid-gap: 16px;
   }
 

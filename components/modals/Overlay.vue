@@ -136,6 +136,10 @@ onBeforeUnmount(() => {
     position: relative;
     white-space: normal;
     text-align: left;
+
+    @media screen and (max-width: 768px) {
+      margin: 0!important;
+    }
   }
 }
 </style>

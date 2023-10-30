@@ -299,12 +299,18 @@ const closeModal = () => {
 
   width: 100vw;
   max-width: 1070px;
+  min-height: 100vh;
 
   display: flex;
   flex-direction: column;
 
   background: $grayBg2;
-  border-radius: 40px;
+
+  @include mq($bp-small) {
+    min-height: auto;
+
+    border-radius: 40px;
+  }
 
   &__close {
     position: absolute;
@@ -312,6 +318,8 @@ const closeModal = () => {
     right: 40px;
 
     padding: 10px;
+
+    z-index: 10;
 
     ::v-deep(.ui-icon) svg {
       width: 24px;
@@ -325,13 +333,20 @@ const closeModal = () => {
 
   &__main {
     display: grid;
-    grid-template-columns: 440px 1fr;
-    grid-gap: 38px;
+    grid-gap: 30px;
 
-    padding: 30px;
+    padding: 20px;
 
     background: $white;
-    border-radius: 40px;
+
+    @include mq($bp-small) {
+      grid-template-columns: 440px 1fr;
+      grid-gap: 38px;
+
+      padding: 30px;
+
+      border-radius: 40px;
+    }
   }
 
   &__image {
@@ -476,7 +491,11 @@ const closeModal = () => {
     flex-direction: column;
     grid-gap: 30px;
 
-    padding: 30px 30px 40px;
+    padding: 30px 20px;
+
+    @include mq($bp-small) {
+      padding: 30px 30px 40px;
+    }
   }
 }
 

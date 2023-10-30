@@ -148,15 +148,23 @@ const onSubmit = () => {
 <style lang="scss" scoped>
 .modal-auth {
   width: 100vw;
-  max-width: 442px;
+  min-height: 100vh;
 
   display: flex;
   flex-direction: column;
 
-  padding: 50px 60px;
+  padding: 20px;
 
   background: $white;
-  border-radius: 40px;
+
+  @include mq($bp-small) {
+    min-height: auto;
+    max-width: 442px;
+
+    padding: 50px 60px;
+
+    border-radius: 40px;
+  }
 
   &__close {
     ::v-deep(.ui-icon) svg {
@@ -189,6 +197,11 @@ const onSubmit = () => {
     @include text_big;
 
     margin-bottom: 40px;
+  }
+
+  &__form {
+    max-width: 360px;
+    margin: 0 auto;
   }
 
   &__number {
