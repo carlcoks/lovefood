@@ -16,18 +16,17 @@
 
           <div class="header__top">
             <LayoutHeaderRestaurant
-              v-if="route.name === 'index'"
               class="header__restaurant"
               @click="isShowReceipt = true"
             />
-            <NuxtLink
+            <!-- <NuxtLink
               v-else
               to="/"
               class="header__back"
             >
               <UIIcon name="arrow" />
               {{ pageTitle }}
-            </NuxtLink>
+            </NuxtLink> -->
 
             <button
               type="button"
@@ -39,7 +38,6 @@
           </div>
 
           <LayoutHeaderSearch
-            v-if="route.name === 'index'"
             class="header__search"
           />
         </div>
@@ -108,8 +106,6 @@
 </template>
 
 <script setup lang="ts">
-const route = useRoute()
-
 const isShowCart = ref<true | false>(false)
 const isShowAuth = ref<true | false>(false)
 const isShowAcceptCity = ref<true | false>(false)
