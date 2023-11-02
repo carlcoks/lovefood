@@ -23,12 +23,12 @@
             </p>
             <ul class="footer__menu footer-menu footer-menu--double">
               <li
-                v-for="(item, i) in menu"
+                v-for="(item, i) in catalog.categories"
                 :key="i"
                 class="footer-menu__item"
               >
                 <a
-                  href="#"
+                  :href="`#${item.name.toLowerCase()}`"
                   class="footer-menu__link"
                 >
                   {{ item.name }}
@@ -165,18 +165,9 @@
 </template>
 
 <script setup>
-const menu = [
-  { link: '/', name: 'Акции' },
-  { link: '/', name: 'Новинки' },
-  { link: '/', name: 'Пицца' },
-  { link: '/', name: 'Роллы' },
-  { link: '/', name: 'Обед/ужин' },
-  { link: '/', name: 'Собери вок' },
-  { link: '/', name: 'Закуски' },
-  { link: '/', name: 'Десерты' },
-  { link: '/', name: 'Напитки' },
-  { link: '/', name: 'Бронь столов' },
-]
+import { useCatalogStore } from '@/store/catalog'
+
+const catalog = useCatalogStore()
 
 const about = [
   { link: '/', name: 'Оплата' },

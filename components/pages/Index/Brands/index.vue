@@ -96,21 +96,21 @@ const next = ref(null)
   }
 
   &__button {
-    grid-gap: 6px;
+    // grid-gap: 6px;
     
-    padding: 0;
+    // padding: 0;
 
     font-weight: 500;
-    color: $grayText;
+    // color: $grayText;
 
-    background: none;
+    // background: none;
 
-    @include mq(0, $bp-small) {
+    // @include mq(0, $bp-small) {
       
-    }
+    // }
 
     ::v-deep(.ui-icon) svg path {
-      fill: $grayText;
+      fill: $blackText3;
     }
   }
 }

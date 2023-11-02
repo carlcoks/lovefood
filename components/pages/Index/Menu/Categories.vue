@@ -1,14 +1,17 @@
 <template>
   <div class="index-menu-categories">
-    <div class="index-menu-categories__tabs">
-      <button
-        v-for="(item, i) in tabs"
-        :key="i"
-        :class="['index-menu-categories-tab', { 'active' : i === activeTab }]"
-        @click.prevent="activeTab = i"
-      >
-        {{ item }}
-      </button>
+    <div class="index-menu-categories__tabs-wrap">
+      <div class="index-menu-categories__tabs">
+        <a
+          v-for="(item, i) in catalog.categories"
+          :key="i"
+          :href="`#${item.name.toLowerCase()}`"
+          :class="['index-menu-categories-tab', { 'active' : i === activeTab }]"
+          @click="activeTab = i"
+        >
+          {{ item.name }}
+        </a>
+      </div>
     </div>
 
     <button
@@ -23,9 +26,11 @@
 </template>
 
 <script setup>
-const emits = defineEmits(['showFilters'])
+import { useCatalogStore } from '@/store/catalog'
 
-const tabs = ['Акции', 'Новинки', 'Пицца', 'Роллы', 'Обед/Ужин', 'Собери WOK', 'Закуски', 'Десерты', 'Напитки', 'Еще +']
+const catalog = useCatalogStore()
+
+const emits = defineEmits(['showFilters'])
 
 const activeTab = ref(0)
 </script>
@@ -33,6 +38,7 @@ const activeTab = ref(0)
 <style lang="scss" scoped>
 .index-menu-categories {
   position: sticky;
+  top: 0;
   
   display: flex;
   align-items: center;
@@ -43,15 +49,24 @@ const activeTab = ref(0)
   z-index: 10;
 
   @include mq($bp-small) {
-    height: 80px;
-
     flex-direction: row;
-    grid-gap: 0;
 
     padding: 8px;
 
-    background: $grayBg;
+    background: $grayBg2;
     border-radius: 20px;
+  }
+
+  &__tabs-wrap {
+    height: 48px;
+
+    margin: 0 -20px 0 0;
+
+    overflow: hidden;
+
+    @include mq($bp-small) {
+      margin: 0;
+    }
   }
 
   &__tabs {
@@ -59,10 +74,10 @@ const activeTab = ref(0)
     align-items: center;
     grid-gap: 7px;
 
-    margin: 0 -20px 0 -16px;
-    padding: 0 20px 0 16px;
+    padding-right: 20px;
+    padding-bottom: 20px;
 
-    overflow: auto;
+    overflow-x: auto;
 
     @include mq($bp-small) {
       margin: 0;
@@ -75,6 +90,8 @@ const activeTab = ref(0)
   display: flex;
   align-items: center;
   justify-content: center;
+
+  height: 48px;
 
   padding: 12px 15px;
 
@@ -90,6 +107,7 @@ const activeTab = ref(0)
 
   @include mq($bp-small) {
     background: none;
+    border-color: $grayBg2;
   }
 
   &:hover {

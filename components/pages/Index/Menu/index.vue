@@ -7,26 +7,20 @@
       />
 
       <div class="index-menu__content">
-        <div class="index-menu__block">
+        <div
+          v-for="block in catalog.catalog"
+          :key="block.id"
+          :id="block.name.toLowerCase()"
+          class="index-menu__block"
+        >
           <h2 class="index-menu__title">
-            Акции
+            {{ block.name }}
           </h2>
           <div class="index-menu__list">
             <PagesIndexMenuCard
-              v-for="i in 12"
-              :key="i"
-            />
-          </div>
-        </div>
-
-        <div class="index-menu__block">
-          <h2 class="index-menu__title">
-            Новинки
-          </h2>
-          <div class="index-menu__list">
-            <PagesIndexMenuCard
-              v-for="i in 12"
-              :key="i"
+              v-for="product in block.products"
+              :key="product.id"
+              :item="product"
             />
           </div>
         </div>
@@ -41,6 +35,10 @@
 </template>
 
 <script setup>
+import { useCatalogStore } from '@/store/catalog'
+
+const catalog = useCatalogStore()
+
 const isShowFilters = ref(false)
 </script>
 

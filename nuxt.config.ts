@@ -54,4 +54,24 @@ export default defineNuxtConfig({
       mode: 'out-in',
     },
   },
+
+  modules: [
+    '@pinia/nuxt',
+    'vue-yandex-maps/nuxt',
+  ],
+
+  pinia: {
+    storesDirs: ['./store/**'],
+  },
+
+  yandexMaps: {
+    apikey: process.env.YMAPS_KEY,
+  },
+
+  runtimeConfig: {
+    public: {
+      BASE_URL: process.env.BASE_URL,
+      YMAPS_KEY: process.env.YMAPS_KEY,
+    },
+  },
 })

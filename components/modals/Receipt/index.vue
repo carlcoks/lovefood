@@ -43,9 +43,9 @@ te<template>
         </div>
       </div>
 
-      <div class="modal-receipt__map">
-        <img src="@/assets/images/map.jpg" alt="">
-      </div>
+      <ModalsReceiptMap
+        class="modal-receipt__map"
+      />
     </div>
   </ModalsOverlay>
 </template>
@@ -70,14 +70,21 @@ const closeModal = () => {
 <style lang="scss" scoped>
 .modal-receipt {
   width: 100vw;
-  max-width: 1150px;
-  height: 678px;
+  min-height: 100vh;
 
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
 
   background: $white;
-  border-radius: 40px;
+
+  @include mq($bp-small) {
+    max-width: 1150px;
+    min-height: auto;
+    height: 678px;
+
+    grid-template-columns: repeat(2, 1fr);
+  
+    border-radius: 40px;
+  }
 
   &__close {
     position: absolute;
@@ -94,6 +101,8 @@ const closeModal = () => {
     background: $white;
     border-radius: 50%;
 
+    z-index: 10;
+
     ::v-deep(.ui-icon) svg {
       width: 24px;
       height: 24px;
@@ -108,15 +117,19 @@ const closeModal = () => {
     display: flex;
     flex-direction: column;
 
-    padding: 50px 60px;
+    padding: 0;
+
+    @include mq($bp-small) {
+      padding: 50px 60px;
+    }
   }
 
   &__map {
-    width: 100%;
-    height: 100%;
+    display: none;
 
-    border-radius: 0 40px 40px 0;
-    overflow: hidden;
+    @include mq($bp-small) {
+      display: block;
+    }
   }
 
   &__tabs {

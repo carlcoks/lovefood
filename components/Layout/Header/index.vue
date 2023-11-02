@@ -16,7 +16,7 @@
 
           <div class="header__top">
             <LayoutHeaderRestaurant
-              v-if="route.fullPath === '/'"
+              v-if="route.name === 'index'"
               class="header__restaurant"
               @click="isShowReceipt = true"
             />
@@ -39,7 +39,7 @@
           </div>
 
           <LayoutHeaderSearch
-            v-if="route.fullPath === '/'"
+            v-if="route.name === 'index'"
             class="header__search"
           />
         </div>
@@ -194,12 +194,14 @@ onMounted(() => {
     flex: 0 0 auto;
 
     display: none;
+
+    @include mq($bp-small) {
+      display: block;
+    }
   }
 
   &__info {
     flex: 0 0 auto;
-
-    display: none;
   }
 
   &__top {

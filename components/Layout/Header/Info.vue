@@ -19,9 +19,13 @@
 
 <style lang="scss" scoped>
 .header-info {
-  display: flex;
-  flex-direction: column;
-  grid-gap: 4px;
+  display: none;
+
+  @include mq($bp-small) {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 4px;
+  }
 
   &__phone {
     @include text_small;

@@ -4,10 +4,13 @@
       class="index-menu-card__image"
       @click.prevent="isShowModal = true"
     >
-      <img src="@/assets/images/menu-card-example.png" alt="">
+      <img :src="productImage" alt="">
 
-      <span class="index-menu-card__discount">
-        -25%
+      <span
+        v-if="discount"
+        class="index-menu-card__discount"
+      >
+        -{{ discount }}%
       </span>
       
       <button
@@ -38,7 +41,7 @@
         class="index-menu-card__name"
         @click.prevent="isShowModal = true"
       >
-        Желтохвост
+        {{ item.name }}
       </p>
 
       <div class="index-menu-card__description">
@@ -52,10 +55,10 @@
         </p>
 
         <p class="index-menu-card__price">
-          <small>
-            1 880 ₽
+          <small v-if="+item.regular_price !== +item.price">
+            {{ item.regular_price.toLocaleString() }} ₽
           </small>
-          1 680 ₽
+          {{ item.price.toLocaleString() }} ₽
         </p>
       </div>
 
@@ -76,6 +79,25 @@
 </template>
 
 <script setup>
+const props = defineProps({
+  item: {
+    type: Object,
+    default: () => ({}),
+  },
+})
+
+const productImage = computed(() => {
+  return props.item?.images[0] || ''
+})
+
+const discount = computed(() => {
+  if (props.item?.regular_price && props.item?.price && +props.item.regular_price !== +props.item.price) {
+    return 100 - (props.item.price / props.item.regular_price * 100)
+  }
+
+  return 0
+})
+
 const isFavorite = ref(false)
 const isShowModal = ref(false)
 </script>
@@ -156,8 +178,7 @@ const isShowModal = ref(false)
   }
 
   &__content {
-    display: flex;
-    flex-direction: column;
+    display: grid;
     padding: 0 10px;
   }
 
