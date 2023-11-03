@@ -10,14 +10,14 @@
         <div
           v-for="block in catalog.catalog"
           :key="block.id"
-          :id="block.name.toLowerCase()"
+          :id="`block_${block.id}`"
           class="index-menu__block"
         >
           <h2 class="index-menu__title">
             {{ block.name }}
           </h2>
           <div class="index-menu__list">
-            <PagesIndexMenuCard
+            <CommonProductCard
               v-for="product in block.products"
               :key="product.id"
               :item="product"
@@ -55,11 +55,6 @@ const isShowFilters = ref(false)
   &__content {
     display: flex;
     flex-direction: column;
-    grid-gap: 20px;
-
-    @include mq($bp-small) {
-      grid-gap: 30px;
-    }
   }
 
   &__block {
@@ -67,8 +62,16 @@ const isShowFilters = ref(false)
     flex-direction: column;
     grid-gap: 20px;
 
+    margin-bottom: 20px;
+
     @include mq($bp-small) {
       grid-gap: 30px;
+
+      margin-bottom: 30px;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
     }
   }
 

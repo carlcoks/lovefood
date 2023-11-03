@@ -1,7 +1,7 @@
 <template>
   <ModalsOverlay
     :is-show="isShow"
-    @close="emits('close')"
+    @close="close()"
   >
     <div class="modal-product">
       <a
@@ -14,10 +14,17 @@
 
       <div class="modal-product__main">
         <div class="modal-product__image">
-          <img src="@/assets/images/menu-card-example.png" alt="">
+          <img
+            v-lazy-load
+            :data-src="productImage"
+            :alt="product.name"
+          >
           
-          <p class="modal-product__discount">
-            -25%
+          <p
+            v-if="discount"
+            class="modal-product__discount"
+          >
+            -{{ discount }}%
           </p>
 
           <div class="modal-product__characteristics">
@@ -39,47 +46,24 @@
         <div class="modal-product__content">
           <div class="modal-product__header">
             <p class="modal-product__title">
-              Название блюда
+              {{ product.name }}
             </p>
 
-            <p class="modal-product__description">
-              Описание блюда Описание блюда Описание блюда Описание блюда Описание блюда в три строки
-            </p>
+            <div
+              v-html="product.description"
+              class="modal-product__description"
+            />
           </div>
 
           <div class="modal-product-variants">
             <div class="modal-product-variants__line">
               <button
-              :class="['modal-product-variants__button', { 'active' : size === 0 }]"
-                @click.prevent="size = 0"
+                v-for="(acfVariant, i) in acfVariations"
+                :key="i"
+                :class="['modal-product-variants__button', { 'active' : size === 0 }]"
+                @click.prevent="size = i"
               >
-                Маленький
-              </button>
-              <button
-                :class="['modal-product-variants__button', { 'active' : size === 1 }]"
-                @click.prevent="size = 1"
-              >
-                Средний
-              </button>
-              <button
-              :class="['modal-product-variants__button', { 'active' : size === 2 }]"
-                @click.prevent="size = 2"
-              >
-                Большой
-              </button>
-            </div>
-            <div class="modal-product-variants__line">
-              <button
-                :class="['modal-product-variants__button', { 'active' : type === 0 }]"
-                @click.prevent="type = 0"
-              >
-                Традиционное тесто
-              </button>
-              <button
-                :class="['modal-product-variants__button', { 'active' : type === 1 }]"
-                @click.prevent="type = 1"
-              >
-                Тонкое тесто
+                {{ acfVariant.product_name_short }}
               </button>
             </div>
           </div>
@@ -211,9 +195,9 @@
 
             <div class="modal-product__buttons">
               <p class="modal-product__price">
-                1 680 ₽
-                <small>
-                  1 880 ₽
+                {{ product.price.toLocaleString()}} ₽
+                <small v-if="+product.price !== +product.regular_price">
+                  {{ product.regular_price.toLocaleString() }} ₽
                 </small>
               </p>
 
@@ -280,16 +264,41 @@
 
 <script setup>
 import { Swiper, SwiperSlide } from 'swiper/vue'
+import { useCatalogStore } from '@/store/catalog'
 
-const emits = defineEmits(['close'])
+const catalog = useCatalogStore()
 
 const isShow = ref(true)
 
 const size = ref(0)
 const type = ref(1)
 
+const product = computed(() => {
+  return catalog.product
+})
+
+const productImage = computed(() => {
+  return product.value?.images[0] || ''
+})
+
+const discount = computed(() => {
+  if (product.value?.regular_price && product.value?.price && +product.value.regular_price !== +product.value.price) {
+    return 100 - (product.value.price / product.value.regular_price * 100)
+  }
+
+  return 0
+})
+
+const acfVariations = computed(() => {
+  return product.value?.acf?.variations || []
+})
+
 const closeModal = () => {
   isShow.value = false
+}
+
+const close = () => {
+  catalog.setProduct(null)
 }
 </script>
 
@@ -508,12 +517,14 @@ const closeModal = () => {
   &__line {
     display: flex;
     align-items: center;
-    grid-gap: 3px;
+    // grid-gap: 3px;
+    flex-wrap: wrap;
+    grid-gap: 3px 15px;
 
     padding: 3px;
 
     border-radius: 117px;
-    background: $grayBg2;
+    // background: $grayBg2;
   }
 
   &__button {

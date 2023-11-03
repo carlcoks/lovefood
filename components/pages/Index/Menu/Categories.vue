@@ -2,37 +2,99 @@
   <div class="index-menu-categories">
     <div class="index-menu-categories__tabs-wrap">
       <div class="index-menu-categories__tabs">
-        <a
-          v-for="(item, i) in catalog.categories"
-          :key="i"
-          :href="`#${item.name.toLowerCase()}`"
-          :class="['index-menu-categories-tab', { 'active' : i === activeTab }]"
-          @click="activeTab = i"
+        <button
+          v-for="item in categories"
+          :key="item.id"
+          type="button"
+          :class="['index-menu-categories-tab', { 'active' : activeTab === item.id }]"
+          @click.prevent="scrollTo(item.id)"
         >
           {{ item.name }}
-        </a>
+        </button>
+
+        <button
+          v-if="!showMore"
+          type="button"
+          class="index-menu-categories-tab"
+          @click.prevent="showMore = true"
+        >
+          Ещё+
+        </button>
       </div>
     </div>
 
-    <button
-      class="index-menu-categories-tab index-menu-categories-filter"
-      @click.prevent="emits('showFilters')"
-    >
-      <UIIcon name="filter" />
-      <span class="index-menu-categories-filter__line" />
-      3
-    </button>
+    <CommonFilterButton />
   </div>
 </template>
 
 <script setup>
 import { useCatalogStore } from '@/store/catalog'
 
+import scrollToEl from '@/utils/scrollToEl'
+
 const catalog = useCatalogStore()
 
-const emits = defineEmits(['showFilters'])
+const activeTab = ref(null)
+const showMore = ref(false)
+const positions = []
+const HEIGHT = 64
 
-const activeTab = ref(0)
+const categories = computed(() => {
+  const arr = catalog.categories
+
+  if (!showMore.value) {
+    return arr.slice(0, 9)
+  }
+
+  return arr
+})
+
+const scrollTo = (id) => {
+  activeTab.value = id
+
+  scrollToEl(`block_${id}`, HEIGHT * -1)
+}
+
+const onScroll = (e) => {
+  const scrollPosition = (window.pageYOffset || document.documentElement.scrollTop) + HEIGHT
+
+  if (scrollPosition < positions[0]?.top) {
+    return activeTab.value = positions[0]?.id || null
+  }
+
+  const isset = positions.find(item => {
+    if (scrollPosition >= item.top && scrollPosition <= item.bottom) {
+      activeTab.value = item.id
+
+      return true
+    }
+
+    return false
+  })
+
+  if (!isset) {
+    activeTab.value = null
+  }
+}
+
+const getBlocksPositions = () => {
+  categories.value.forEach(item => {
+    const el = document.getElementById(`block_${item.id}`)
+
+    positions.push({
+      id: item.id,
+      top: el.offsetTop,
+      bottom: el.offsetTop + el.scrollHeight,
+    })
+  })
+}
+
+onMounted(() => {
+  activeTab.value = categories.value[0]?.id || null
+
+  getBlocksPositions()
+  document.addEventListener('scroll', onScroll)
+})
 </script>
 
 <style lang="scss" scoped>
@@ -118,39 +180,6 @@ const activeTab = ref(0)
   &.active {
     background-color: $white;
     border-color: $yellow;
-  }
-}
-
-.index-menu-categories-filter {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 48px;
-  
-  font-size: 0;
-
-  background: $grayBg;
-
-  @include mq($bp-small) {
-    grid-gap: 10px;
-
-    @include text_normal;
-    color: $orange;
-
-    background: $white;
-  }
-
-  &__line {
-    display: none;
-
-    @include mq($bp-small) {
-      display: block;
-      width: 2px;
-      height: 20px;
-
-      background: #D9D9D9;
-      border-radius: 2px;
-    }
   }
 }
 </style>

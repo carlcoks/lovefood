@@ -58,6 +58,7 @@ export default defineNuxtConfig({
   modules: [
     '@pinia/nuxt',
     'vue-yandex-maps/nuxt',
+    'nuxt-lazy-load',
   ],
 
   pinia: {
@@ -66,6 +67,16 @@ export default defineNuxtConfig({
 
   yandexMaps: {
     apikey: process.env.YMAPS_KEY,
+  },
+
+  lazyLoad: {
+    images: false,
+    videos: false,
+    audios: false,
+    iframes: false,
+    native: false,
+    directiveOnly: true,
+    defaultImage: '/images/default-image.png',
   },
 
   runtimeConfig: {

@@ -68,7 +68,7 @@
           </h2>
 
           <div class="brand__list">
-            <PagesIndexMenuCard
+            <CommonProductCard
               v-for="i in 9"
               :key="i"
             />

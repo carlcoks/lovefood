@@ -4,15 +4,22 @@
       class="index__banners"
     />
 
-    <PagesIndexBrands
+    <!-- <PagesIndexBrands
       class="index__brands"
-    />
+    /> -->
 
     <PagesIndexMenu />
+
+    <ModalsProduct
+      v-if="catalog.isShowProductModal"
+    />
   </main>
 </template>
 
 <script setup>
+import { useCatalogStore } from '@/store/catalog'
+
+const catalog = useCatalogStore()
 </script>
 
 <style lang="scss" scoped>

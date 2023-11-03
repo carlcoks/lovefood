@@ -2,9 +2,13 @@
   <div class="index-menu-card">
     <div
       class="index-menu-card__image"
-      @click.prevent="isShowModal = true"
+      @click.prevent="openProduct()"
     >
-      <img :src="productImage" alt="">
+      <img
+        :data-src="productImage"
+        :alt="item.name"
+        v-lazy-load
+      >
 
       <span
         v-if="discount"
@@ -39,20 +43,21 @@
     <div class="index-menu-card__content">
       <p
         class="index-menu-card__name"
-        @click.prevent="isShowModal = true"
+        @click="openProduct()"
       >
         {{ item.name }}
       </p>
 
       <div class="index-menu-card__description">
-        <p class="index-menu-card__info">
+        <!-- <p class="index-menu-card__info">
           <span>
             100 гр
           </span>
           <span>
             1680 ₽/шт
           </span>
-        </p>
+        </p> -->
+        <p />
 
         <p class="index-menu-card__price">
           <small v-if="+item.regular_price !== +item.price">
@@ -65,20 +70,20 @@
       <UIButton
         color="gray"
         class="index-menu-card__button"
+        @click="addToCart()"
       >
         <UIIcon name="add" />
         В корзину
       </UIButton>
     </div>
-
-    <ModalsProduct
-      v-if="isShowModal"
-      @close="isShowModal = false"
-    />
   </div>
 </template>
 
 <script setup>
+import { useCatalogStore } from '@/store/catalog'
+
+const catalog = useCatalogStore()
+
 const props = defineProps({
   item: {
     type: Object,
@@ -100,6 +105,14 @@ const discount = computed(() => {
 
 const isFavorite = ref(false)
 const isShowModal = ref(false)
+
+const openProduct = () => {
+  catalog.setProduct(props.item)
+}
+
+const addToCart = () => {
+  // catalog.setProduct(props.item)
+}
 </script>
 
 <style lang="scss" scoped>

@@ -5,7 +5,7 @@
     </h2>
 
     <div class="page-lk-favorite__list">
-      <PagesIndexMenuCard
+      <CommonProductCard
         v-for="i in 9"
         :key="i"
       />

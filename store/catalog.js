@@ -1,6 +1,7 @@
 export const useCatalogStore = defineStore('catalogStore', {
   state: () => ({
     catalog: [],
+    product: null, // select product for modal
   }),
 
   actions: {
@@ -19,6 +20,10 @@ export const useCatalogStore = defineStore('catalogStore', {
 
       this.catalog = catalog
     },
+
+    setProduct (data) {
+      this.product = data
+    }
   },
 
   getters: {
@@ -29,6 +34,10 @@ export const useCatalogStore = defineStore('catalogStore', {
           name: item.name,
         }
       })
-    }
+    },
+
+    isShowProductModal: (state) => {
+      return !!state.product
+    },
   },
 })

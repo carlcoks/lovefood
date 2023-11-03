@@ -30,6 +30,7 @@
                 <a
                   :href="`#${item.name.toLowerCase()}`"
                   class="footer-menu__link"
+                  @click.prevent="scrollToEl(`block_${item.id}`, -64)"
                 >
                   {{ item.name }}
                 </a>
@@ -166,6 +167,8 @@
 
 <script setup>
 import { useCatalogStore } from '@/store/catalog'
+
+import scrollToEl from '@/utils/scrollToEl'
 
 const catalog = useCatalogStore()
 
