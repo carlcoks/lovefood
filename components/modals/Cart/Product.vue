@@ -9,7 +9,11 @@
     </a>
     <div class="modal-cart-item__main">
       <div class="modal-cart-item__image">
-        <img src="@/assets/images/menu-card-example.png" alt="">
+        <img
+          :data-src="productImage"
+          :alt="item.name"
+          v-lazy-load
+        >
       </div>
       <div class="modal-cart-item__content">
         <div class="modal-cart-item__top">
@@ -56,6 +60,11 @@ const props = defineProps({
     type: Object,
     default: () => ({}),
   }
+})
+
+// Computed
+const productImage = computed(() => {
+  return props.item?.images[0] || ''
 })
 
 const itemRegularPrice = computed(() => {

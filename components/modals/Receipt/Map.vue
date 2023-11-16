@@ -1,43 +1,48 @@
 <template>
-  <yandex-map
-    v-model="map"
-    :settings="{
-      location: {
-        center,
-        zoom,
-      }
-    }"
-    class="modal-receipt-map"
-  >
-    <yandex-map-default-features-layer/>
-    <yandex-map-default-scheme-layer/>
-
-    <yandex-map-marker
-      v-for="(item, i) in locations"
-      :key="i"
+  <div v-if="!isLoading">
+    <yandex-map
+      v-model="map"
       :settings="{
-        coordinates: item.coordinates,
-        id: item.id,
+        location: {
+          center,
+          zoom,
+        }
       }"
+      class="modal-receipt-map"
     >
-      <div class="modal-receipt-map-marker">
-        <UIIcon
-          name="metka"
-          class="modal-receipt-map-marker__icon"
-        />
-      </div>
-    </yandex-map-marker>
-  </yandex-map>
+      <yandex-map-default-features-layer/>
+      <yandex-map-default-scheme-layer/>
+
+      <yandex-map-marker
+        v-for="(item, i) in markers"
+        :key="i"
+        :settings="{
+          coordinates: item.coordinates,
+          id: item.id,
+        }"
+      >
+        <div class="modal-receipt-map-marker">
+          <UIIcon
+            name="metka"
+            class="modal-receipt-map-marker__icon"
+          />
+        </div>
+      </yandex-map-marker>
+    </yandex-map>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { YMap } from '@yandex/ymaps3-types'
+import type { YMap } from '@yandex/ymaps3-types'
 import {
   YandexMap,
   YandexMapDefaultFeaturesLayer,
   YandexMapDefaultSchemeLayer,
   YandexMapMarker,
+  VueYandexMaps
 } from 'vue-yandex-maps'
+
+import trimStr from '@/utils/trimStr'
 
 const props = defineProps({
   locations: {
@@ -46,28 +51,26 @@ const props = defineProps({
   },
 })
 
-const map = ref<null | YMap>(null)
-const center = ref<[number, number]>([37.6231313266754, 55.75254426140658])
-const zoom = ref(9)
+const map = shallowRef<null | YMap>(null)
+const center = ref<[number, number]>([61.419145, 55.166572])
+const zoom = ref(11)
+const isLoading = ref(true)
 
-const markers = ref([
-  // {
-  //   id: '1',
-  //   coordinates: [37.6231313266754, 55.75254426140658],
-  // },
-])
+const markers = ref([])
 
 onMounted(() => {
   const array = props.locations.map((item, i) => {
     return {
       id: `id_${item.id}`,
-      coordinates: item.coord.split(',')
+      coordinates: trimStr(item.coord).split(',').reverse()
     }
   })
 
-  // markers.value = array
-
   markers.value = array
+
+  setTimeout(() => {
+    isLoading.value = false
+  }, 1000)
 })
 </script>
 

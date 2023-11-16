@@ -69,11 +69,18 @@ const types = [
 ]
 const currentType = ref('delivery')
 
+const deliveryType = computed(() => common.deliveryType)
 const pickupLocations = computed(() => common.pickupLocations)
 
 const closeModal = () => {
   isShow.value = false
 }
+
+onMounted(() => {
+  if (deliveryType.value) {
+    currentType.value = deliveryType.value
+  }
+})
 </script>
 
 <style lang="scss" scoped>

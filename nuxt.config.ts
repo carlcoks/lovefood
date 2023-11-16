@@ -67,6 +67,7 @@ export default defineNuxtConfig({
 
   yandexMaps: {
     apikey: process.env.YMAPS_KEY,
+    // initializeOn: 'onPluginInit'
   },
 
   lazyLoad: {

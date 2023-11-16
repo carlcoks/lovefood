@@ -34,7 +34,7 @@
       </p>
       <p
         v-else-if="!isClose"
-        class="header-restaurant__value"
+        class="header-restaurant__value header-restaurant__value--address"
       >
         {{ valueText }}
       </p>
@@ -199,7 +199,9 @@ const valueText = computed(() => {
   }
 
   &__box {
-    display: flex;
+    display: grid;
+    grid-auto-flow: column;
+    // display: flex;
     align-items: center;
     grid-gap: 10px;
   }
@@ -227,6 +229,10 @@ const valueText = computed(() => {
     grid-gap: 2px;
 
     @include overflow-text;
+
+    &--address {
+      display: block;
+    }
 
     & > span {
       display: flex;

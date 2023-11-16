@@ -73,8 +73,11 @@
             </template>
           </UIButton>
 
-          <transition-group name="fade" mode="out-in">
-            <template v-if="!isShowCategories">
+          <transition name="fade" mode="out-in">
+            <div
+              v-if="!isShowCategories"
+              class="header__side header__side--right"
+            >
               <UIButton
                 class="header__button"
                 color="gray"
@@ -89,8 +92,8 @@
               <LayoutHeaderLang
                 @click="isShowSettings = true"
               />
-            </template>
-          </transition-group>
+            </div>
+          </transition>
         </div>
 
         <LayoutHeaderNotifications />
@@ -267,7 +270,7 @@ onMounted(() => {
 
   &__restaurant {
     flex: 0 0 auto;
-    max-width: 380px;
+    max-width: 450px;
   }
 
   &__burger {
