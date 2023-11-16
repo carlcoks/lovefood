@@ -1,6 +1,8 @@
 export const useCartStore = defineStore('cartStore', {
   state: () => ({
     cart: [],
+    notifications: [],
+    isShowCart: false,
   }),
 
   actions: {
@@ -9,12 +11,16 @@ export const useCartStore = defineStore('cartStore', {
         ...item,
         count: 1,
       })
+
+      this.addNotification()
     },
 
     incrementItem (id) {
       this.cart.find(item => {
         if (+item.id === +id) {
           item.count++
+
+          this.addNotification()
           return true
         }
 
@@ -52,6 +58,18 @@ export const useCartStore = defineStore('cartStore', {
 
     clearCart () {
       this.cart = []
+    },
+
+    toggleShowCart (value) {
+      this.isShowCart = value
+    },
+
+    addNotification () {
+      this.notifications.push('Товар добавлен в корзину')
+
+      setTimeout(() => {
+        this.notifications.splice(0, 1)
+      }, 2000)
     }
   },
 
@@ -67,6 +85,7 @@ export const useCartStore = defineStore('cartStore', {
       }, 0)
     },
 
+    // Сумма всех товаров с учетом скидки
     cartItemsPrice: (state) => {
       return state.cart.reduce((acc, item) => {
         acc += item.count * item.price
@@ -74,6 +93,7 @@ export const useCartStore = defineStore('cartStore', {
       }, 0)
     },
 
+    // Сумма всех товаров без скидки
     cartItemsRegularPrice: (state) => {
       return state.cart.reduce((acc, item) => {
         acc += item.count * item.regular_price

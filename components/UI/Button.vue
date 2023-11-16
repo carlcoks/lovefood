@@ -80,6 +80,10 @@ const component = computed(() => {
   &--yellow {
     background: $yellow;
 
+    &:hover {
+      background: $yellowDark;
+    }
+
     &:disabled {
       color: rgba(0, 0, 0, 0.30);
       background: $yellowLight;

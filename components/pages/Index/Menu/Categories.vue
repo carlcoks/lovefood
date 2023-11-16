@@ -23,7 +23,9 @@
       </div>
     </div>
 
-    <CommonFilterButton />
+    <CommonFilterButton
+      @click="emits('showFilters')"
+    />
   </div>
 </template>
 
@@ -34,10 +36,12 @@ import scrollToEl from '@/utils/scrollToEl'
 
 const catalog = useCatalogStore()
 
+const emits = defineEmits(['showFilters'])
+
 const activeTab = ref(null)
 const showMore = ref(false)
 const positions = []
-const HEIGHT = 64
+const HEIGHT = 80
 
 const categories = computed(() => {
   const arr = catalog.categories
@@ -99,8 +103,8 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .index-menu-categories {
-  position: sticky;
-  top: 0;
+  // position: sticky;
+  // top: 0;
   
   display: flex;
   align-items: center;

@@ -28,16 +28,16 @@
           </p>
 
           <div class="modal-product__characteristics">
-            <div class="modal-product__characteristic">
+            <div v-if="badges.includes('halal')" class="modal-product__characteristic">
               <UIIcon name="icon-halal" />
             </div>
-            <div class="modal-product__characteristic">
+            <div v-if="badges.includes('preorder')" class="modal-product__characteristic">
               <UIIcon name="icon-hit" />
             </div>
-            <div class="modal-product__characteristic">
+            <div v-if="badges.includes('vegan')" class="modal-product__characteristic">
               <UIIcon name="icon-vegan" />
             </div>
-            <div class="modal-product__characteristic">
+            <div v-if="badges.includes('spicy')" class="modal-product__characteristic">
               <UIIcon name="icon-hot" />
             </div>
           </div>
@@ -223,7 +223,7 @@
         </div>
       </div>
 
-      <div class="modal-product__else modal-product-else">
+      <!-- <div class="modal-product__else modal-product-else">
         <p class="modal-product__title modal-product__title--else">
           Что нибудь ещё?
         </p>
@@ -267,7 +267,7 @@
             </div>
           </SwiperSlide>
         </Swiper>
-      </div>
+      </div> -->
     </div>
   </ModalsOverlay>
 </template>
@@ -319,6 +319,10 @@ const productPrice = computed(() => {
 
 const productRegularPrice = computed(() => {
   return product.value.regular_price
+})
+
+const badges = computed(() => {
+  return product.value?.acf['product-badge'] || []
 })
 
 // Methods

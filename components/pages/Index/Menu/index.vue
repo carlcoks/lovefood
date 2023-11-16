@@ -2,13 +2,14 @@
   <section class="index-menu">
     <div class="container">
       <PagesIndexMenuCategories
+        id="categories" 
         @show-filters="isShowFilters = true"
         class="index-menu__categories"
       />
 
       <div class="index-menu__content">
         <div
-          v-for="block in catalog.catalog"
+          v-for="block in filteredCatalog"
           :key="block.id"
           :id="`block_${block.id}`"
           class="index-menu__block"
@@ -21,6 +22,7 @@
               v-for="product in block.products"
               :key="product.id"
               :item="product"
+              :is-promo="block.id === 140"
             />
           </div>
         </div>
@@ -36,10 +38,26 @@
 
 <script setup>
 import { useCatalogStore } from '@/store/catalog'
+import { useCommonStore } from '@/store/common'
 
 const catalog = useCatalogStore()
+const common = useCommonStore()
 
 const isShowFilters = ref(false)
+
+// warehouse_id
+const pickupLocation = computed(() => common.pickupLocation)
+
+
+const filteredCatalog = computed(() => {
+  if (pickupLocation.value) {
+    return catalog.catalog.filter(item => {
+      return item.products.filter(product => product.locations.filter(location => +location.id === +pickupLocation.value.warehouse_id))
+    })
+  }
+
+  return catalog.catalog
+})
 </script>
 
 <style lang="scss" scoped>
@@ -91,7 +109,7 @@ const isShowFilters = ref(false)
 
     @include mq($bp-small) {
       grid-template-columns: repeat(5, 1fr);
-      grid-gap: 30px 17px;
+      grid-gap: 25px 15px;
     }
   }
 }

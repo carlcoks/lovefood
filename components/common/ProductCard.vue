@@ -1,5 +1,5 @@
 <template>
-  <div class="index-menu-card">
+  <div :class="['index-menu-card', { 'index-menu-card--promo' : isPromo }]">
     <div
       class="index-menu-card__image"
       @click.prevent="openProduct()"
@@ -25,16 +25,16 @@
       </button>
 
       <div class="index-menu-card__types">
-        <div class="index-menu-card-type">
+        <div v-if="badges.includes('halal')" class="index-menu-card-type">
           <UIIcon name="icon-halal" />
         </div>
-        <div class="index-menu-card-type">
+        <div v-if="badges.includes('preorder')" class="index-menu-card-type">
           <UIIcon name="icon-hit" />
         </div>
-        <div class="index-menu-card-type">
+        <div v-if="badges.includes('vegan')" class="index-menu-card-type">
           <UIIcon name="icon-vegan" />
         </div>
-        <div class="index-menu-card-type">
+        <div v-if="badges.includes('spicy')" class="index-menu-card-type">
           <UIIcon name="icon-hot" />
         </div>
       </div>
@@ -49,41 +49,60 @@
       </p>
 
       <div class="index-menu-card__description">
-        <!-- <p class="index-menu-card__info">
+        <p class="index-menu-card__info index-menu-card__info--gray">
           <span>
-            100 гр
+            В наличии
           </span>
           <span>
-            1680 ₽/шт
+            {{ item.stock_quantity }} шт
           </span>
-        </p> -->
-        <p />
-
-        <p class="index-menu-card__price">
-          <small v-if="+item.regular_price !== +item.price">
-            {{ item.regular_price.toLocaleString() }} ₽
-          </small>
-          {{ item.price.toLocaleString() }} ₽
         </p>
       </div>
 
-      <UIButton
-        v-if="!count"
-        color="gray"
-        class="index-menu-card__button"
-        @click="addToCart()"
-      >
-        <UIIcon name="add" />
-        В корзину
-      </UIButton>
+      <div class="index-menu-card__description">
+        <p class="index-menu-card__info">
+          <span>
+            {{ item.base_portion_size }} {{ item.sub_measure_unit }}
+          </span>
+          <!-- <span>
+            1 шт
+          </span>
+          <span>
+            367 гр
+          </span> -->
+        </p>
+
+        <CommonPriceBlock
+          :regular-price="+item.regular_price"
+          :price="+item.price"
+          class="index-menu-card__price"
+        />
+      </div>
 
       <UICounter
-        v-else
+        v-if="count"
         :count="count"
         @increment="increment()"
         @decrement="decrement()"
         class="index-menu-card__counter"
       />
+
+      <UIButton
+        v-else
+        color="gray"
+        :class="['index-menu-card__button', { 'index-menu-card__button--arrow' : buttonLabel.icon === 'arrow'}]"
+        @click="buttonLabel.icon === 'add' ? addToCart() : openProduct()"
+      >
+        <UIIcon
+          v-if="buttonLabel.icon === 'add'"
+          :name="buttonLabel.icon"
+        />
+        {{ buttonLabel.text }}
+        <UIIcon
+          v-if="buttonLabel.icon === 'arrow'"
+          :name="buttonLabel.icon"
+        />
+      </UIButton>
     </div>
   </div>
 </template>
@@ -99,6 +118,10 @@ const props = defineProps({
   item: {
     type: Object,
     default: () => ({}),
+  },
+  isPromo: {
+    type: Boolean,
+    default: false,
   },
 })
 
@@ -123,6 +146,31 @@ const count = computed(() => {
   return item?.count || 0
 })
 
+const buttonLabel = computed(() => {
+  const variants = ['variable', 'group_variable', 'group_variable_2']
+
+  if (props.item.type === 'supplements') {
+    return {
+      text: 'Собрать',
+      icon: ''
+    }
+  } else if (variants.includes(props.item.type)) {
+    return {
+      text: 'Выбрать',
+      icon: 'arrow'
+    }
+  }
+
+  return {
+    text: 'В корзину',
+    icon: 'add'
+  }
+})
+
+const badges = computed(() => {
+  return props.item?.acf['product-badge'] || []
+})
+
 // Methods
 const openProduct = () => {
   catalog.setProduct(props.item)
@@ -145,15 +193,26 @@ const decrement = () => {
 .index-menu-card {
   display: flex;
   flex-direction: column;
-  grid-gap: 12px;
-
-  padding-bottom: 10px;
 
   background: $white;
   border-radius: 20px;
 
-  @include mq($bp-small) {
-    grid-gap: 20px;
+  &--promo {
+    background: $yellowLightSecondary;
+
+    .index-menu-card {
+      &__image {
+        border-color: $yellow;
+      }
+
+      &__discount {
+        background: $orange;
+      }
+
+      &__button {
+        background: $white;
+      }
+    }
   }
 
   &__image {
@@ -218,37 +277,34 @@ const decrement = () => {
 
   &__content {
     display: grid;
-    padding: 0 10px;
+    padding: 16px 10px 10px;
   }
 
   &__name {
-    margin-bottom: 12px;
+    margin-bottom: 16px;
 
     @include overflow-text;
     @include text_big;
     font-weight: 600;
 
     cursor: pointer;
-
-    @include mq($bp-small) {
-      margin-bottom: 20px;
-    }
   }
 
   &__description {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    margin-bottom: 8px;
   }
 
   &__info {
-    display: none;
+    // display: none;
 
-    @include mq($bp-small) {
+    // @include mq($bp-small) {
       display: flex;
       align-items: center;
 
-      color: $grayText;
       @include text_mini;
 
       span {
@@ -268,35 +324,27 @@ const decrement = () => {
           }
         }
       }
-    }
-  }
+    // }
 
-  &__price {
-    display: flex;
-    align-items: center;
-    grid-gap: 6px;
-
-    color: $orange;
-
-    @include text_normal;
-    font-weight: 600;
-
-    small {
-      @include extra_small;
+    &--gray {
       color: $grayText;
-      text-decoration: line-through;
     }
   }
 
   &__button {
-    margin-top: 15px;
-
     font-weight: 500;
+
+    &--arrow {
+      ::v-deep(.ui-icon) {
+        svg path {
+          fill: $blackText3;
+        }
+      }
+    }
   }
 
   &__counter {
     height: 48px;
-    margin-top: 15px;
   }
 }
 

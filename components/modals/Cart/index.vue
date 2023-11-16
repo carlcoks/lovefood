@@ -4,7 +4,7 @@
     position="right"
     :offset="0"
     name="cart"
-    @close="emits('close')"
+    @close="cart.toggleShowCart(false)"
   >
     <div
       :class="[
@@ -122,8 +122,6 @@
 import { useCartStore } from '@/store/cart'
 
 const cart = useCartStore()
-
-const emits = defineEmits(['close'])
 
 const isShow = ref(true)
 

@@ -2,19 +2,24 @@
   <div class="input">
     <input
       :type="type"
-      :value="value"
+      :value="modelValue"
       :placeholder="placeholder"
       :disabled="disabled"
       :class="[
         'input__area',
         color ? `input__area--${color}` : ''
       ]"
+      @input="$emit('update:modelValue', $event.target.value)"
     >
   </div>
 </template>
 
 <script setup>
 defineProps({
+  modelValue: {
+    type: undefined,
+    default: '',
+  },
   type: {
     type: String,
     default: 'text',

@@ -3,81 +3,103 @@
     <div class="container">
       <div class="header__box">
         <div class="header__side">
-          <NuxtLink
-            to="/"
-            class="header__logo logo"
-          >
-            <UIIcon name="logo" />
-          </NuxtLink>
-
-          <LayoutHeaderInfo
-            class="header__info"
+          <LayoutHeaderLogo
+            :is-small="isShowCategories"
+            class="header__logo"
           />
 
-          <div class="header__top">
-            <LayoutHeaderRestaurant
-              class="header__restaurant"
-              @click="isShowReceipt = true"
-            />
-            <!-- <NuxtLink
+          <transition name="fade" mode="out-in">
+            <div
+              v-if="!isShowCategories"
+              class="header__side"
+            >
+              <LayoutHeaderInfo
+                class="header__info"
+              />
+
+              <div class="header__top">
+                <LayoutHeaderRestaurant
+                  class="header__restaurant"
+                  @click="isShowReceipt = true"
+                />
+                <!-- <NuxtLink
+                  v-else
+                  to="/"
+                  class="header__back"
+                >
+                  <UIIcon name="arrow" />
+                  {{ pageTitle }}
+                </NuxtLink> -->
+
+                <button
+                  type="button"
+                  class="header__burger burger"
+                  @click.prevent="isShowMobileMenu = true"
+                >
+                  <UIIcon name="burger" />
+                </button>
+              </div>
+
+              <LayoutHeaderSearch
+                class="header__search"
+              />
+            </div>
+
+            <PagesIndexMenuCategories
               v-else
-              to="/"
-              class="header__back"
-            >
-              <UIIcon name="arrow" />
-              {{ pageTitle }}
-            </NuxtLink> -->
-
-            <button
-              type="button"
-              class="header__burger burger"
-              @click.prevent="isShowMobileMenu = true"
-            >
-              <UIIcon name="burger" />
-            </button>
-          </div>
-
-          <LayoutHeaderSearch
-            class="header__search"
-          />
+              class="header__categories"
+            />
+          </transition>
         </div>
 
         <div class="header__side header__side--right">
           <UIButton
-            class="header__button"
+            class="header-cart header__button"
             color="yellow"
-            @click.prevent="isShowCart = true"
+            @click.prevent="cart.toggleShowCart(true)"
           >
             <UIIcon name="cart" />
-            Корзина
+
+            <span
+              v-if="cart.cartItemsLength"
+              class="header-cart__value"
+            >
+              {{ cart.cartItemsLength }}
+              <span />
+              {{ cart.cartItemsPrice.toLocaleString() }} ₽
+            </span>
+            <template v-else>
+              Корзина
+            </template>
           </UIButton>
 
-          <UIButton
-            class="header__button"
-            color="gray"
-            @click.prevent="isShowAuth = true"
-          >
-            <UIIcon name="person-outline" />
-            Войти
-          </UIButton>
+          <transition-group name="fade" mode="out-in">
+            <template v-if="!isShowCategories">
+              <UIButton
+                class="header__button"
+                color="gray"
+                @click.prevent="isShowAuth = true"
+              >
+                <UIIcon name="person-outline" />
+                Войти
+              </UIButton>
 
-          <div />
+              <div />
 
-          <LayoutHeaderLang
-            @click="isShowSettings = true"
-          />
+              <LayoutHeaderLang
+                @click="isShowSettings = true"
+              />
+            </template>
+          </transition-group>
         </div>
+
+        <LayoutHeaderNotifications />
       </div>
     </div>
 
     <ModalsReceipt
       v-if="isShowReceipt"
       @close="isShowReceipt = false"
-    />
-
-    <ModalsCart
-      v-if="isShowCart"
-      @close="isShowCart = false"
     />
 
     <ModalsAuth
@@ -106,18 +128,34 @@
 </template>
 
 <script setup lang="ts">
-const isShowCart = ref<true | false>(false)
+import { useCartStore } from '@/store/cart'
+
+const cart = useCartStore()
+
 const isShowAuth = ref<true | false>(false)
 const isShowAcceptCity = ref<true | false>(false)
 const isShowSettings = ref<true | false>(false)
 const isShowReceipt = ref<true | false>(false)
 const isShowMobileMenu = ref<true | false>(false)
 
+const isShowCategories = ref(false)
+
 const pageTitle = computed(() => {
   return 'Рестораны'
 })
 
+const onScroll = () => {
+  const top = document.getElementById('categories')?.getBoundingClientRect().top || null
+
+  if (top !== null && top <= 0) {
+    isShowCategories.value = true
+  } else {
+    isShowCategories.value = false
+  }
+}
+
 onMounted(() => {
+  document.addEventListener('scroll', onScroll)
   // setTimeout(() => {
   //   isShowAcceptCity.value = true
   // }, 2000)
@@ -126,10 +164,10 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .header {
-  // position: fixed;
-  // top: 0;
-  // right: 0;
-  // left: 0;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
 
   display: flex;
   align-items: center;
@@ -145,6 +183,8 @@ onMounted(() => {
   }
 
   &__box {
+    position: relative;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -196,6 +236,10 @@ onMounted(() => {
     }
   }
 
+  &__categories {
+    flex: 1 1 auto;
+  }
+
   &__info {
     flex: 0 0 auto;
   }
@@ -243,6 +287,18 @@ onMounted(() => {
   }
 }
 
-.burger {
+.header-cart {
+  &__value {
+    display: flex;
+    align-items: center;
+    grid-gap: 8px;
+
+    span {
+      width: 2px;
+      height: 20px;
+      background: rgba(0, 0, 0, 0.30);
+      border-radius: 20px;
+    }
+  }
 }
 </style>

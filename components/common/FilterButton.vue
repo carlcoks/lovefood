@@ -2,6 +2,7 @@
   <button
     type="button"
     class="filter-button"
+    @click.prevent="emits('click')"
   >
     <UIIcon name="filter" />
     <!-- <span class="index-menu-categories-filter__line" />
@@ -10,6 +11,7 @@
 </template>
 
 <script setup>
+const emits = defineEmits(['click'])
 </script>
 
 <style lang="scss" scoped>

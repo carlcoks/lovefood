@@ -7,23 +7,24 @@
           class="modal-receipt-pickup-search__loop"
         />
         <UIInput
+          v-model="search"
           placeholder="Поиск"
           class="modal-receipt-pickup-search__input"
         />
       </div>
 
-      <p class="modal-receipt-pickup__location">
+      <!-- <p class="modal-receipt-pickup__location">
         <UIIcon name="location" />
         Москва
-      </p>
+      </p> -->
     </div>
 
     <div class="modal-receipt-pickup__main">
       <div
-        v-for="i in 4"
+        v-for="(item, i) in filteredLocations"
         :key="i"
-        :class="['modal-receipt-pickup-item', { 'active' : currentAddress === i }]"
-        @click="currentAddress = i"
+        :class="['modal-receipt-pickup-item', { 'active' : currentAddress?.id === item.id }]"
+        @click="currentAddress?.id === item.id ? currentAddress = null : currentAddress = item"
       >
         <div class="modal-receipt-pickup-item__left">
           <UIIcon
@@ -33,14 +34,14 @@
         </div>
         <div class="modal-receipt-pickup-item__content">
           <p class="modal-receipt-pickup-item__address">
-            Ул. Стандартная, 21к1
+            {{ item.address }}
           </p>
           <p class="modal-receipt-pickup-item__city">
-            г. Москва
+            {{ item.name }}
           </p>
           <p class="modal-receipt-pickup-item__time">
             <UIIcon name="clock-filled" />
-            9:00 – 20:00
+            {{ item.working_time}}
           </p>
         </div>
       </div>
@@ -51,6 +52,7 @@
         :disabled="!currentAddress"
         color="yellow"
         class="modal-receipt-pickup__button"
+        @click="submit()"
       >
         Подтвердить
       </UIButton>
@@ -59,7 +61,42 @@
 </template>
 
 <script setup>
+import { useCommonStore } from '@/store/common'
+
+const common = useCommonStore()
+
+const props = defineProps({
+  locations: {
+    type: Array,
+    default: () => ([]),
+  },
+})
+
+const emits = defineEmits(['close'])
+
+const search = ref('')
 const currentAddress = ref(null)
+
+const pickupLocation = computed(() => common.pickupLocation)
+
+const filteredLocations = computed(() => {
+  return props.locations.filter(item => {
+    return item.address.toLowerCase().includes(search.value.toLowerCase())
+  })
+})
+
+const submit = () => {
+  common.setDeliveryType('pickup')
+  common.setPickupLocation(currentAddress.value)
+
+  emits('close')
+}
+
+onMounted(() => {
+  if (pickupLocation.value) {
+    currentAddress.value = pickupLocation.value
+  }
+})
 </script>
 
 <style lang="scss" scoped>

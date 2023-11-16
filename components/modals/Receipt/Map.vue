@@ -13,7 +13,7 @@
     <yandex-map-default-scheme-layer/>
 
     <yandex-map-marker
-      v-for="(item, i) in markers"
+      v-for="(item, i) in locations"
       :key="i"
       :settings="{
         coordinates: item.coordinates,
@@ -39,16 +39,36 @@ import {
   YandexMapMarker,
 } from 'vue-yandex-maps'
 
+const props = defineProps({
+  locations: {
+    type: Array,
+    default: () => ([]),
+  },
+})
+
 const map = ref<null | YMap>(null)
 const center = ref<[number, number]>([37.6231313266754, 55.75254426140658])
 const zoom = ref(9)
 
 const markers = ref([
-  {
-    id: '1',
-    coordinates: [37.6231313266754, 55.75254426140658],
-  },
+  // {
+  //   id: '1',
+  //   coordinates: [37.6231313266754, 55.75254426140658],
+  // },
 ])
+
+onMounted(() => {
+  const array = props.locations.map((item, i) => {
+    return {
+      id: `id_${item.id}`,
+      coordinates: item.coord.split(',')
+    }
+  })
+
+  // markers.value = array
+
+  markers.value = array
+})
 </script>
 
 <style lang="scss" scoped>

@@ -30,7 +30,7 @@
                 <a
                   :href="`#${item.name.toLowerCase()}`"
                   class="footer-menu__link"
-                  @click.prevent="scrollToEl(`block_${item.id}`, -64)"
+                  @click.prevent="scrollToEl(`block_${item.id}`, -80)"
                 >
                   {{ item.name }}
                 </a>
@@ -157,6 +157,7 @@
 
         <button
           class="footer__to-top"
+          @click.prevent="scrollToTop()"
         >
           <UIIcon name="arrow" />
         </button>
@@ -179,6 +180,10 @@ const about = [
   { link: '/', name: 'Возврат' },
   { link: '/', name: 'Реквизиты' },
 ]
+
+const scrollToTop = () => {
+  scrollToEl()
+}
 </script>
 
 <style lang="scss" scoped>

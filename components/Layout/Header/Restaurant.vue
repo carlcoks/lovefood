@@ -48,7 +48,12 @@
 </template>
 
 <script setup lang="ts">
-const deliveryType = ref<'pickup' | 'delivery' | null>(null)
+import { useCommonStore } from '@/store/common'
+
+const common = useCommonStore()
+
+const deliveryType = computed(() => common.deliveryType)
+const pickupLocation = computed(() => common.pickupLocation)
 
 const isClose = computed(() => {
   return false
@@ -72,12 +77,13 @@ const labelText = computed(() => {
   } else if (deliveryType.value === 'delivery') {
     return 'Доставка'
   } else {
-    return 'Москва'
+    // return 'Москва'
+    return ''
   }
 })
 
 const valueText = computed(() => {
-  return 'Стандартная, 12'
+  return pickupLocation.value?.address || ''
 })
 </script>
 

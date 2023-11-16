@@ -35,6 +35,8 @@ te<template>
             />
             <ModalsReceiptPickup
               v-else-if="currentType === 'pickup'"
+              :locations="pickupLocations"
+              @close="closeModal()"
             />
             <ModalsReceiptLounge
               v-else-if="currentType === 'lounge'"
@@ -44,6 +46,7 @@ te<template>
       </div>
 
       <ModalsReceiptMap
+        :locations="pickupLocations"
         class="modal-receipt__map"
       />
     </div>
@@ -51,6 +54,10 @@ te<template>
 </template>
 
 <script setup>
+import { useCommonStore } from '@/store/common'
+
+const common = useCommonStore()
+
 const emits = defineEmits(['close'])
 
 const isShow = ref(true)
@@ -61,6 +68,8 @@ const types = [
   { label: 'В зале', type: 'lounge' },
 ]
 const currentType = ref('delivery')
+
+const pickupLocations = computed(() => common.pickupLocations)
 
 const closeModal = () => {
   isShow.value = false
@@ -79,7 +88,7 @@ const closeModal = () => {
   @include mq($bp-small) {
     max-width: 1150px;
     min-height: auto;
-    height: 678px;
+    min-height: 678px;
 
     grid-template-columns: repeat(2, 1fr);
   
