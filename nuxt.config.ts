@@ -76,7 +76,7 @@ export default defineNuxtConfig({
     iframes: false,
     native: false,
     directiveOnly: true,
-    defaultImage: '/images/default-image.png',
+    defaultImage: '/images/default-image.jpg',
   },
 
   runtimeConfig: {

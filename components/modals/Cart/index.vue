@@ -9,7 +9,7 @@
     <div
       :class="[
         'modal-cart',
-        { 'modal-cart--empty' : isCartEmpty }
+        { 'modal-cart--empty' : !cart.cartItems.length }
       ]"
     >
       <a
@@ -20,7 +20,10 @@
         <UIIcon name="close" />
       </a>
       
-      <div class="modal-cart__main">
+      <div
+        v-if="cart.cartItems.length"
+        class="modal-cart__main"
+      >
         <div class="modal-cart__header">
           <div class="modal-cart__top">
             <p class="modal-cart__title">
@@ -29,99 +32,23 @@
 
             <button
               class="modal-cart__clear"
-              @click.prevent="cleanCart()"
+              @click.prevent="clearCart()"
             >
               <UIIcon name="close" />
               Очистить
             </button>
           </div>
           <p class="modal-cart__count">
-            3 товара на <span>23 930 ₽</span>
+            {{ cart.cartItemsLength }} товара на <span>{{ cart.cartItemsPrice }} ₽</span>
           </p>
         </div>
 
         <div class="modal-cart__content">
-          <div class="modal-cart-item">
-            <a
-              href="#"
-              class="modal-cart-item__remove"
-              @click.prevent=""
-            >
-              <UIIcon name="close" />
-            </a>
-            <div class="modal-cart-item__main">
-              <div class="modal-cart-item__image">
-                <img src="@/assets/images/menu-card-example.png" alt="">
-              </div>
-              <div class="modal-cart-item__content">
-                <div class="modal-cart-item__top">
-                  <p class="modal-cart-item__title">
-                    Название блюда
-                  </p>
-                  <p class="modal-cart-item__info">
-                    <span>
-                      100 гр
-                    </span>
-                    <span>
-                      1680 ₽/шт
-                    </span>
-                  </p>
-                </div>
-
-                <div class="modal-cart-item__footer">
-                  <div class="modal-cart-item__price">
-                    <small>
-                      1 880 ₽
-                    </small>
-                    1 680 ₽
-                  </div>
-
-                  <UICounter />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="modal-cart-item">
-            <a
-              href="#"
-              class="modal-cart-item__remove"
-              @click.prevent=""
-            >
-              <UIIcon name="close" />
-            </a>
-            <div class="modal-cart-item__main">
-              <div class="modal-cart-item__image">
-                <img src="@/assets/images/menu-card-example.png" alt="">
-              </div>
-              <div class="modal-cart-item__content">
-                <div class="modal-cart-item__top">
-                  <p class="modal-cart-item__title">
-                    Название блюда
-                  </p>
-                  <p class="modal-cart-item__info">
-                    <span>
-                      100 гр
-                    </span>
-                    <span>
-                      1680 ₽/шт
-                    </span>
-                  </p>
-                </div>
-
-                <div class="modal-cart-item__footer">
-                  <div class="modal-cart-item__price">
-                    <small>
-                      1 880 ₽
-                    </small>
-                    1 680 ₽
-                  </div>
-
-                  <UICounter />
-                </div>
-              </div>
-            </div>
-          </div>
+          <ModalsCartProduct
+            v-for="(item, i) in cart.cartItems"
+            :key="i"
+            :item="item"
+          />
         </div>
 
         <div class="modal-cart__footer">
@@ -177,52 +104,35 @@
           >
             Перейти к оформлению
             <span class="modal-cart-order-btn__price">
-              <small>
-                1 880 ₽
+              <small v-if="+cart.cartItemsRegularPrice !== +cart.cartItemsPrice">
+                {{ cart.cartItemsRegularPrice.toLocaleString() }} ₽
               </small>
-              1 680 ₽
+              {{ cart.cartItemsPrice.toLocaleString() }} ₽
             </span>
           </UIButton>
         </div>
       </div>
-      
-      <!-- <div class="modal-cart-empty">
-        <div class="modal-cart-empty__header">
-          <UIIcon name="cart-empty" />
-          <p class="modal-cart__title">
-            Ой, пока пусто!
-          </p>
-        </div>
-        <div class="modal-cart-empty__content">
-          <p class="modal-cart-empty__label">
-            Хотите повоторить предыдущий заказ?
-          </p>
-          <UIButton
-            color="yellow"
-            class="modal-cart-empty__button"
-          >
-            <UIIcon name="repeat" />
-            Повторить
-          </UIButton>
-        </div>
-      </div> -->
+
+      <ModalsCartEmptyBlock v-else />
     </div>
   </ModalsOverlay>
 </template>
 
 <script setup>
+import { useCartStore } from '@/store/cart'
+
+const cart = useCartStore()
+
 const emits = defineEmits(['close'])
 
 const isShow = ref(true)
-
-const isCartEmpty = ref(false)
 
 const closeModal = () => {
   isShow.value = false
 }
 
-const cleanCart = () => {
-
+const clearCart = () => {
+  cart.clearCart()
 }
 </script>
 
@@ -483,173 +393,6 @@ const cleanCart = () => {
       color: rgba(0, 0, 0, 0.30);
       text-decoration: line-through;
     }
-  }
-}
-
-.modal-cart-item {
-  position: relative;
-
-  display: flex;
-  flex-direction: column;
-  grid-gap: 20px;
-
-  padding: 5px 10px 5px 5px;
-
-  background: $white;
-  border-radius: 20px;
-
-  &__remove {
-    position: absolute;
-    top: 15px;
-    right: 10px;
-
-    ::v-deep(.ui-icon) svg {
-      width: 18px;
-      height: 18px;
-
-      path {
-        fill: #262626;
-      }
-    }
-  }
-
-  &__main {
-    display: flex;
-    grid-gap: 20px;
-  }
-
-  &__image {
-    flex: 0 0 auto;
-
-    width: 100px;
-    height: 100px;
-
-    border: 1px solid $grayBg;
-    border-radius: 20px;
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-  }
-
-  &__content {
-    flex: 1 1 auto;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-
-    padding: 10px 0;
-  }
-
-  &__top {
-    display: flex;
-    flex-direction: column;
-    grid-gap: 4px;
-  }
-
-  &__title {
-    @include overflow-text;
-    @include text_small;
-    font-weight: 600;
-  }
-
-  &__info {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-
-    @include text_mini;
-    color: $grayText;
-
-    span {
-      display: flex;
-      align-items: center;
-
-      &:after {
-        content: '';
-        display: block;
-        width: 3px;
-        height: 3px;
-
-        margin: 0 4px;
-
-        background: $grayText;
-        border-radius: 50%;
-        opacity: 0.3;
-      }
-
-      &:last-child {
-        &:after {
-          display: none;
-        }
-      }
-    }
-  }
-
-  &__footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  &__price {
-    display: flex;
-    flex-direction: column;
-    grid-gap: 4px;
-
-    @include text_normal;
-    font-weight: 600;
-    color: $orange;
-
-    small {
-      @include extra_small;
-      color: rgba(0, 0, 0, 0.30);
-      text-decoration: line-through;
-    }
-  }
-}
-
-.modal-cart-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  grid-gap: 40px;
-
-  &__header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    grid-gap: 23px;
-  }
-
-  &__content {
-    display: flex;
-    flex-direction: column;
-    grid-gap: 30px;
-
-    width: 292px;
-
-    padding: 30px 40px;
-
-    text-align: center;
-
-    background: $white;
-    border-radius: 20px;
-  }
-
-  &__label {
-    @include text_big;
-    font-weight: 600;
-    color: $black;
-  }
-
-  &__button {
-    width: 100%;
-
-    font-weight: 500;
   }
 }
 </style>

@@ -68,6 +68,7 @@
       </div>
 
       <UIButton
+        v-if="!count"
         color="gray"
         class="index-menu-card__button"
         @click="addToCart()"
@@ -75,14 +76,24 @@
         <UIIcon name="add" />
         В корзину
       </UIButton>
+
+      <UICounter
+        v-else
+        :count="count"
+        @increment="increment()"
+        @decrement="decrement()"
+        class="index-menu-card__counter"
+      />
     </div>
   </div>
 </template>
 
 <script setup>
 import { useCatalogStore } from '@/store/catalog'
+import { useCartStore } from '@/store/cart'
 
 const catalog = useCatalogStore()
+const cart = useCartStore()
 
 const props = defineProps({
   item: {
@@ -91,6 +102,9 @@ const props = defineProps({
   },
 })
 
+const isFavorite = ref(false)
+
+// Computed
 const productImage = computed(() => {
   return props.item?.images[0] || ''
 })
@@ -103,15 +117,27 @@ const discount = computed(() => {
   return 0
 })
 
-const isFavorite = ref(false)
-const isShowModal = ref(false)
+const count = computed(() => {
+  const item = cart.cart.find(item => +item.id === +props.item.id)
 
+  return item?.count || 0
+})
+
+// Methods
 const openProduct = () => {
   catalog.setProduct(props.item)
 }
 
 const addToCart = () => {
-  // catalog.setProduct(props.item)
+  cart.addToCart(props.item)
+}
+
+const increment = () => {
+  cart.incrementItem(props.item.id)
+}
+
+const decrement = () => {
+  cart.decrementItem(props.item.id)
 }
 </script>
 
@@ -266,6 +292,11 @@ const addToCart = () => {
     margin-top: 15px;
 
     font-weight: 500;
+  }
+
+  &__counter {
+    height: 48px;
+    margin-top: 15px;
   }
 }
 

@@ -21,7 +21,7 @@ export const useCatalogStore = defineStore('catalogStore', {
       this.catalog = catalog
     },
 
-    setProduct (data) {
+    setProduct (data = null) {
       this.product = data
     }
   },

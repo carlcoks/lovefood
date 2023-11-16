@@ -2,7 +2,7 @@
   <div class="counter">
     <button
       class="counter__button"
-      @click.prevent="decrement()"
+      @click.prevent="emits('decrement')"
     >
       <UIIcon name="minus" />
     </button>
@@ -13,7 +13,7 @@
 
     <button
       class="counter__button"
-      @click.prevent="increment()"
+      @click.prevent="emits('increment')"
     >
       <UIIcon name="plus" />
     </button>
@@ -21,24 +21,20 @@
 </template>
 
 <script setup>
-const count = ref(1)
-
-const decrement = () => {
-  if (count.value === 0) {
-    return false
+defineProps({
+  count: {
+    type: Number,
+    default: 1,
   }
+})
 
-  count.value--
-}
-
-const increment = () => {
-  count.value++
-}
+const emits = defineEmits(['increment', 'decrement'])
 </script>
 
 <style lang="scss" scoped>
 .counter {
-  width: 130px;
+  // width: 130px;
+  width: 100%;
 
   display: flex;
   align-items: center;

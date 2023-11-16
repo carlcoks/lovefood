@@ -195,19 +195,29 @@
 
             <div class="modal-product__buttons">
               <p class="modal-product__price">
-                {{ product.price.toLocaleString()}} ₽
-                <small v-if="+product.price !== +product.regular_price">
-                  {{ product.regular_price.toLocaleString() }} ₽
+                {{ productPrice.toLocaleString()}} ₽
+                <small v-if="+productPrice !== +productRegularPrice">
+                  {{ productRegularPrice.toLocaleString() }} ₽
                 </small>
               </p>
 
               <UIButton
+                v-if="!count"
                 color="gray"
                 class="modal-product__button"
+                @click="addToCart()"
               >
                 <UIIcon name="add" />
                 В корзину
               </UIButton>
+
+              <UICounter
+                v-else
+                :count="count"
+                @increment="increment()"
+                @decrement="decrement()"
+                class="modal-product__counter"
+              />
             </div>
           </div>
         </div>
@@ -264,15 +274,19 @@
 
 <script setup>
 import { Swiper, SwiperSlide } from 'swiper/vue'
+
 import { useCatalogStore } from '@/store/catalog'
+import { useCartStore } from '@/store/cart'
 
 const catalog = useCatalogStore()
+const cart = useCartStore()
 
 const isShow = ref(true)
 
 const size = ref(0)
 const type = ref(1)
 
+// Computed
 const product = computed(() => {
   return catalog.product
 })
@@ -292,6 +306,33 @@ const discount = computed(() => {
 const acfVariations = computed(() => {
   return product.value?.acf?.variations || []
 })
+
+const count = computed(() => {
+  const item = cart.cart.find(item => +item.id === +product.value.id)
+
+  return item?.count || 0
+})
+
+const productPrice = computed(() => {
+  return product.value.price
+})
+
+const productRegularPrice = computed(() => {
+  return product.value.regular_price
+})
+
+// Methods
+const addToCart = () => {
+  cart.addToCart(product.value)
+}
+
+const increment = () => {
+  cart.incrementItem(product.value.id)
+}
+
+const decrement = () => {
+  cart.decrementItem(product.value.id)
+}
 
 const closeModal = () => {
   isShow.value = false
@@ -493,6 +534,11 @@ const close = () => {
     width: 240px;
 
     font-weight: 500;
+  }
+
+  &__counter {
+    max-width: 240px;
+    height: 48px;
   }
 
   &__else {
