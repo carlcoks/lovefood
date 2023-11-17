@@ -94,6 +94,7 @@ const valueText = computed(() => {
   justify-content: space-between;
   grid-gap: 30px;
 
+  height: 48px;
   padding: 0 15px;
 
   @include text_normal;
@@ -107,7 +108,6 @@ const valueText = computed(() => {
 
   @include mq($bp-small) {
     min-width: 300px;
-    height: 48px;
   }
 
   &--close {

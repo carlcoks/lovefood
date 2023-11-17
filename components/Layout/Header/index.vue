@@ -53,25 +53,7 @@
         </div>
 
         <div class="header__side header__side--right">
-          <UIButton
-            class="header-cart header__button"
-            color="yellow"
-            @click.prevent="cart.toggleShowCart(true)"
-          >
-            <UIIcon name="cart" />
-
-            <span
-              v-if="cart.cartItemsLength"
-              class="header-cart__value"
-            >
-              {{ cart.cartItemsLength }}
-              <span />
-              {{ cart.cartItemsPrice.toLocaleString() }} ₽
-            </span>
-            <template v-else>
-              Корзина
-            </template>
-          </UIButton>
+          <LayoutHeaderCart />
 
           <transition name="fade" mode="out-in">
             <div
@@ -96,7 +78,7 @@
           </transition>
         </div>
 
-        <LayoutHeaderNotifications />
+        <CommonCartNotifications class="header__notifications" />
       </div>
     </div>
 
@@ -131,10 +113,6 @@
 </template>
 
 <script setup lang="ts">
-import { useCartStore } from '@/store/cart'
-
-const cart = useCartStore()
-
 const isShowAuth = ref<true | false>(false)
 const isShowAcceptCity = ref<true | false>(false)
 const isShowSettings = ref<true | false>(false)
@@ -253,6 +231,11 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    grid-gap: 20px;
+
+    @include mq($bp-small) {
+      grid-gap: 0;
+    }
   }
 
   &__back {
@@ -269,8 +252,8 @@ onMounted(() => {
   }
 
   &__restaurant {
-    flex: 0 0 auto;
-    max-width: 450px;
+    flex: 1 1 auto;
+    max-width: 350px;
   }
 
   &__burger {
@@ -288,19 +271,12 @@ onMounted(() => {
   &__button {
     font-weight: 500;
   }
-}
 
-.header-cart {
-  &__value {
-    display: flex;
-    align-items: center;
-    grid-gap: 8px;
+  &__notifications {
+    display: none;
 
-    span {
-      width: 2px;
-      height: 20px;
-      background: rgba(0, 0, 0, 0.30);
-      border-radius: 20px;
+    @include mq($bp-small) {
+      display: flex;
     }
   }
 }

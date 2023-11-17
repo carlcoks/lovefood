@@ -1,12 +1,12 @@
 <template>
-  <div class="header-notifications">
-    <transition-group name="slide-right" mode="out-in">
+  <div class="cart-notifications">
+    <transition-group name="slide-right">
       <div
         v-for="(item, i) in cartNotifications"
         :key="i"
-        class="header-notification"
+        class="cart-notification"
       >
-        <UIIcon name="cart-filled" />
+        <UIIcon name="cart-filled" class="cart-notification__icon" />
         {{ item }}
       </div>
     </transition-group>
@@ -22,22 +22,29 @@ const cartNotifications = computed(() => cart.notifications)
 </script>
 
 <style lang="scss" scoped>
-.header-notifications {
+.cart-notifications {
   position: absolute;
-  top: calc(100% + 20px);
   right: 0;
+  bottom: calc(54px + 20px);
+  left: 0;
 
   display: flex;
   flex-direction: column;
   grid-gap: 10px;
+
+  @include mq($bp-small) {
+    top: calc(100% + 20px);
+    bottom: unset;
+    left: unset;
+  }
 }
 
-.header-notification {
+.cart-notification {
   display: flex;
   align-items: center;
   grid-gap: 20px;
 
-  padding: 25px 40px;
+  padding: 13px 40px;
 
   @include text_normal;
   font-weight: 500;
@@ -47,5 +54,14 @@ const cartNotifications = computed(() => cart.notifications)
   background: $greenLight;
 
   box-shadow: 0px 0px 50px 0px rgba(0, 0, 0, 0.08);
+
+  @include mq($bp-small) {
+    padding: 25px 40px;
+  }
+
+  &__icon {
+    width: 24px;
+    height: 24px;
+  }
 }
 </style>

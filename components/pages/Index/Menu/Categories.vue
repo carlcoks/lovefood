@@ -96,8 +96,10 @@ const getBlocksPositions = () => {
 onMounted(() => {
   activeTab.value = categories.value[0]?.id || null
 
-  getBlocksPositions()
-  document.addEventListener('scroll', onScroll)
+  nextTick(() => {
+    getBlocksPositions()
+    document.addEventListener('scroll', onScroll)
+  })
 })
 </script>
 

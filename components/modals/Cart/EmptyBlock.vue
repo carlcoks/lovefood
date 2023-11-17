@@ -1,5 +1,13 @@
 <template>
   <div class="modal-cart-empty">
+    <a
+      href="#"
+      class="modal-cart-empty__close"
+      @click.prevent="emits('close')"
+    >
+      <UIIcon name="close" />
+    </a>
+
     <div class="modal-cart-empty__header">
       <UIIcon name="cart-empty" />
       <p class="modal-cart__title">
@@ -22,6 +30,7 @@
 </template>
 
 <script setup>
+const emits = defineEmits(['close'])
 </script>
 
 <style lang="scss" scoped>
@@ -30,6 +39,20 @@
   flex-direction: column;
   align-items: center;
   grid-gap: 40px;
+
+  &__close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+
+    @include mq($bp-small) {
+      display: none;
+    }
+
+    ::v-deep(.ui-icon) svg path {
+      fill: $blackText3;
+    }
+  }
 
   &__header {
     display: flex;

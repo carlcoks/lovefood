@@ -26,9 +26,15 @@
       >
         <div class="modal-cart__header">
           <div class="modal-cart__top">
-            <p class="modal-cart__title">
+            <a
+              href="#"
+              rel="nofollow"
+              class="modal-cart__title"
+              @click.prevent="closeModal()"
+            >
+              <UIIcon name="arrow" />
               Корзина
-            </p>
+            </a>
 
             <button
               class="modal-cart__clear"
@@ -101,6 +107,7 @@
           <UIButton
             color="yellow"
             class="modal-cart-order-btn"
+            @click="submit()"
           >
             Перейти к оформлению
             <span class="modal-cart-order-btn__price">
@@ -113,7 +120,10 @@
         </div>
       </div>
 
-      <ModalsCartEmptyBlock v-else />
+      <ModalsCartEmptyBlock
+        v-else
+        @close="closeModal()"
+      />
     </div>
   </ModalsOverlay>
 </template>
@@ -132,32 +142,66 @@ const closeModal = () => {
 const clearCart = () => {
   cart.clearCart()
 }
+
+const submit = () => {
+  closeModal()
+  navigateTo('/order')
+}
 </script>
 
 <style lang="scss" scoped>
 .modal-cart {
-  width: 512px;
+  position: relative;
+
+  width: 100vw;
+  max-width: 512px;
   height: 100vh;
 
   display: flex;
   flex-direction: column;
 
-  border-radius: 40px 0 0 40px;
   background: $grayBg;
+
+  @include mq($bp-small) {
+    border-radius: 40px 0 0 40px;
+  }
 
   &--empty {
     justify-content: center;
   }
 
   &__close {
-    position: absolute;
-    left: -60px;
-    top: 50%;
-    transform: translateY(-50%);
+    display: none;
+
+    @include mq($bp-small) {
+      display: block;
+
+      position: absolute;
+      left: -60px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
   }
 
   &__title {
-    @include h2;
+    display: flex;
+    align-items: center;
+    grid-gap: 10px;
+
+    @include text_large;
+    font-weight: 700;
+
+    @include mq($bp-small) {
+      @include h2;
+    }
+
+    span {
+      transform: rotate(180deg);
+
+      @include mq($bp-small) {
+        display: none;
+      }
+    }
   }
 
   &__main {
@@ -175,11 +219,16 @@ const clearCart = () => {
     flex-direction: column;
     grid-gap: 12px;
 
-    padding: 40px 40px 20px;
+    padding: 20px;
 
     background: $white;
     border-bottom: 1px solid $grayText2;
-    border-radius: 40px 0 0 0;
+    
+    @include mq($bp-small) {
+      padding: 40px 40px 20px;
+
+      border-radius: 40px 0 0 0;
+    }
   }
 
   &__top {
@@ -208,11 +257,17 @@ const clearCart = () => {
   }
 
   &__count {
-    @include text_big;
-    font-weight: 600;
+    display: none;
 
-    span {
-      color: $orange;
+    @include mq($bp-small) {
+      display: block;
+
+      @include text_big;
+      font-weight: 600;
+
+      span {
+        color: $orange;
+      }
     }
   }
 
@@ -223,9 +278,13 @@ const clearCart = () => {
     flex-direction: column;
     grid-gap: 10px;
 
-    padding: 28px 40px;
+    padding: 20px;
 
     overflow-y: auto;
+
+    @include mq($bp-small) {
+      padding: 28px 40px;
+    }
   }
 
   &__footer {
@@ -233,13 +292,20 @@ const clearCart = () => {
 
     display: flex;
     flex-direction: column;
-    grid-gap: 20px;
+    grid-gap: 12px;
 
-    padding: 20px 40px 40px;
+    padding: 20px;
 
     background: $white;
     border-top: 1px solid $grayText2;
-    border-radius: 0 0 40px 0;
+    
+    @include mq($bp-small) {
+      grid-gap: 20px;
+
+      padding: 20px 40px 40px;
+      
+      border-radius: 0 0 40px 0;
+    }
   }
 }
 
