@@ -1,35 +1,44 @@
 <template>
-  <div v-if="!isLoading">
-    <yandex-map
-      v-model="map"
-      :settings="{
-        location: {
-          center,
-          zoom,
-        }
-      }"
-      class="modal-receipt-map"
-    >
-      <yandex-map-default-features-layer/>
-      <yandex-map-default-scheme-layer/>
+  <yandex-map
+    v-model="map"
+    :settings="{
+      location: {
+        center,
+        zoom,
+      }
+    }"
+    class="modal-receipt-map"
+  >
+    <yandex-map-default-features-layer/>
+    <yandex-map-default-scheme-layer/>
 
-      <yandex-map-marker
-        v-for="(item, i) in markers"
-        :key="i"
-        :settings="{
-          coordinates: item.coordinates,
-          id: item.id,
-        }"
+    <yandex-map-controls :settings="{ position: 'right' }">
+      <yandex-map-zoom-control />
+    </yandex-map-controls>
+
+    <yandex-map-marker
+      v-for="(item, i) in markers"
+      :key="i"
+      :settings="{
+        coordinates: item.coordinates,
+        id: item.id,
+      }"
+    >
+      <div
+        class="modal-receipt-map-marker"
+        @click="map?.setLocation({
+          center: item.coordinates,
+          zoom: 17,
+          duration: 400
+        })"
       >
-        <div class="modal-receipt-map-marker">
-          <UIIcon
-            name="metka"
-            class="modal-receipt-map-marker__icon"
-          />
-        </div>
-      </yandex-map-marker>
-    </yandex-map>
-  </div>
+        <UIIcon
+          name="metka-red"
+          class="modal-receipt-map-marker__icon"
+        />
+      </div>
+    </yandex-map-marker>
+  </yandex-map>
 </template>
 
 <script setup lang="ts">
@@ -39,6 +48,8 @@ import {
   YandexMapDefaultFeaturesLayer,
   YandexMapDefaultSchemeLayer,
   YandexMapMarker,
+  YandexMapControls,
+  YandexMapZoomControl,
   VueYandexMaps
 } from 'vue-yandex-maps'
 
@@ -53,14 +64,17 @@ const props = defineProps({
 
 const map = shallowRef<null | YMap>(null)
 const center = ref<[number, number]>([61.419145, 55.166572])
-const zoom = ref(11)
-const isLoading = ref(true)
+const zoom = shallowRef(12)
 
 const markers = ref([])
 
-onMounted(() => {
-  console.log('VueYandexMaps', VueYandexMaps)
+watch(VueYandexMaps.isLoaded, (value) => {
+  if (value) {
+    setMarkers()
+  }
+})
 
+const setMarkers = () => {
   const array = props.locations.map((item, i) => {
     return {
       id: `id_${item.id}`,
@@ -69,10 +83,12 @@ onMounted(() => {
   })
 
   markers.value = array
+}
 
-  // setTimeout(() => {
-  //   isLoading.value = false 
-  // }, 1000)
+onMounted(async () => {
+  if (VueYandexMaps.isLoaded.value) {
+    setMarkers()
+  }
 })
 </script>
 
@@ -86,17 +102,12 @@ onMounted(() => {
 }
 
 .modal-receipt-map-marker {
-  margin-top: -50px;
-  margin-left: -25px;
+  transform: translate(-50%, calc(-50% - 25px));
 
   &__icon {
     ::v-deep svg {
       width: 50px;
       height: 50px;
-
-      path {
-        fill: $blackText;
-      }
     }
   }
 }
