@@ -45,14 +45,22 @@ const common = useCommonStore()
 
 const isShowFilters = ref(false)
 
-// warehouse_id
 const pickupLocation = computed(() => common.pickupLocation)
-
 
 const filteredCatalog = computed(() => {
   if (pickupLocation.value) {
-    return catalog.catalog.filter(item => {
-      return item.products.filter(product => product.locations.filter(location => +location.id === +pickupLocation.value.warehouse_id))
+    return catalog.catalog.map(item => {
+      return {
+        ...item,
+        products: item.products.filter(product => {
+          const isset = product.locations.find(location => +location.id === +pickupLocation.value.warehouse_id)
+          if (isset) {
+            return true
+          } else {
+            return false
+          }
+        })
+      }
     })
   }
 

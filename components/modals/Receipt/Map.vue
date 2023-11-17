@@ -59,6 +59,8 @@ const isLoading = ref(true)
 const markers = ref([])
 
 onMounted(() => {
+  console.log('VueYandexMaps', VueYandexMaps)
+
   const array = props.locations.map((item, i) => {
     return {
       id: `id_${item.id}`,
@@ -68,9 +70,9 @@ onMounted(() => {
 
   markers.value = array
 
-  setTimeout(() => {
-    isLoading.value = false
-  }, 1000)
+  // setTimeout(() => {
+  //   isLoading.value = false 
+  // }, 1000)
 })
 </script>
 
