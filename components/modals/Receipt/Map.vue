@@ -1,5 +1,6 @@
 <template>
   <yandex-map
+    v-if="!isLoading"
     v-model="map"
     :settings="{
       location: {
@@ -57,7 +58,8 @@ import {
   YandexMapMarker,
   YandexMapControls,
   YandexMapZoomControl,
-  VueYandexMaps
+  VueYandexMaps,
+  initYmaps
 } from 'vue-yandex-maps'
 
 import trimStr from '@/utils/trimStr'
@@ -69,6 +71,7 @@ const props = defineProps({
   },
 })
 
+const isLoading = ref(true)
 const map = shallowRef<null | YMap>(null)
 const center = ref<Coordinates>([61.419145, 55.166572])
 const zoom = shallowRef<number>(12)
@@ -76,7 +79,6 @@ const zoom = shallowRef<number>(12)
 const markers = ref<Marker[]>([])
 
 watch(VueYandexMaps.isLoaded, (value) => {
-  console.log('value', value)
   if (value) {
     setMarkers()
   }
@@ -94,9 +96,10 @@ const setMarkers = () => {
 }
 
 onMounted(async () => {
-  console.log('VueYandexMaps.isLoaded.value', VueYandexMaps.isLoaded.value)
+  await initYmaps()
+  isLoading.value = false
+
   if (VueYandexMaps.isLoaded.value) {
-    console.log('VueYandexMaps.isLoaded.value 2', VueYandexMaps.isLoaded.value)
     setMarkers()
   }
 })
