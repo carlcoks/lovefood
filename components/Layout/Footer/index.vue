@@ -192,7 +192,7 @@ const scrollToTop = () => {
 
   background: $grayBg2;
 
-  @include mq($bp-small) {
+  @include mq($bp-medium) {
     padding: 70px 0 40px;
   }
 
@@ -206,7 +206,7 @@ const scrollToTop = () => {
     flex-direction: column;
     grid-gap: 30px;
 
-    @include mq($bp-small) {
+    @include mq($bp-medium) {
       flex-direction: row;
       align-items: flex-start;
       justify-content: space-between;
@@ -217,10 +217,15 @@ const scrollToTop = () => {
   &__row {
     display: flex;
     align-items: flex-start;
-    justify-content: space-between;
+    flex-direction: column;
     grid-gap: 30px;
+    
+    @include mq($bp-super-small) {
+      flex-direction: row;
+      justify-content: space-between;
+    }
 
-    @include mq($bp-small) {
+    @include mq($bp-medium) {
       grid-gap: 120px;
     }
   }
@@ -236,7 +241,7 @@ const scrollToTop = () => {
     @include text_large;
     font-weight: 700;
 
-    @include mq($bp-small) {
+    @include mq($bp-medium) {
       @include h2;
     }
   }
@@ -250,7 +255,7 @@ const scrollToTop = () => {
     @include text_normal;
     font-weight: 600;
 
-    @include mq($bp-small) {
+    @include mq($bp-medium) {
       @include text_big;
 
       padding-left: 4px;
@@ -276,7 +281,7 @@ const scrollToTop = () => {
     @include text_big;
     font-weight: 600;
 
-    @include mq($bp-small) {
+    @include mq($bp-medium) {
       @include text_large;
       font-weight: 700;
     }
@@ -284,8 +289,13 @@ const scrollToTop = () => {
 
   &__apps {
     display: flex;
-    align-items: flex-start;
+    flex-direction: column;
     grid-gap: 30px;
+    
+    @include mq($bp-super-small) {
+      flex-direction: row;
+      align-items: flex-start;
+    }
   }
 
   &__socials {
@@ -304,7 +314,7 @@ const scrollToTop = () => {
 
     border-top: 1px solid #D9D9D9;
 
-    @include mq($bp-small) {
+    @include mq($bp-medium) {
       margin-top: 50px;
       padding-top: 22px;
     }
@@ -315,12 +325,14 @@ const scrollToTop = () => {
 
     @include text_small;
 
-    @include mq($bp-small) {
+    @include mq($bp-medium) {
       @include text_big;
     }
   }
 
   &__to-top {
+    flex: 0 0 auto;
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -343,7 +355,7 @@ const scrollToTop = () => {
   display: grid;
   grid-gap: 16px 30px;
 
-  @include mq($bp-small) {
+  @include mq($bp-medium) {
     grid-gap: 15px 60px;
   }
 

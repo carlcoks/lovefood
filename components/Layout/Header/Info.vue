@@ -21,7 +21,7 @@
 .header-info {
   display: none;
 
-  @include mq($bp-small) {
+  @include mq($bp-medium) {
     display: flex;
     flex-direction: column;
     grid-gap: 4px;

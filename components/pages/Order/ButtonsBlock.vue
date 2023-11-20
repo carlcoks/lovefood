@@ -55,6 +55,7 @@ const cart = useCartStore()
     
     &--order {
       grid-gap: 40px;
+      justify-content: space-between;
 
       span {
         font-weight: 500;

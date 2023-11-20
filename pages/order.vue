@@ -10,15 +10,19 @@
 
             <div class="page-order__block">
               <div class="page-order-delivery-types">
-                <button
-                  v-for="(item, i) in deliveryTypes"
-                  :key="i"
-                  :class="['page-order-delivery-type', { 'active' : item.type === deliveryType }]"
-                  @click.prevent="deliveryType = item.type"
-                >
-                  <UIIcon :name="item.type" />
-                  {{ item.label }}
-                </button>
+                <div class="page-order-delivery-types__wrap">
+                  <div class="page-order-delivery-types__list">
+                    <button
+                      v-for="(item, i) in deliveryTypes"
+                      :key="i"
+                      :class="['page-order-delivery-type', { 'active' : item.type === deliveryType }]"
+                      @click.prevent="deliveryType = item.type"
+                    >
+                      <UIIcon :name="item.type" />
+                      {{ item.label }}
+                    </button>
+                  </div>
+                </div>
               </div>
 
               <transition name="fade" mode="out-in">
@@ -153,7 +157,11 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .page-order {
-  padding: 60px 0;
+  padding: 10px 0 60px;
+
+  @include mq($bp-medium) {
+    padding: 60px 0;
+  }
 
   &__box {
     display: flex;
@@ -170,11 +178,14 @@ onMounted(() => {
 
   &__section {
     flex: 1 1 auto;
-    max-width: 767px;
 
     display: flex;
     flex-direction: column;
     grid-gap: 60px;
+
+    @include mq($bp-medium) {
+      max-width: 767px;
+    }
   }
 
   &__content {
@@ -185,13 +196,22 @@ onMounted(() => {
 
   &__block {
     display: grid;
-    flex-direction: column;
-    grid-gap: 24px;
+    grid-gap: 20px;
+
+    @include mq($bp-medium) {
+      grid-gap: 24px;
+    }
   }
 
   &__title {
-    @include h2;
-    color: $black;
+    display: none;
+
+    @include mq($bp-medium) {
+      display: block;
+
+      @include h2;
+      color: $black;
+    }
   }
 
   &__subtitle {
@@ -250,15 +270,32 @@ onMounted(() => {
 }
 
 .page-order-delivery-types {
-  width: 100%;
-  
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  height: 58px;
 
-  padding: 5px;
+  margin: 0 -20px;
 
-  background: $grayBg2;
-  border-radius: 20px;
+  overflow: hidden;
+
+  @include mq($bp-medium) {
+    height: auto;
+    margin: 0;
+  }
+
+  &__wrap {
+    padding: 0 16px 20px;
+
+    overflow: auto;
+  }
+
+  &__list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    padding: 5px;
+
+    background: $grayBg2;
+    border-radius: 20px;
+  }
 }
 
 .page-order-delivery-type {
@@ -276,6 +313,7 @@ onMounted(() => {
   border: 0;
 
   transition: color 0.3s, background-color 0.3s;
+  white-space: nowrap;
 
   &.active {
     color: $blackText;
@@ -290,7 +328,7 @@ onMounted(() => {
   &__list {
     height: 48px;
 
-    margin: 0 -16px;
+    margin: 0 -20px;
 
     overflow: hidden;
 
@@ -302,7 +340,6 @@ onMounted(() => {
   &__list-wrap {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     grid-gap: 12px;
 
     padding: 0 16px 20px;
@@ -310,7 +347,7 @@ onMounted(() => {
     overflow: auto;
 
     @include mq($bp-medium) {
-      padding: 0;
+      padding: 0 0 20px 0;
     }
   }
 

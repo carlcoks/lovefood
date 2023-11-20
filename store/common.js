@@ -1,5 +1,7 @@
 export const useCommonStore = defineStore('commonStore', {
   state: () => ({
+    isMobileOrTablet: false,
+    isTablet: false,
     city: null,
     deliveryType: null, // 'pickup' | 'delivery' | null
     deliveryLocations: [],

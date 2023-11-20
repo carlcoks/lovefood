@@ -19,17 +19,18 @@
 
               <div class="header__top">
                 <LayoutHeaderRestaurant
+                  v-if="!isMobileOrTablet || route.fullPath === '/'"
                   class="header__restaurant"
                   @click="isShowReceipt = true"
                 />
-                <!-- <NuxtLink
+                <NuxtLink
                   v-else
                   to="/"
                   class="header__back"
                 >
                   <UIIcon name="arrow" />
                   {{ pageTitle }}
-                </NuxtLink> -->
+                </NuxtLink>
 
                 <button
                   type="button"
@@ -41,6 +42,7 @@
               </div>
 
               <LayoutHeaderSearch
+                v-if="!isMobileOrTablet || route.fullPath === '/'"
                 class="header__search"
               />
             </div>
@@ -113,6 +115,11 @@
 </template>
 
 <script setup lang="ts">
+import { useCommonStore } from '@/store/common'
+
+const commonStore = useCommonStore()
+const route = useRoute()
+
 const isShowAuth = ref<true | false>(false)
 const isShowAcceptCity = ref<true | false>(false)
 const isShowSettings = ref<true | false>(false)
@@ -121,8 +128,14 @@ const isShowMobileMenu = ref<true | false>(false)
 
 const isShowCategories = ref(false)
 
+const isMobileOrTablet = computed(() => commonStore.isMobileOrTablet)
+
 const pageTitle = computed(() => {
-  return 'Рестораны'
+  if (route.fullPath === '/order') {
+    return 'Оформление заказа'
+  }
+  return ''
+  // return 'Рестораны'
 })
 
 const onScroll = () => {
@@ -157,7 +170,7 @@ onMounted(() => {
 
   z-index: 1000;
 
-  @include mq($bp-small) {
+  @include mq($bp-medium) {
     height: 80px;
 
     border-bottom: 1px solid $grayBg;
@@ -173,7 +186,7 @@ onMounted(() => {
 
     padding: 15px 0;
 
-    @include mq($bp-small) {
+    @include mq($bp-medium) {
       padding: 14px 0;
     }
   }
@@ -186,7 +199,7 @@ onMounted(() => {
     grid-gap: 20px;
     
 
-    @include mq($bp-small) {
+    @include mq($bp-medium) {
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
@@ -197,7 +210,7 @@ onMounted(() => {
     &--right {
       display: none;
 
-      @include mq($bp-small) {
+      @include mq($bp-medium) {
         display: flex;
 
         flex: 0 0 auto;
@@ -212,7 +225,7 @@ onMounted(() => {
 
     display: none;
 
-    @include mq($bp-small) {
+    @include mq($bp-medium) {
       display: block;
     }
   }
@@ -233,7 +246,7 @@ onMounted(() => {
     justify-content: space-between;
     grid-gap: 20px;
 
-    @include mq($bp-small) {
+    @include mq($bp-medium) {
       grid-gap: 0;
     }
   }
@@ -259,7 +272,7 @@ onMounted(() => {
   &__burger {
     display: flex;
 
-    @include mq($bp-small) {
+    @include mq($bp-medium) {
       display: none;
     }
   }
@@ -276,7 +289,7 @@ onMounted(() => {
   &__notifications {
     display: none;
 
-    @include mq($bp-small) {
+    @include mq($bp-medium) {
       display: flex;
     }
   }

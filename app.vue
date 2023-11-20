@@ -10,10 +10,21 @@
 import { useCatalogStore } from '@/store/catalog'
 import { useCommonStore } from '@/store/common'
 
-const catalog = useCatalogStore()
-const common = useCommonStore()
+const catalogStore = useCatalogStore()
+const commonStore = useCommonStore()
 
-await catalog.getCatalog()
+await catalogStore.getCatalog()
 
-common.getLocations()
+commonStore.getLocations()
+
+const setWindowStore = () => {
+  // commonStore.isMobile = window.innerWidth < 700;
+  commonStore.isMobileOrTablet = window.innerWidth < 992
+  commonStore.isTablet = window.innerWidth < 992 && window.innerWidth >= 768
+}
+
+onMounted(() => {
+  setWindowStore()
+  window.addEventListener('resize', setWindowStore)
+})
 </script>
