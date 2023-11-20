@@ -42,6 +42,13 @@
 </template>
 
 <script setup lang="ts">
+type Coordinates = Array<String | Number>
+
+interface Marker {
+  id: string;
+  coordinates: Coordinates
+}
+
 import type { YMap } from '@yandex/ymaps3-types'
 import {
   YandexMap,
@@ -63,12 +70,13 @@ const props = defineProps({
 })
 
 const map = shallowRef<null | YMap>(null)
-const center = ref<[number, number]>([61.419145, 55.166572])
-const zoom = shallowRef(12)
+const center = ref<Coordinates>([61.419145, 55.166572])
+const zoom = shallowRef<number>(12)
 
-const markers = ref([])
+const markers = ref<Marker[]>([])
 
 watch(VueYandexMaps.isLoaded, (value) => {
+  console.log('value', value)
   if (value) {
     setMarkers()
   }
@@ -86,7 +94,9 @@ const setMarkers = () => {
 }
 
 onMounted(async () => {
+  console.log('VueYandexMaps.isLoaded.value', VueYandexMaps.isLoaded.value)
   if (VueYandexMaps.isLoaded.value) {
+    console.log('VueYandexMaps.isLoaded.value 2', VueYandexMaps.isLoaded.value)
     setMarkers()
   }
 })

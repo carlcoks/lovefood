@@ -77,7 +77,7 @@ const emits = defineEmits(['close'])
 const search = ref('')
 const currentAddress = ref(null)
 
-const pickupLocation = computed(() => common.pickupLocation)
+const selectedLocation = computed(() => common.pickupLoselectedLocationcation)
 
 const filteredLocations = computed(() => {
   return props.locations.filter(item => {
@@ -87,14 +87,14 @@ const filteredLocations = computed(() => {
 
 const submit = () => {
   common.setDeliveryType('pickup')
-  common.setPickupLocation(currentAddress.value)
+  common.setLocation(currentAddress.value)
 
   emits('close')
 }
 
 onMounted(() => {
-  if (pickupLocation.value) {
-    currentAddress.value = pickupLocation.value
+  if (selectedLocation.value) {
+    currentAddress.value = selectedLocation.value
   }
 })
 </script>

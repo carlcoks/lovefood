@@ -9,6 +9,8 @@
     /> -->
 
     <PagesIndexMenu />
+
+    <LayoutBottomBar />
   </main>
 </template>
 

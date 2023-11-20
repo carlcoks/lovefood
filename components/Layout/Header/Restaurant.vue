@@ -53,7 +53,7 @@ import { useCommonStore } from '@/store/common'
 const common = useCommonStore()
 
 const deliveryType = computed(() => common.deliveryType)
-const pickupLocation = computed(() => common.pickupLocation)
+const selectedLocation = computed(() => common.selectedLocation)
 
 const isClose = computed(() => {
   return false
@@ -83,7 +83,7 @@ const labelText = computed(() => {
 })
 
 const valueText = computed(() => {
-  return pickupLocation.value?.address || ''
+  return selectedLocation.value?.address || ''
 })
 </script>
 

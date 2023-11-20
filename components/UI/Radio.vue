@@ -1,8 +1,15 @@
 <template>
-  <label class="radio">
+  <label
+    :for="id"
+    class="radio"
+  >
     <input
+      :id="id"
       type="radio"
+      :value="value"
+      :checked="isChecked"
       class="radio__input"
+      @change="$emit('update:modelValue', $event.target.value)"
     >
     <span
       class="radio__box"
@@ -14,9 +21,24 @@
 </template>
 
 <script setup>
-// defineProps({
+const props = defineProps({
+  id: {
+    type: String,
+    default: '',
+  },
+  modelValue: {
+    type: undefined,
+    default: '',
+  },
+  value: {
+    type: undefined,
+    default: '',
+  },
+})
 
-// })
+const isChecked = computed(() => {
+  return props.modelValue === props.value
+})
 </script>
 
 <style lang="scss" scoped>
@@ -31,6 +53,8 @@
     display: none;
 
     &:checked + .radio__box {
+      border-color: $yellow;
+
       &:after {
         opacity: 1;
       }
@@ -45,7 +69,7 @@
     width: 24px;
     height: 24px;
 
-    border: 1px solid $grayText2;
+    border: 2px solid $grayText2;
     border-radius: 50%;
 
     &:after {
@@ -54,7 +78,7 @@
       width: 16px;
       height: 16px;
 
-      background: $grayText2;
+      background: $yellow;
       border-radius: 50%;
 
       transition: opacity 0.3s;

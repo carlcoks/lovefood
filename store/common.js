@@ -4,7 +4,7 @@ export const useCommonStore = defineStore('commonStore', {
     deliveryType: null, // 'pickup' | 'delivery' | null
     deliveryLocations: [],
     pickupLocations: [],
-    pickupLocation: null, // выбранная локация
+    selectedLocation: null, // выбранная локация
   }),
 
   actions: {
@@ -24,8 +24,8 @@ export const useCommonStore = defineStore('commonStore', {
       this.deliveryType = value
     },
 
-    setPickupLocation (value) {
-      this.pickupLocation = value
+    setLocation (value) {
+      this.selectedLocation = value
     }
   }
 })

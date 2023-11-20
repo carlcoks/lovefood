@@ -1,8 +1,17 @@
 <template>
   <div class="input">
+    <label
+      v-if="label"
+      :for="id"
+      class="input__label"
+    >
+      {{ label }}
+    </label>
+
     <input
+      :id="id"
       :type="type"
-      :value="modelValue"
+      :value="value"
       :placeholder="placeholder"
       :disabled="disabled"
       :class="[
@@ -16,6 +25,14 @@
 
 <script setup>
 defineProps({
+  id: {
+    type: String,
+    default: '',
+  },
+  label: {
+    type: String,
+    default: '',
+  },
   modelValue: {
     type: undefined,
     default: '',
@@ -47,6 +64,16 @@ defineProps({
 .input {
   width: 100%;
 
+  &__label {
+    display: block;
+
+    @include text_normal;
+    font-weight: 500;
+    color: $black;
+
+    margin-bottom: 12px;
+  }
+
   &__area {
     width: 100%;
     height: 48px;
@@ -54,7 +81,7 @@ defineProps({
     padding: 12px 15px;
 
     @include text_normal;
-    font-weight: inherit;
+    font-weight: 500;
 
     background: $grayBg2;
     border-radius: 14px;
