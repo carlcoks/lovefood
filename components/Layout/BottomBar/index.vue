@@ -17,7 +17,7 @@
       >
         <span class="mini-cart__side">
           <UIIcon name="cart" class="mini-cart__icon mini-cart__icon--cart" />
-          2 500 ₽
+          {{ cart.cartItemsPrice.toLocaleString() }} ₽
         </span>
 
         <span class="mini-cart__side mini-cart__side--delivery">

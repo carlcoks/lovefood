@@ -23,7 +23,7 @@
             </p>
             <ul class="footer__menu footer-menu footer-menu--double">
               <li
-                v-for="(item, i) in catalog.categories"
+                v-for="(item, i) in catalogStore.filteredCatalog"
                 :key="i"
                 class="footer-menu__item"
               >
@@ -171,7 +171,7 @@ import { useCatalogStore } from '@/store/catalog'
 
 import scrollToEl from '@/utils/scrollToEl'
 
-const catalog = useCatalogStore()
+const catalogStore = useCatalogStore()
 
 const about = [
   { link: '/', name: 'Оплата' },
