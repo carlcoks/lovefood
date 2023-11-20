@@ -121,11 +121,9 @@
 </template>
 
 <script setup>
-import { useCartStore } from '@/store/cart'
 import { useCommonStore } from '@/store/common'
 
-const cart = useCartStore()
-const common = useCommonStore()
+const commonStore = useCommonStore()
 
 const deliveryTypes = [
   { label: 'Доставка', type: 'delivery' },
@@ -144,11 +142,11 @@ const deliveryTimes = [
 const deliveryType = ref('delivery')
 const deliveryTime = ref(1)
 
-const commonDeliveryType = computed(() => common.deliveryType)
+const currentDeliveryType = computed(() => commonStore.deliveryType)
 
 onMounted(() => {
-  if (commonDeliveryType.value) {
-    deliveryType.value = commonDeliveryType.value
+  if (currentDeliveryType.value) {
+    deliveryType.value = currentDeliveryType.value
   }
 })
 </script>

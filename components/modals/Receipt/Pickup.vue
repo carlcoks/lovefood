@@ -63,7 +63,7 @@
 <script setup>
 import { useCommonStore } from '@/store/common'
 
-const common = useCommonStore()
+const commonStore = useCommonStore()
 
 const props = defineProps({
   locations: {
@@ -77,7 +77,7 @@ const emits = defineEmits(['close'])
 const search = ref('')
 const currentAddress = ref(null)
 
-const selectedLocation = computed(() => common.pickupLoselectedLocationcation)
+const selectedLocation = computed(() => commonStore.selectedLocation)
 
 const filteredLocations = computed(() => {
   return props.locations.filter(item => {
@@ -86,8 +86,8 @@ const filteredLocations = computed(() => {
 })
 
 const submit = () => {
-  common.setDeliveryType('pickup')
-  common.setLocation(currentAddress.value)
+  commonStore.setDeliveryType('pickup')
+  commonStore.setLocation(currentAddress.value)
 
   emits('close')
 }

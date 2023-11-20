@@ -40,7 +40,7 @@
 <script setup>
 import { useCommonStore } from '@/store/common'
 
-const common = useCommonStore()
+const commonStore = useCommonStore()
 
 const props = defineProps({
   deliveryType: {
@@ -49,7 +49,7 @@ const props = defineProps({
   }
 })
 
-const selectedLocation = computed(() => common.selectedLocation)
+const selectedLocation = computed(() => commonStore.selectedLocation)
 
 const label = computed(() => {
   switch (props.deliveryType) {

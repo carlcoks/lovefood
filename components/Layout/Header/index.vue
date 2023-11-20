@@ -270,6 +270,7 @@ onMounted(() => {
 
   &__button {
     font-weight: 500;
+    padding: 12px 20px 12px 15px;
   }
 
   &__notifications {

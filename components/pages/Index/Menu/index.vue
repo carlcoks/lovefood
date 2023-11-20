@@ -9,7 +9,7 @@
 
       <div class="index-menu__content">
         <div
-          v-for="block in filteredCatalog"
+          v-for="block in catalogStore.filteredCatalog"
           :key="block.id"
           :id="`block_${block.id}`"
           class="index-menu__block"
@@ -38,34 +38,10 @@
 
 <script setup>
 import { useCatalogStore } from '@/store/catalog'
-import { useCommonStore } from '@/store/common'
 
-const catalog = useCatalogStore()
-const common = useCommonStore()
+const catalogStore = useCatalogStore()
 
 const isShowFilters = ref(false)
-
-const selectedLocation = computed(() => common.selectedLocation)
-
-const filteredCatalog = computed(() => {
-  if (selectedLocation.value) {
-    return catalog.catalog.map(item => {
-      return {
-        ...item,
-        products: item.products.filter(product => {
-          const isset = product.locations.find(location => +location.id === +selectedLocation.value.warehouse_id)
-          if (isset) {
-            return true
-          } else {
-            return false
-          }
-        })
-      }
-    })
-  }
-
-  return catalog.catalog
-})
 </script>
 
 <style lang="scss" scoped>

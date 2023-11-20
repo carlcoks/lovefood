@@ -27,5 +27,8 @@ export const useCommonStore = defineStore('commonStore', {
     setLocation (value) {
       this.selectedLocation = value
     }
-  }
+  },
+
+  getters: {
+  },
 })

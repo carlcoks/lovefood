@@ -34,7 +34,7 @@ import { useCatalogStore } from '@/store/catalog'
 
 import scrollToEl from '@/utils/scrollToEl'
 
-const catalog = useCatalogStore()
+const catalogStore = useCatalogStore()
 
 const emits = defineEmits(['showFilters'])
 
@@ -44,7 +44,7 @@ const positions = []
 const HEIGHT = 80
 
 const categories = computed(() => {
-  const arr = catalog.categories
+  const arr = catalogStore.categories
 
   if (!showMore.value) {
     return arr.slice(0, 9)

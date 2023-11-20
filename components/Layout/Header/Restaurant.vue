@@ -50,10 +50,10 @@
 <script setup lang="ts">
 import { useCommonStore } from '@/store/common'
 
-const common = useCommonStore()
+const commonStore = useCommonStore()
 
-const deliveryType = computed(() => common.deliveryType)
-const selectedLocation = computed(() => common.selectedLocation)
+const selectedLocation = computed(() => commonStore.selectedLocation)
+const deliveryType = computed(() => commonStore.deliveryType)
 
 const isClose = computed(() => {
   return false

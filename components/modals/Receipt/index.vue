@@ -56,7 +56,7 @@ te<template>
 <script setup>
 import { useCommonStore } from '@/store/common'
 
-const common = useCommonStore()
+const commonStore = useCommonStore()
 
 const emits = defineEmits(['close'])
 
@@ -69,8 +69,8 @@ const types = [
 ]
 const currentType = ref('delivery')
 
-const deliveryType = computed(() => common.deliveryType)
-const pickupLocations = computed(() => common.pickupLocations)
+const deliveryType = computed(() => commonStore.deliveryType)
+const pickupLocations = computed(() => commonStore.pickupLocations)
 
 const closeModal = () => {
   isShow.value = false
