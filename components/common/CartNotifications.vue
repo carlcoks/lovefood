@@ -16,9 +16,9 @@
 <script setup>
 import { useCartStore } from '@/store/cart'
 
-const cart = useCartStore()
+const cartStore = useCartStore()
 
-const cartNotifications = computed(() => cart.notifications)
+const cartNotifications = computed(() => cartStore.notifications)
 </script>
 
 <style lang="scss" scoped>

@@ -15,7 +15,7 @@
     </div>
     <ul class="page-order-composition__list">
       <li
-        v-for="(item, i) in cart.cartItems"
+        v-for="(item, i) in cartItems"
         :key="i"
         class="page-order-composition__item"
       >
@@ -33,13 +33,13 @@
     <ul class="page-order-composition__list">
       <li class="page-order-composition__item">
         <p class="page-order-composition__value">
-          {{ cart.cartItemsLength }} {{ declOfNum(cart.cartItemsLength, ['товар', 'товара', 'товаров']) }}
+          {{ cartItemsLength }} {{ declOfNum(cartItemsLength, ['товар', 'товара', 'товаров']) }}
         </p>
         <p class="page-order-composition__value">
-          {{ cart.cartItemsPrice.toLocaleString() }} ₽
+          {{ cartItemsPrice.toLocaleString() }} ₽
         </p>
       </li>
-      <li class="page-order-composition__item">
+      <!-- <li class="page-order-composition__item">
         <p class="page-order-composition__value">
           Списание баллов
         </p>
@@ -47,8 +47,8 @@
           0
           <UIIcon name="bonuses" />
         </p>
-      </li>
-      <li class="page-order-composition__item">
+      </li> -->
+      <!-- <li class="page-order-composition__item">
         <p class="page-order-composition__value">
           Доставка
           <UIIcon name="info" />
@@ -56,7 +56,7 @@
         <p class="page-order-composition__value">
           Бесплатно
         </p>
-      </li>
+      </li> -->
     </ul>
 
     <div class="page-order-composition__divider" />
@@ -67,10 +67,10 @@
           Сумма заказа
         </p>
         <p class="page-order-composition__value">
-          {{ cart.cartItemsPrice.toLocaleString() }} ₽
+          {{ cartItemsPrice.toLocaleString() }} ₽
         </p>
       </li>
-      <li class="page-order-composition__item">
+      <!-- <li class="page-order-composition__item">
         <p class="page-order-composition__value">
           Начислим баллов
           <UIIcon name="info" />
@@ -79,7 +79,7 @@
           0
           <UIIcon name="bonuses" />
         </p>
-      </li>
+      </li> -->
     </ul>
   </div>
 </template>
@@ -89,9 +89,9 @@ import { useCartStore } from '@/store/cart'
 
 import declOfNum from '@/utils/declOfNum'
 
-const cart = useCartStore()
+const cartStore = useCartStore()
 
-
+const { cartItems, cartItemsPrice, cartItemsLength } = storeToRefs(cartStore)
 </script>
 
 <style lang="scss" scoped>

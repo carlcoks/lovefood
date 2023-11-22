@@ -4,12 +4,12 @@
     position="right"
     :offset="0"
     name="cart"
-    @close="cart.toggleShowCart(false)"
+    @close="cartStore.toggleShowCartModal(false)"
   >
     <div
       :class="[
         'modal-cart',
-        { 'modal-cart--empty' : !cart.cartItems.length }
+        { 'modal-cart--empty' : !cartItems.length }
       ]"
     >
       <a
@@ -21,7 +21,7 @@
       </a>
       
       <div
-        v-if="cart.cartItems.length"
+        v-if="cartItems.length"
         class="modal-cart__main"
       >
         <div class="modal-cart__header">
@@ -45,13 +45,13 @@
             </button>
           </div>
           <p class="modal-cart__count">
-            {{ cart.cartItemsLength }} товара на <span>{{ cart.cartItemsPrice }} ₽</span>
+            {{ cartItemsLength }} товара на <span>{{ cartItemsPrice }} ₽</span>
           </p>
         </div>
 
         <div class="modal-cart__content">
           <ModalsCartProduct
-            v-for="(item, i) in cart.cartItems"
+            v-for="(item, i) in cartItems"
             :key="i"
             :item="item"
           />
@@ -80,7 +80,7 @@
             </button>
           </form>
 
-          <div class="modal-cart-delivery">
+          <!-- <div class="modal-cart-delivery">
             <div class="modal-cart-delivery__icon">
               <UIIcon name="delivery" />
             </div>
@@ -102,7 +102,7 @@
                 </p>
               </div>
             </div>
-          </div>
+          </div> -->
 
           <UIButton
             color="yellow"
@@ -111,10 +111,10 @@
           >
             Перейти к оформлению
             <span class="modal-cart-order-btn__price">
-              <small v-if="+cart.cartItemsRegularPrice !== +cart.cartItemsPrice">
-                {{ cart.cartItemsRegularPrice.toLocaleString() }} ₽
+              <small v-if="+cartItemsRegularPrice !== +cartItemsPrice">
+                {{ cartItemsRegularPrice.toLocaleString() }} ₽
               </small>
-              {{ cart.cartItemsPrice.toLocaleString() }} ₽
+              {{ cartItemsPrice.toLocaleString() }} ₽
             </span>
           </UIButton>
         </div>
@@ -131,7 +131,9 @@
 <script setup>
 import { useCartStore } from '@/store/cart'
 
-const cart = useCartStore()
+const cartStore = useCartStore()
+
+const { cartItems, cartItemsRegularPrice, cartItemsPrice } = storeToRefs(cartStore)
 
 const isShow = ref(true)
 
@@ -140,7 +142,7 @@ const closeModal = () => {
 }
 
 const clearCart = () => {
-  cart.clearCart()
+  cartStore.clearCart()
 }
 
 const submit = () => {

@@ -1,7 +1,7 @@
 <template>
   <ModalsOverlay
     :is-show="isShow"
-    @close="emits('close')"
+    @close="commonStore.toggleShowAcceptCityModal(false)"
   >
     <div class="modal-accept-city">
       <div class="modal-accept-city__header">
@@ -45,7 +45,9 @@
 </template>
 
 <script setup>
-const emits = defineEmits(['close'])
+import { useCommonStore } from '@/store/common'
+
+const commonStore = useCommonStore()
 
 const isShow = ref(true)
 

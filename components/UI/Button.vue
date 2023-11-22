@@ -3,14 +3,19 @@
     :is="component"
     :to="to"
     :type="type"
-    :disabled="disabled"
+    :disabled="isDisabled"
     :class="[
       'button',
       color ? `button--${color}` : '',
       size ? `button--${size}` : '',
     ]"
   >
-    <slot />
+    <UILoader
+      v-if="isLoading"
+      class="button__loader"
+    />
+
+    <slot v-else />
   </component>
 </template>
 
@@ -38,6 +43,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  isLoading: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const component = computed(() => {
@@ -46,6 +55,10 @@ const component = computed(() => {
   }
 
   return 'button'
+})
+
+const isDisabled = computed(() => {
+  return props.disabled || props.isLoading
 })
 </script>
 

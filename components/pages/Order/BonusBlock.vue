@@ -10,7 +10,7 @@
           Ваш бонусный баланс:
         </p>
         <p class="page-order-bonus__value">
-          2 840
+          0
           <UIIcon name="bonuses" />
         </p>
       </div>

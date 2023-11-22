@@ -6,7 +6,7 @@
     <input
       :id="id"
       type="radio"
-      :value="value"
+      :value="defaultValue"
       :checked="isChecked"
       class="radio__input"
       @change="$emit('update:modelValue', $event.target.value)"
@@ -28,16 +28,20 @@ const props = defineProps({
   },
   modelValue: {
     type: undefined,
-    default: '',
+    default: null,
   },
   value: {
     type: undefined,
+    default: null,
+  },
+  defaultValue: {
+    type: String,
     default: '',
   },
 })
 
 const isChecked = computed(() => {
-  return props.modelValue === props.value
+  return (props.modelValue || props.value) === props.defaultValue
 })
 </script>
 

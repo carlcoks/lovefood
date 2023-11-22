@@ -7,6 +7,7 @@
         'header-restaurant--location' : !deliveryType && !isClose,
       },
     ]"
+    @click.prevent="commonStore.toggleShowReceiptModal(true)"
   >
     <div class="header-restaurant__box">
       <p class="header-restaurant__label">

@@ -2,7 +2,7 @@ export const useCartStore = defineStore('cartStore', {
   state: () => ({
     cart: [],
     notifications: [],
-    isShowCart: false,
+    isShowCartModal: false,
   }),
 
   actions: {
@@ -60,8 +60,8 @@ export const useCartStore = defineStore('cartStore', {
       this.cart = []
     },
 
-    toggleShowCart (value) {
-      this.isShowCart = value
+    toggleShowCartModal (value) {
+      this.isShowCartModal = value
     },
 
     addNotification () {

@@ -65,22 +65,16 @@ import { useCommonStore } from '@/store/common'
 
 const commonStore = useCommonStore()
 
-const props = defineProps({
-  locations: {
-    type: Array,
-    default: () => ([]),
-  },
-})
-
 const emits = defineEmits(['close'])
 
 const search = ref('')
 const currentAddress = ref(null)
 
 const selectedLocation = computed(() => commonStore.selectedLocation)
+const pickupLocations = computed(() => commonStore.pickupLocations)
 
 const filteredLocations = computed(() => {
-  return props.locations.filter(item => {
+  return pickupLocations.value.filter(item => {
     return item.address.toLowerCase().includes(search.value.toLowerCase())
   })
 })

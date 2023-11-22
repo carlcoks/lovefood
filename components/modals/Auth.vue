@@ -1,7 +1,7 @@
 <template>
   <ModalsOverlay
     :is-show="isShow"
-    @close="emits('close')"
+    @close="commonStore.toggleShowAuthModal(false)"
   >
     <div class="modal-auth">
       <div class="modal-auth__header">
@@ -113,7 +113,9 @@
 import { VueTelInput } from 'vue-tel-input'
 import 'vue-tel-input/vue-tel-input.css'
 
-const emits = defineEmits(['close'])
+import { useCommonStore } from '@/store/common'
+
+const commonStore = useCommonStore()
 
 const isShow = ref(true)
 

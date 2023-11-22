@@ -7,11 +7,27 @@
     <LayoutFooter />
 
     <LazyModalsProduct
-      v-if="catalog.isShowProductModal"
+      v-if="isShowProductModal"
     />
 
     <LazyModalsCart
-      v-if="isShowCart"
+      v-if="isShowCartModal"
+    />
+
+    <LazyModalsReceipt
+      v-if="isShowReceiptModal"
+    />
+
+    <LazyModalsAuth
+      v-if="isShowAuthModal"
+    />
+
+    <LazyModalsSettings
+      v-if="isShowSettingsModal"
+    />
+
+    <LazyModalsAcceptCity
+      v-if="isShowAcceptCityModal"
     />
   </div>
 </template>
@@ -19,13 +35,22 @@
 <script setup>
 import { useCatalogStore } from '@/store/catalog'
 import { useCartStore } from '@/store/cart'
+import { useCommonStore } from '@/store/common'
 
-const catalog = useCatalogStore()
-const cart = useCartStore()
+const catalogStore = useCatalogStore()
+const { isShowProductModal } = storeToRefs(catalogStore)
+
+const cartStore = useCartStore()
+const commonStore = useCommonStore()
 
 const route = useRoute()
 
-const isShowCart = computed(() => cart.isShowCart)
+const isShowCartModal = computed(() => cartStore.isShowCartModal)
+
+const isShowReceiptModal = computed(() => commonStore.isShowReceiptModal)
+const isShowAuthModal = computed(() => commonStore.isShowAuthModal)
+const isShowSettingsModal = computed(() => commonStore.isShowSettingsModal)
+const isShowAcceptCityModal = computed(() => commonStore.isShowAcceptCityModal)
 </script>
 
 <style lang="scss" scoped>

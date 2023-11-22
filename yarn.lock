@@ -3146,6 +3146,11 @@ make-fetch-happen@^13.0.0:
     promise-retry "^2.0.1"
     ssri "^10.0.0"
 
+maska@^2.1.8:
+  version "2.1.8"
+  resolved "https://registry.npmjs.org/maska/-/maska-2.1.8.tgz"
+  integrity sha512-UGhHVHUCrUQExDDdKJLWXOXYV5c7WOAKiEjeSlaptDcF34AoHdvB1083en4WGQoa4xyUnkeGvN7mjxqefw6uKw==
+
 mdn-data@2.0.28:
   version "2.0.28"
   resolved "https://registry.npmjs.org/mdn-data/-/mdn-data-2.0.28.tgz"

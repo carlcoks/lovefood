@@ -1,7 +1,7 @@
 te<template>
   <ModalsOverlay
     :is-show="isShow"
-    @close="emits('close')"
+    @close="commonStore.toggleShowReceiptModal(false)"
   >
     <div class="modal-receipt">
       <a
@@ -35,7 +35,6 @@ te<template>
             />
             <ModalsReceiptPickup
               v-else-if="currentType === 'pickup'"
-              :locations="pickupLocations"
               @close="closeModal()"
             />
             <ModalsReceiptLounge
@@ -46,7 +45,7 @@ te<template>
       </div>
 
       <ModalsReceiptMap
-        :locations="pickupLocations"
+        :delivery-type="currentType"
         class="modal-receipt__map"
       />
     </div>
@@ -58,8 +57,6 @@ import { useCommonStore } from '@/store/common'
 
 const commonStore = useCommonStore()
 
-const emits = defineEmits(['close'])
-
 const isShow = ref(true)
 
 const types = [
@@ -70,7 +67,6 @@ const types = [
 const currentType = ref('delivery')
 
 const deliveryType = computed(() => commonStore.deliveryType)
-const pickupLocations = computed(() => commonStore.pickupLocations)
 
 const closeModal = () => {
   isShow.value = false

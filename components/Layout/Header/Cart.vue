@@ -2,17 +2,17 @@
   <UIButton
     class="header-cart"
     color="yellow"
-    @click.prevent="cart.toggleShowCart(true)"
+    @click.prevent="cartStore.toggleShowCartModal(true)"
   >
     <UIIcon name="cart" />
 
     <span
-      v-if="cart.cartItemsLength"
+      v-if="cartItemsLength"
       class="header-cart__value"
     >
-      {{ cart.cartItemsLength }}
+      {{ cartItemsLength }}
       <span />
-      {{ cart.cartItemsPrice.toLocaleString() }} ₽
+      {{ cartItemsPrice.toLocaleString() }} ₽
     </span>
     <template v-else>
       Корзина
@@ -23,7 +23,9 @@
 <script setup>
 import { useCartStore } from '@/store/cart'
 
-const cart = useCartStore()
+const cartStore = useCartStore()
+
+const { cartItemsLength, cartItemsPrice } = storeToRefs(cartStore)
 </script>
 
 <style lang="scss" scoped>

@@ -1,7 +1,7 @@
 <template>
   <ModalsOverlay
     :is-show="isShow"
-    @close="emits('close')"
+    @close="commonStore.toggleShowSettingsModal(false)"
   >
     <div class="modal-settings">
       <div class="modal-settings__header">
@@ -42,7 +42,9 @@
 </template>
 
 <script setup>
-const emits = defineEmits(['close'])
+import { useCommonStore } from '@/store/common'
+
+const commonStore = useCommonStore()
 
 const isShow = ref(true)
 

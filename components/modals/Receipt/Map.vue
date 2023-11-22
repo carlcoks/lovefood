@@ -1,11 +1,10 @@
 <template>
   <yandex-map
-    v-if="!isLoading"
     v-model="map"
     :settings="{
       location: {
         center,
-        zoom,
+        zoom
       }
     }"
     class="modal-receipt-map"
@@ -59,49 +58,95 @@ import {
   YandexMapControls,
   YandexMapZoomControl,
   VueYandexMaps,
-  initYmaps
 } from 'vue-yandex-maps'
 
+import { useCommonStore } from '@/store/common'
 import trimStr from '@/utils/trimStr'
 
+const commonStore = useCommonStore()
+
 const props = defineProps({
-  locations: {
-    type: Array,
-    default: () => ([]),
+  deliveryType: {
+    type: String,
+    default: 'delivery',
   },
 })
 
-const isLoading = ref(true)
 const map = shallowRef<null | YMap>(null)
 const center = ref<Coordinates>([61.419145, 55.166572])
 const zoom = shallowRef<number>(12)
 
 const markers = ref<Marker[]>([])
 
-watch(VueYandexMaps.isLoaded, (value) => {
-  if (value) {
-    setMarkers()
+// Watch
+watch(() => props.deliveryType, () => {
+  setMarkers()
+})
+
+// Computed
+const pickupLocations = computed(() => commonStore.pickupLocations)
+
+const currentLocations = computed(() => {
+  switch (props.deliveryType) {
+    case 'pickup':
+      return pickupLocations.value
+    default:
+      return []
   }
 })
 
 const setMarkers = () => {
-  const array = props.locations.map((item, i) => {
+  const array = currentLocations.value.map((item, i) => {
     return {
       id: `id_${item.id}`,
-      coordinates: trimStr(item.coord).split(',').reverse()
+      coordinates: trimStr(item.coord).split(',').reverse().map(item => item * 1)
     }
   })
 
   markers.value = array
+
+  setCenter()
+}
+
+const setCenter = () => {
+  // const obj = {}
+
+  // if (markers.value.length > 1) {
+  //   obj.bounds = markers.value.map(item => {
+  //     return [
+  //       item.coordinates[0] * 1,
+  //       item.coordinates[1] * 1
+  //     ]
+  //   })
+  //   console.log('b', obj.bounds)
+  //   // obj.zoom = 1
+  //   obj.duration = 400
+  // } else if (markers.value.length === 1) {
+  //   obj.center = markers.value[0].coordinates
+  //   // obj.zoom = zoom.value
+  //   obj.duration = 400
+  // }
+
+  // const bounds = markers.value.map(item => {
+  //   return [
+  //     item.coordinates[0] * 1,
+  //     item.coordinates[1] * 1
+  //   ]
+  // })
+
+  // map.value?.setLocation(obj)
+
+  const bounds = map.value?.bounds
+
+  map.value?.setLocation({
+    bounds,
+    zoom: 15,
+    duration: 400
+  })
 }
 
 onMounted(async () => {
-  await initYmaps()
-  isLoading.value = false
-
-  if (VueYandexMaps.isLoaded.value) {
-    setMarkers()
-  }
+  setMarkers()
 })
 </script>
 

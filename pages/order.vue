@@ -16,7 +16,6 @@
                       v-for="(item, i) in deliveryTypes"
                       :key="i"
                       :class="['page-order-delivery-type', { 'active' : item.type === deliveryType }]"
-                      @click.prevent="deliveryType = item.type"
                     >
                       <UIIcon :name="item.type" />
                       {{ item.label }}
@@ -36,26 +35,9 @@
               />
             </div>
 
-            <div class="page-order-form">
-              <p class="page-order__subtitle">
-                Кто получит заказ?
-              </p>
-
-              <div class="page-order-form__row">
-                <UIInput
-                  label="Имя"
-                  value="Антон"
-                  color="white"
-                  disabled
-                />
-                <UIInput
-                  label="Номер телефона"
-                  value="+7 999 000 00 00"
-                  color="white"
-                  disabled
-                />
-              </div>
-            </div>
+            <PagesOrderFormBlock
+              v-model="userData"
+            />
 
             <div class="page-order-delivery-time">
               <p class="page-order__subtitle">
@@ -81,10 +63,17 @@
               <PagesOrderBonusBlock />
             </div>
 
-            <PagesOrderPaymentsBlock />
+            <PagesOrderPaymentsBlock
+              :payment-methods="paymentMethods"
+              v-model="paymentMethod"
+            />
           </div>
 
-          <PagesOrderButtonsBlock class="page-order__buttons page-order__buttons--desktop" />
+          <PagesOrderButtonsBlock
+            :is-loading="isLoading"
+            class="page-order__buttons page-order__buttons--desktop"
+            @submit="order"
+          />
         </section>
 
         <aside class="page-order__aside page-order-aside">
@@ -118,16 +107,24 @@
           <PagesOrderComposition />
         </aside>
 
-        <PagesOrderButtonsBlock class="page-order__buttons page-order__buttons--mobile" />
+        <PagesOrderButtonsBlock
+          :is-loading="isLoading"
+          class="page-order__buttons page-order__buttons--mobile"
+          @submit="order"
+        />
       </div>
     </div>
   </main>
 </template>
 
 <script setup>
+import { useCartStore } from '@/store/cart'
 import { useCommonStore } from '@/store/common'
 
+const cartStore = useCartStore()
 const commonStore = useCommonStore()
+
+const { cartItems, cartItemsLength } = storeToRefs(cartStore)
 
 const deliveryTypes = [
   { label: 'Доставка', type: 'delivery' },
@@ -143,16 +140,170 @@ const deliveryTimes = [
   'Другое время',
 ]
 
+const isLoading = ref(false)
 const deliveryType = ref('delivery')
-const deliveryTime = ref(1)
+const deliveryTime = ref(0)
 
+const userData = reactive({
+  name: '',
+  nameError: '',
+  phone: '',
+  phoneError: '',
+})
+
+const paymentMethods = ref([])
+const paymentMethod = ref(null)
+
+const selectedLocation = computed(() => commonStore.selectedLocation)
 const currentDeliveryType = computed(() => commonStore.deliveryType)
+const selectedPaymentMethod = computed(() => paymentMethods.value.find(item => item.id === paymentMethod.value))
+
+// Methods
+const order = async () => {
+  if (isLoading.value) {
+    return false
+  }
+
+  if (!userData.name) {
+    userData.nameError = 'Введите имя'
+    return false
+  }
+  if (!userData.phone) {
+    userData.phoneError = 'Введите телефон'
+    return false
+  }
+
+  let obj = {
+    promo: null,
+
+    set_paid: false,
+
+    // environment_information: {
+    //   platform: platform.os.family,
+    //   app_version: platform.os.version,
+    //   build_number: platform.os.architecture
+    // },
+
+    payment_method: selectedPaymentMethod.value.id,
+    payment_method_title: selectedPaymentMethod.value.title,
+
+    billing: {
+      first_name: userData.name,
+      phone: userData.phone,
+      country: 'RU',
+      address_1: selectedLocation.value.address,
+      warehouse_id: selectedLocation.value.warehouse_id
+    },
+
+    shipping: {
+      first_name: userData.name,
+      phone: userData.phone,
+      country: 'RU',
+      address_1: selectedLocation.value.address,
+      warehouse_id: selectedLocation.value.warehouse_id
+    },
+  }
+
+  
+  obj.line_items = cartItems.value.map(item => {
+    return {
+      product_id: item.id,
+      quantity: item.count,
+      type: 'main'
+    }
+  })
+
+  const bonuses = 0
+
+  // if (this.$root.cartData.coupons.length != 0) {
+  //   let coupons = []
+  //   for(var code in this.$root.cartData.coupons) {
+  //     let el = this.$root.cartData.coupons[code]
+  //     let couponItem = {
+  //       amount: el.value,
+  //       code: el.code,
+  //       discount_type: el.type
+  //     }
+
+  //     coupons.push(couponItem)
+  //     if (el.total) bonuses += el.total;
+  //   }
+
+  //   data.coupon_lines = coupons;
+  // }
+  obj.bonuses = bonuses
+
+  // if (this.$root.user.auth) {
+  //   data.customer_id = this.$root.userData.id
+  // }
+
+  const consumer_key = 'ck_8e9043f849e95e6d003c3cc2474fc22b2ed01eec'
+  const consumer_secret = 'cs_74c746f821c405606c0950997a33b194ffc06876'
+
+  let query = {
+    consumer_key,
+    consumer_secret
+  }
+  // if (this.$root.user.auth) {
+  //   query.customer = this.$root.userData.id
+  // }
+  query = new URLSearchParams(query).toString()
+
+  isLoading.value = true
+
+  const { data } = await useMyFetch('/wp-json/wc/v3/orders', {
+    method: 'post',
+    query,
+    body: obj
+  })
+
+  isLoading.value = false
+
+  console.log('data', data)
+
+  cartStore.clearCart()
+
+  // axios.post(config.api.newOrder + '?' + query, data).then(res => {
+  //   this.loading = false
+
+  //   try {
+  //     this.$cart.clear()
+  //     this.$router.push({ name: 'orderInfo', params: { hash: res.data.order_key } })
+  //   } catch(e) {
+  //     // err
+  //   }
+  // }).catch(() => {
+  //   this.loading = false
+  //   this.$cart.clearCoupons()
+  //   alert('Произошла ошибка сервера, попробуйте еще раз.')
+  // })
+}
+
+// const checkAvailable = () => {
+//   if (!selectedLocation.value || !cartItemsLength) {
+//     return navigateTo('/')
+//   }
+// }
+
+const getPaymentMethods = async () => {
+  const { data } = await useMyFetch('/wp-json/systeminfo/v1/payment_methods')
+
+  const methods = data?.value || []
+  paymentMethods.value = methods.filter(item => item.enabled)
+
+  if (methods.length) {
+    paymentMethod.value = methods[0]?.id
+  }
+}
 
 onMounted(() => {
   if (currentDeliveryType.value) {
     deliveryType.value = currentDeliveryType.value
   }
 })
+
+// checkAvailable()
+getPaymentMethods()
 </script>
 
 <style lang="scss" scoped>
@@ -258,17 +409,6 @@ onMounted(() => {
   }
 }
 
-.page-order-form {
-  display: grid;
-  grid-gap: 24px;
-
-  &__row {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 20px;
-  }
-}
-
 .page-order-delivery-types {
   height: 58px;
 
@@ -285,6 +425,10 @@ onMounted(() => {
     padding: 0 16px 20px;
 
     overflow: auto;
+
+    @include mq($bp-medium) {
+      padding: 0;
+    }
   }
 
   &__list {

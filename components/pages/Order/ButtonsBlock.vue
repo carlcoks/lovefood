@@ -12,13 +12,15 @@
     </UIButton>
 
     <UIButton
+      :is-loading="isLoading"
       color="yellow"
-      class="page-order-buttons__button page-order-buttons__button--order"
+      :class="['page-order-buttons__button page-order-buttons__button--order', { 'page-order-buttons__button--center' : isLoading }]"
+      @click="emits('submit')"
     >
       <span>
       Оформить заказ
       </span>
-      {{ cart.cartItemsPrice.toLocaleString() }} ₽
+      {{ cartItemsPrice.toLocaleString() }} ₽
     </UIButton>
   </div>
 </template>
@@ -26,7 +28,18 @@
 <script setup>
 import { useCartStore } from '@/store/cart'
 
-const cart = useCartStore()
+const cartStore = useCartStore()
+
+const { cartItemsPrice } = storeToRefs(cartStore)
+
+defineProps({
+  isLoading: {
+    type: Boolean,
+    default: false,
+  },
+})
+
+const emits = defineEmits(['submit'])
 </script>
 
 <style lang="scss" scoped>
@@ -56,10 +69,15 @@ const cart = useCartStore()
     &--order {
       grid-gap: 40px;
       justify-content: space-between;
+      min-width: 200px;
 
       span {
         font-weight: 500;
       }
+    }
+
+    &--center {
+      justify-content: center;
     }
   }
 

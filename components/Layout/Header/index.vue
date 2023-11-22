@@ -21,7 +21,6 @@
                 <LayoutHeaderRestaurant
                   v-if="!isMobileOrTablet || route.fullPath === '/'"
                   class="header__restaurant"
-                  @click="isShowReceipt = true"
                 />
                 <NuxtLink
                   v-else
@@ -65,7 +64,7 @@
               <UIButton
                 class="header__button"
                 color="gray"
-                @click.prevent="isShowAuth = true"
+                @click.prevent="commonStore.toggleShowAuthModal(true)"
               >
                 <UIIcon name="person-outline" />
                 Войти
@@ -73,9 +72,7 @@
 
               <div />
 
-              <LayoutHeaderLang
-                @click="isShowSettings = true"
-              />
+              <LayoutHeaderLang />
             </div>
           </transition>
         </div>
@@ -83,26 +80,6 @@
         <CommonCartNotifications class="header__notifications" />
       </div>
     </div>
-
-    <ModalsReceipt
-      v-if="isShowReceipt"
-      @close="isShowReceipt = false"
-    />
-
-    <ModalsAuth
-      v-if="isShowAuth"
-      @close="isShowAuth = false"
-    />
-
-    <ModalsSettings
-      v-if="isShowSettings"
-      @close="isShowSettings = false"
-    />
-
-    <ModalsAcceptCity
-      v-if="isShowAcceptCity"
-      @close="isShowAcceptCity = false"
-    />
 
     <transition name="mobile-menu" mode="out-in">
       <LayoutHeaderMobileMenu
@@ -120,14 +97,11 @@ import { useCommonStore } from '@/store/common'
 const commonStore = useCommonStore()
 const route = useRoute()
 
-const isShowAuth = ref<true | false>(false)
-const isShowAcceptCity = ref<true | false>(false)
-const isShowSettings = ref<true | false>(false)
-const isShowReceipt = ref<true | false>(false)
 const isShowMobileMenu = ref<true | false>(false)
 
 const isShowCategories = ref(false)
 
+// Computed
 const isMobileOrTablet = computed(() => commonStore.isMobileOrTablet)
 
 const pageTitle = computed(() => {
@@ -138,6 +112,7 @@ const pageTitle = computed(() => {
   // return 'Рестораны'
 })
 
+// Methods
 const onScroll = () => {
   const top = document.getElementById('categories')?.getBoundingClientRect().top || null
 
@@ -150,9 +125,6 @@ const onScroll = () => {
 
 onMounted(() => {
   document.addEventListener('scroll', onScroll)
-  // setTimeout(() => {
-  //   isShowAcceptCity.value = true
-  // }, 2000)
 })
 </script>
 

@@ -5,27 +5,22 @@
     </p>
 
     <div class="page-order-payments__list">
-      <div class="page-order-payments__item">
+      <div
+        v-for="item in paymentMethods"
+        :key="item.id"
+        class="page-order-payments__item"
+      >
         <UIRadio
-          id="card"
-          v-model="paymentType"
-          value="card"
+          :id="item.id"
+          :value="modelValue"
+          :default-value="item.id"
+          @input="update"
         >
-          Картой при получении
-        </UIRadio>
-      </div>
-
-      <div class="page-order-payments__item">
-        <UIRadio
-          id="cash"
-          v-model="paymentType"
-          value="cash"
-        >
-          Наличными при получении
+          {{ item.title }}
         </UIRadio>
 
         <div
-          v-if="paymentType === 'cash'"
+          v-if="item.id === 'cod' && modelValue === 'cod'"
           class="page-order-payments-block"
         >
           <p class="page-order-payments-block__label">
@@ -43,22 +38,27 @@
           </div>
         </div>
       </div>
-
-      <div class="page-order-payments__item">
-        <UIRadio
-          id="online"
-          v-model="paymentType"
-          value="online"
-        >
-          Онлайн оплата
-        </UIRadio>
-      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-const paymentType = ref(null)
+const props = defineProps({
+  paymentMethods: {
+    type: Array,
+    default: () => ([]),
+  },
+  modelValue: {
+    type: undefined,
+    default: null,
+  },
+})
+
+const emits = defineEmits(['update:modelValue'])
+
+const update = (e) => {
+  emits('update:modelValue', e.target.value)
+}
 </script>
 
 <style lang="scss" scoped>

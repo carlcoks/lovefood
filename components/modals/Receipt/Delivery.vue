@@ -6,10 +6,10 @@
           Укажите адрес доставки
         </p>
 
-        <p class="modal-receipt-delivery__location">
+        <!-- <p class="modal-receipt-delivery__location">
           <UIIcon name="location" />
           Москва
-        </p>
+        </p> -->
       </div>
 
       <div class="modal-receipt-delivery-form">
@@ -87,6 +87,7 @@
       </div>
 
       <UIButton
+        disabled
         color="yellow"
         class="modal-receipt-delivery__button"
       >

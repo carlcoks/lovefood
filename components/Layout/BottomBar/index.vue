@@ -1,5 +1,5 @@
 <template>
-  <div :class="['bottom-bar', { 'bottom-bar--full' : cart.cartItemsLength }]">
+  <div :class="['bottom-bar', { 'bottom-bar--full' : cartItemsLength }]">
     <a
       href="#"
       rel="nofollow"
@@ -11,22 +11,22 @@
 
     <transition name="slide-top" mode="out-in">
       <button
-        v-if="cart.cartItemsLength"
+        v-if="cartItemsLength"
         class="mini-cart"
-        @click.prevent="cart.toggleShowCart(true)"
+        @click.prevent="cartStore.toggleShowCartModal(true)"
       >
         <span class="mini-cart__side">
           <UIIcon name="cart" class="mini-cart__icon mini-cart__icon--cart" />
-          {{ cart.cartItemsPrice.toLocaleString() }} ₽
+          {{ cartItemsPrice.toLocaleString() }} ₽
         </span>
 
-        <span class="mini-cart__side mini-cart__side--delivery">
+        <!-- <span class="mini-cart__side mini-cart__side--delivery">
           <UIIcon name="delivery" class="mini-cart__icon mini-cart__icon--delivery" />
           48 мин
-        </span>
+        </span> -->
 
         <span class="mini-cart__count">
-          {{ cart.cartItemsLength }}
+          {{ cartItemsLength }}
         </span>
       </button>
     </transition>
@@ -40,7 +40,9 @@ import { useCartStore } from '@/store/cart'
 
 import scrollToEl from '@/utils/scrollToEl'
 
-const cart = useCartStore()
+const cartStore = useCartStore()
+
+const { cartItemsPrice, cartItemsLength } = storeToRefs(cartStore)
 
 const toTop = () => {
   scrollToEl()
