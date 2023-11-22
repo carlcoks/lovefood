@@ -61,6 +61,8 @@ const toTop = () => {
   flex-direction: column;
   grid-gap: 12px;
 
+  z-index: 100;
+
   @include mq($bp-small) {
     display: none;
   }
