@@ -1,5 +1,5 @@
 <template>
-  <div :class="['layout-default', { 'layout-default--index' : route.fullPath === '/' }]">
+  <div :class="['layout-default']">
     <LayoutHeader />
 
     <slot />
@@ -29,6 +29,10 @@
     <LazyModalsAcceptCity
       v-if="isShowAcceptCityModal"
     />
+
+    <LazyModalsDeliveryType
+      v-if="isShowDeliveryTypeModal"
+    />
   </div>
 </template>
 
@@ -43,14 +47,13 @@ const { isShowProductModal } = storeToRefs(catalogStore)
 const cartStore = useCartStore()
 const commonStore = useCommonStore()
 
-const route = useRoute()
-
 const isShowCartModal = computed(() => cartStore.isShowCartModal)
 
 const isShowReceiptModal = computed(() => commonStore.isShowReceiptModal)
 const isShowAuthModal = computed(() => commonStore.isShowAuthModal)
 const isShowSettingsModal = computed(() => commonStore.isShowSettingsModal)
 const isShowAcceptCityModal = computed(() => commonStore.isShowAcceptCityModal)
+const isShowDeliveryTypeModal = computed(() => commonStore.isShowDeliveryTypeModal)
 </script>
 
 <style lang="scss" scoped>
@@ -59,14 +62,6 @@ const isShowAcceptCityModal = computed(() => commonStore.isShowAcceptCityModal)
   
   @include mq($bp-medium) {
     padding-top: 80px;
-  }
-  
-  &--index {
-    padding-top: 146px;
-
-    @include mq($bp-medium) {
-      padding-top: 80px;
-    }
   }
 }
 </style>

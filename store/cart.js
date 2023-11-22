@@ -1,3 +1,5 @@
+import { useCommonStore } from '@/store/common'
+
 export const useCartStore = defineStore('cartStore', {
   state: () => ({
     cart: [],
@@ -7,6 +9,16 @@ export const useCartStore = defineStore('cartStore', {
 
   actions: {
     addToCart (item) {
+      const commonStore = useCommonStore()
+
+      if (!commonStore.deliveryType) {
+        commonStore.toggleShowDeliveryTypeModal(true)
+        return false
+      } else if (!commonStore.selectedLocation) {
+        commonStore.toggleShowReceiptModal(true)
+        return false
+      }
+
       this.cart.push({
         ...item,
         count: 1,

@@ -17,7 +17,6 @@
 <style lang="scss" scoped>
 .header-search {
   position: relative;
-  width: 100%;
 
   &__icon {
     position: absolute;

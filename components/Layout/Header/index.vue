@@ -17,28 +17,26 @@
                 class="header__info"
               />
 
-              <div class="header__top">
-                <LayoutHeaderRestaurant
-                  v-if="!isMobileOrTablet || route.fullPath === '/'"
-                  class="header__restaurant"
-                />
-                <NuxtLink
-                  v-else
-                  to="/"
-                  class="header__back"
-                >
-                  <UIIcon name="arrow" />
-                  {{ pageTitle }}
-                </NuxtLink>
+              <LayoutHeaderRestaurant
+                v-if="!isMobileOrTablet || route.fullPath === '/'"
+                class="header__restaurant"
+              />
+              <NuxtLink
+                v-else
+                to="/"
+                class="header__back"
+              >
+                <UIIcon name="arrow" />
+                {{ pageTitle }}
+              </NuxtLink>
 
-                <button
-                  type="button"
-                  class="header__burger burger"
-                  @click.prevent="isShowMobileMenu = true"
-                >
-                  <UIIcon name="burger" />
-                </button>
-              </div>
+              <button
+                type="button"
+                class="header__burger burger"
+                @click.prevent="isShowMobileMenu = true"
+              >
+                <UIIcon name="burger" />
+              </button>
 
               <LayoutHeaderSearch
                 v-if="!isMobileOrTablet || route.fullPath === '/'"
@@ -167,17 +165,10 @@ onMounted(() => {
     flex: 1 1 auto;
 
     display: flex;
-    flex-direction: column;
-    grid-gap: 20px;
-    
 
-    @include mq($bp-medium) {
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-
-      grid-gap: 40px;
-    }
+    align-items: center;
+    justify-content: space-between;
+    grid-gap: 40px;
 
     &--right {
       display: none;
@@ -250,7 +241,13 @@ onMounted(() => {
   }
 
   &__search {
-    flex: 1 1 auto;
+    display: none;
+
+    @include mq($bp-medium) {
+      display: block;
+
+      flex: 1 1 auto;
+    }
   }
 
   &__button {

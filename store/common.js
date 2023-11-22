@@ -3,7 +3,7 @@ export const useCommonStore = defineStore('commonStore', {
     isMobileOrTablet: false,
     isTablet: false,
     city: null,
-    deliveryType: null, // 'pickup' | 'delivery' | null
+    deliveryType: null, // 'pickup' | 'delivery' | 'lounge' | null
     // deliveryLocations: [],
     // pickupLocations: [],
     locations: [],
@@ -13,6 +13,7 @@ export const useCommonStore = defineStore('commonStore', {
     isShowAuthModal: false,
     isShowSettingsModal: false,
     isShowAcceptCityModal: false,
+    isShowDeliveryTypeModal: false,
   }),
 
   actions: {
@@ -44,6 +45,10 @@ export const useCommonStore = defineStore('commonStore', {
 
     toggleShowAcceptCityModal (value) {
       this.isShowAcceptCityModal = value
+    },
+
+    toggleShowDeliveryTypeModal (value) {
+      this.isShowDeliveryTypeModal = value
     },
   },
 
