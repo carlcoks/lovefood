@@ -54,15 +54,26 @@
             В наличии
           </span>
           <span>
-            {{ item.stock_quantity }} шт
+            {{ inStock }} {{ productMeasureUnit }}
           </span>
         </p>
       </div>
 
       <div class="index-menu-card__description">
-        <p class="index-menu-card__info">
+        <p
+          v-if="isCountable"
+          class="index-menu-card__info"
+        >
           <span>
-            {{ item.base_portion_size }} {{ item.sub_measure_unit }}
+            {{ productBasePortionSize }} {{ productSubMeasureUnit }}
+          </span>
+        </p>
+        <p
+          v-else
+          class="index-menu-card__info"
+        >
+          <span>
+            {{ productBasePortionSize }} {{ productSubMeasureUnit }}
           </span>
           <!-- <span>
             1 шт
@@ -165,6 +176,32 @@ const buttonLabel = computed(() => {
     text: 'В корзину',
     icon: 'add'
   }
+})
+
+const isCountable = computed(() => {
+  return props.item?.countable || false
+})
+
+// Кол-во
+const productQuantity = computed(() => {
+  return props.item?.stock_quantity || 0
+})
+
+const productBasePortionSize = computed(() => {
+  return props.item?.base_portion_size || 1
+})
+
+// В наличии
+const inStock = computed(() => {
+  return productQuantity.value / productBasePortionSize.value
+})
+
+const productMeasureUnit = computed(() => {
+  return props.item?.measure_unit || ''
+})
+
+const productSubMeasureUnit = computed(() => {
+  return props.item?.sub_measure_unit || ''
 })
 
 const badges = computed(() => {

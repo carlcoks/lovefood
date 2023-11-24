@@ -27,6 +27,14 @@
             -{{ discount }}%
           </p>
 
+          <button
+            type="button"
+            :class="['modal-product__favorite', { 'modal-product__favorite--active' : isFavorite }]"
+            @click="isFavorite = !isFavorite"
+          >
+            <UIIcon name="heart" />
+          </button>
+
           <div class="modal-product__characteristics">
             <div v-if="badges.includes('halal')" class="modal-product__characteristic">
               <UIIcon name="icon-halal" />
@@ -68,138 +76,145 @@
             </div>
           </div>
 
-          <div class="modal-product-add">
+          <div
+            v-if="productSupplements.length"
+            class="modal-product-add"
+          >
             <p class="modal-product-add__title">
               Добавить к блюду
             </p>
             <div class="modal-product-add__content">
-              <div class="modal-product-add-item">
+              <div
+                v-for="(supplement, s) in productSupplements"
+                :key="s"
+                :class="['modal-product-add-item', { 'active' : !!selectedSupplements[s] }]"
+                @click="openSupplementsModal(supplement, s)"
+              >
+                <div
+                  v-if="!!selectedSupplements[s]"
+                  class="modal-product-add-item__selected"
+                >
+                  <span>
+                    {{ selectedSupplements[s].reduce((acc, item) => { acc += item.count; return acc }, 0) }} шт
+                  </span>
+                  <span>
+                    {{ selectedSupplements[s].reduce((acc, item) => { acc += item.count * item.price; return acc }, 0) }} ₽
+                  </span>
+                </div>
+                <div
+                  v-else-if="supplement.supplement_required === 'yes'"
+                  class="modal-product-add-item__required"
+                >
+                  Обязательно
+                </div>
                 <div class="modal-product-add-item__image">
-                  <img src="@/assets/images/souce.png" alt="">
+                  <img
+                    v-lazy-load
+                    :data-src="supplement.image"
+                    alt=""
+                  >
                 </div>
                 <div class="modal-product-add-item__box">
-                  Соусы
-                </div>
-              </div>
-              <div class="modal-product-add-item">
-                <div class="modal-product-add-item__image">
-                  <img src="@/assets/images/cheese.png" alt="">
-                </div>
-                <div class="modal-product-add-item__box">
-                  Сыр
-                </div>
-              </div>
-              <div class="modal-product-add-item">
-                <div class="modal-product-add-item__image">
-                  <img src="@/assets/images/souce.png" alt="">
-                </div>
-                <div class="modal-product-add-item__box">
-                  Соусы
-                </div>
-              </div>
-              <div class="modal-product-add-item">
-                <div class="modal-product-add-item__image">
-                  <img src="@/assets/images/cheese.png" alt="">
-                </div>
-                <div class="modal-product-add-item__box">
-                  Сыр
-                </div>
-              </div>
-              <div class="modal-product-add-item">
-                <div class="modal-product-add-item__image">
-                  <img src="@/assets/images/souce.png" alt="">
-                </div>
-                <div class="modal-product-add-item__box">
-                  Соусы
-                </div>
-              </div>
-              <div class="modal-product-add-item">
-                <div class="modal-product-add-item__image">
-                  <img src="@/assets/images/cheese.png" alt="">
-                </div>
-                <div class="modal-product-add-item__box">
-                  Сыр
-                </div>
-              </div>
-              <div class="modal-product-add-item">
-                <div class="modal-product-add-item__image">
-                  <img src="@/assets/images/souce.png" alt="">
-                </div>
-                <div class="modal-product-add-item__box">
-                  Соусы
-                </div>
-              </div>
-              <div class="modal-product-add-item">
-                <div class="modal-product-add-item__image">
-                  <img src="@/assets/images/cheese.png" alt="">
-                </div>
-                <div class="modal-product-add-item__box">
-                  Сыр
+                  {{ supplement.title }}
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- <div class="modal-product__structure modal-product-structure">
+          <div
+            v-if="productAcf.uglevod_product_nutr || productAcf.fat_product_nutr || productAcf.protein_product_nutr || productAcf.kkal_product_nutr"
+            class="modal-product__structure modal-product-structure"
+          >
             <p class="modal-product-structure__title">
               Пищевая ценность на 100г
             </p>
             <div class="modal-product-structure__cols">
-              <div class="modal-product-structure__col">
+              <div
+                v-if="productAcf.uglevod_product_nutr"
+                class="modal-product-structure__col"
+              >
                 <p class="modal-product-structure__value">
-                  21.3 г
+                  {{ productAcf.uglevod_product_nutr }} г
                 </p>
                 <p class="modal-product-structure__label">
                   Углеводы
                 </p>
               </div>
-              <div class="modal-product-structure__col">
+              <div
+                v-if="productAcf.fat_product_nutr"
+                class="modal-product-structure__col"
+              >
                 <p class="modal-product-structure__value">
-                  11.5 г
+                  {{ productAcf.fat_product_nutr }} г
                 </p>
                 <p class="modal-product-structure__label">
                   Жиры
                 </p>
               </div>
-              <div class="modal-product-structure__col">
+              <div
+                v-if="productAcf.protein_product_nutr"
+                class="modal-product-structure__col"
+              >
                 <p class="modal-product-structure__value">
-                  6.2 г
+                  {{ productAcf.protein_product_nutr }} г
                 </p>
                 <p class="modal-product-structure__label">
                   Белки
                 </p>
               </div>
-              <div class="modal-product-structure__col">
+              <div
+                v-if="productAcf.kkal_product_nutr"
+                class="modal-product-structure__col"
+              >
                 <p class="modal-product-structure__value">
-                  432
+                  {{ productAcf.kkal_product_nutr }}
                 </p>
                 <p class="modal-product-structure__label">
                   Ккал
                 </p>
               </div>
             </div>
-          </div> -->
+          </div>
 
           <div class="modal-product__footer">
-            <div class="modal-product-weight">
-              <span>
-                Вес продукта
-              </span>
-              <span>
-                324 гр
-              </span>
-              <span>
-                1680 ₽/шт
-              </span>
+            <div class="modal-product__footer-line">
+              <p
+                v-if="isCountable"
+                class="modal-product-weight"
+              >
+                <span>
+                  Вес продукта
+                </span>
+                <span>
+                  {{ productWeight }} {{ productSubMeasureUnit }}
+                </span>
+              </p>
+              <p
+                v-else
+                class="modal-product-weight"
+              >
+                <span>
+                  {{ productBasePortionSize }} {{ productSubMeasureUnit }}
+                </span>
+              </p>
+
+              <p class="modal-product-weight">
+                <span>
+                  В наличии
+                </span>
+                <span>
+                  {{ inStock }} {{ productMeasureUnit }}
+                </span>
+              </p>
             </div>
 
             <div class="modal-product__buttons">
-              <p class="modal-product__price">
-                {{ productPrice.toLocaleString()}} ₽
-                <small v-if="+productPrice !== +productRegularPrice">
-                  {{ productRegularPrice.toLocaleString() }} ₽
-                </small>
-              </p>
+              <CommonPriceBlock
+                :regular-price="+productRegularPrice"
+                :price="+productPrice"
+                is-reverse
+                is-big
+              />
 
               <UIButton
                 v-if="!count"
@@ -269,6 +284,14 @@
         </Swiper>
       </div> -->
     </div>
+
+    <ModalsSupplements
+      v-if="isShowSupplementsModal"
+      :item="currentSupplement"
+      :selected="selectedSupplements[currentSupplementKey]"
+      @submit="selectSupplemets"
+      @close="closeSupplementsModal()"
+    />
   </ModalsOverlay>
 </template>
 
@@ -282,11 +305,30 @@ const catalog = useCatalogStore()
 const cart = useCartStore()
 
 const isShow = ref(true)
+const isFavorite = ref(false)
+const isShowSupplementsModal = ref(false) // Модалка для добавок
+const currentSupplement = ref(null) // выбранная категории добавок
+const currentSupplementKey = ref(null) // ключ выбранной категории добавок
+const selectedSupplements = ref({}) // Все выбранные добавки
 
 const size = ref(0)
 const type = ref(1)
 
 // Computed
+const supplementsPrice = computed(() => {
+  const obj = selectedSupplements.value
+  let sum = 0
+  for (const key in obj) {
+    sum += obj[key].reduce((acc, item) => {
+      acc += item.count * item.price
+
+      return acc
+    }, 0)
+  }
+
+  return sum
+})
+
 const product = computed(() => {
   return catalog.product
 })
@@ -295,39 +337,89 @@ const productImage = computed(() => {
   return product.value?.images[0] || ''
 })
 
+const productPrice = computed(() => {
+  return supplementsPrice.value + product.value.price
+})
+
+const productRegularPrice = computed(() => {
+  return supplementsPrice.value + product.value.regular_price
+})
+
 const discount = computed(() => {
-  if (product.value?.regular_price && product.value?.price && +product.value.regular_price !== +product.value.price) {
-    return 100 - (product.value.price / product.value.regular_price * 100)
+  if (+productPrice.value !== +productRegularPrice.value) {
+    return 100 - (productPrice.value / productRegularPrice.value * 100)
   }
 
   return 0
 })
 
-const acfVariations = computed(() => {
-  return product.value?.acf?.variations || []
+const isCountable = computed(() => {
+  return product.value?.countable || false
 })
 
+// Вес продукта
+const productWeight = computed(() => {
+  return product.value?.weight || 0
+})
+
+// Кол-во
+const productQuantity = computed(() => {
+  return product.value?.stock_quantity || 0
+})
+
+const productBasePortionSize = computed(() => {
+  return product.value?.base_portion_size || 1
+})
+
+// В наличии
+const inStock = computed(() => {
+  return productQuantity.value / productBasePortionSize.value
+})
+
+const productMeasureUnit = computed(() => {
+  return product.value?.measure_unit || ''
+})
+
+const productSubMeasureUnit = computed(() => {
+  return product.value?.sub_measure_unit || ''
+})
+
+const productAcf = computed(() => {
+  return product.value?.acf || {}
+})
+
+const badges = computed(() => {
+  return productAcf.value['product-badge'] || []
+})
+
+// Добавки к блюду
+const productSupplements = computed(() => {
+  return productAcf.value['supplements'] || []
+})
+
+// Кол-во добавленных в корзину
 const count = computed(() => {
   const item = cart.cart.find(item => +item.id === +product.value.id)
 
   return item?.count || 0
 })
 
-const productPrice = computed(() => {
-  return product.value.price
-})
-
-const productRegularPrice = computed(() => {
-  return product.value.regular_price
-})
-
-const badges = computed(() => {
-  return product.value?.acf['product-badge'] || []
-})
-
 // Methods
 const addToCart = () => {
-  cart.addToCart(product.value)
+  const obj = selectedSupplements.value
+  const supplements = []
+  for (const key in obj) {
+    obj[key].forEach(item => {
+      supplements.push(item)
+    })
+  }
+
+  cart.addToCart({
+    ...product.value,
+    price: productPrice.value,
+    regular_price: productRegularPrice.value,
+    supplements
+  })
 }
 
 const increment = () => {
@@ -336,6 +428,26 @@ const increment = () => {
 
 const decrement = () => {
   cart.decrementItem(product.value.id)
+}
+
+// Открыть модалку для выбора добавок
+const openSupplementsModal = (item, key) => {
+  currentSupplement.value = item
+  currentSupplementKey.value = key
+  isShowSupplementsModal.value = true
+}
+
+// Закрыть модалку для выбора добавок
+const closeSupplementsModal = () => {
+  isShowSupplementsModal.value = false
+  currentSupplement.value = null
+  currentSupplementKey.value = null
+}
+
+// Подтвердить выбор добавок и закрыть модалку выбора
+const selectSupplemets = (data) => {
+  selectedSupplements.value[currentSupplementKey.value] = data
+  closeSupplementsModal()
 }
 
 const closeModal = () => {
@@ -439,6 +551,32 @@ const close = () => {
     border-radius: 20px;
   }
 
+  &__favorite {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 80px;
+    height: 80px;
+
+    padding: 20px;
+
+    ::v-deep(.ui-icon) svg {
+      width: 40px;
+      height: 40px;
+    }
+
+    &--active {
+      ::v-deep(.ui-icon) svg path {
+        fill: $orange;
+      } 
+    }
+  }
+
   &__characteristics {
     position: absolute;
     bottom: 20px;
@@ -512,26 +650,16 @@ const close = () => {
     border-top: 1px solid $grayBg;
   }
 
-  &__buttons {
+  &__footer-line {
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
 
-  &__price {
+  &__buttons {
     display: flex;
     align-items: center;
-    grid-gap: 20px;
-
-    @include h2;
-    color: $orange;
-
-    small {
-      @include text_normal;
-      font-weight: 500;
-      color: $grayText;
-      text-decoration: line-through;
-    }
+    justify-content: space-between;
   }
 
   &__button {
@@ -644,15 +772,82 @@ const close = () => {
 }
 
 .modal-product-add-item {
+  position: relative;
+
   display: flex;
   flex-direction: column;
 
   background: $white;
   border-radius: 20px;
-  border: 1px solid $grayBg;
+  outline: 1px solid $grayBg;
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
 
   overflow: hidden;
+
+  cursor: pointer;
+
+  &.active {
+    outline-width: 2px;
+    outline-color: $yellowDark;
+  }
+
+  &__selected {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 6px 15px;
+
+    @include text_mini;
+    font-weight: 600;
+    color: $orange;
+
+    background: $yellowLightSecondary;
+    border-radius: 0 0 20px 0;
+
+    span {
+      display: flex;
+      align-items: center;
+
+      &:after {
+        content: '';
+        display: block;
+        width: 3px;
+        height: 3px;
+
+        margin: 0 6px;
+
+        background: $grayText;
+        border-radius: 50%;
+        opacity: 0.3;
+      }
+
+      &:last-child {
+        &:after {
+          display: none;
+        }
+      }
+    }
+  }
+
+  &__required {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    padding: 6px 15px;
+
+    @include text_mini;
+    font-weight: 600;
+    color: $orange;
+
+    background: $orangeLight;
+    border-radius: 0 0 20px 0;
+  }
 
   &__image {
     width: 100%;

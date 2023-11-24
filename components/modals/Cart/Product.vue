@@ -47,6 +47,38 @@
         </div>
       </div>
     </div>
+
+    <div
+      v-if="Object.keys(item.supplements).length"
+      class="modal-cart-item__supplements"
+    >
+      <div
+        v-for="(supplement, s) in item.supplements"
+        :key="s"
+        class="modal-cart-item-supplement"
+      >
+        <p class="modal-cart-item-supplement__name">
+          {{ supplement.name }}
+        </p>
+
+        <div class="modal-cart-item-supplement__info">
+          <p class="modal-cart-item-supplement__count">
+            {{ supplement.count }} шт
+
+            <button
+              type="button"
+              class="modal-cart-item-supplement__remove"
+              @click.prevent
+            >
+              <UIIcon name="close" />
+            </button>
+          </p>
+          <p class="modal-cart-item-supplement__price">
+            +{{ supplement.price }} ₽
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -95,7 +127,7 @@ const decrement = () => {
 
   display: flex;
   flex-direction: column;
-  grid-gap: 20px;
+  grid-gap: 16px;
 
   padding: 5px 10px 5px 5px;
 
@@ -217,6 +249,60 @@ const decrement = () => {
 
   &__counter {
     max-width: 130px;
+  }
+
+  &__supplements {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 4px;
+
+    padding: 0 10px 5px 8px;
+  }
+}
+
+.modal-cart-item-supplement {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &__name {
+    @include text_small;
+  }
+
+  &__info {
+    display: flex;
+    align-items: center;
+    grid-gap: 20px;
+  }
+
+  &__count {
+    display: flex;
+    align-items: center;
+    grid-gap: 10px;
+
+    padding: 3px 6px;
+
+    @include text_mini;
+
+    background: $grayBg;
+    border-radius: 23px;
+  }
+
+  &__remove {
+    ::v-deep(.ui-icon) svg {
+      width: 14px;
+      height: 14px;
+
+      path {
+        fill: $blackText3;
+      }
+    }
+  }
+
+  &__price {
+    @include text_small;
+    font-weight: 600;
+    color: #B0B0B0;
   }
 }
 </style>

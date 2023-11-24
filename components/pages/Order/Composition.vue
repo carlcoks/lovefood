@@ -17,13 +17,23 @@
       <li
         v-for="(item, i) in cartItems"
         :key="i"
-        class="page-order-composition__item"
+        class="page-order-composition__item page-order-composition__item--product"
       >
-        <p class="page-order-composition__label">
-          {{ item.name }}
-        </p>
-        <p class="page-order-composition__value">
-          {{ item.regular_price.toLocaleString() }} ₽
+        <div class="page-order-composition__line">
+          <p class="page-order-composition__label">
+            {{ item.name }}
+          </p>
+          <p class="page-order-composition__value">
+            {{ item.regular_price.toLocaleString() }} ₽
+          </p>
+        </div>
+        <p class="page-order-composition__supplements">
+          <span
+            v-for="(supplement, s) in item.supplements"
+            :key="s"
+          >
+            {{ supplement.name }}
+          </span>
         </p>
       </li>
     </ul>
@@ -141,7 +151,22 @@ const { cartItems, cartItemsPrice, cartItemsLength } = storeToRefs(cartStore)
 
   &__item {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: space-between;
+    grid-gap: 20px;
+
+    &--product {
+      display: flex;
+      align-items: flex-start;
+      flex-direction: column;
+      grid-gap: 4px;
+    }
+  }
+
+  &__line {
+    width: 100%;
+    display: flex;
+    align-items: center;
     justify-content: space-between;
     grid-gap: 20px;
   }
@@ -171,6 +196,29 @@ const { cartItems, cartItemsPrice, cartItemsLength } = storeToRefs(cartStore)
 
       ::v-deep(.ui-icon) svg path {
         fill: $orange;
+      }
+    }
+  }
+
+  &__supplements {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+
+    @include text_mini;
+    color: $black;
+
+    span {
+      &:after {
+        content: ',';
+        
+        margin-right: 4px;
+      }
+
+      &:last-child {
+        &:after {
+          display: none;
+        }
       }
     }
   }

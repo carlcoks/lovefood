@@ -58,6 +58,10 @@ export const useCatalogStore = defineStore('catalogStore', {
       })
     },
 
+    ingredients (state) {
+      return state.catalog.find(item => item.id === 135)?.products || []
+    },
+
     isShowProductModal: (state) => {
       return !!state.product
     },

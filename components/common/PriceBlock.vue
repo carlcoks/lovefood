@@ -1,5 +1,13 @@
 <template>
-  <div class="price-block">
+  <div
+    :class="[
+      'price-block',
+      {
+        'price-block--reverse': isReverse,
+        'price-block--big': isBig,
+      },
+    ]"
+  >
     <small v-if="+regularPrice !== +price">
       {{ regularPrice.toLocaleString() }} ₽
     </small>
@@ -17,7 +25,17 @@ defineProps({
   price: {
     type: Number,
     default: 0,
-  }
+  },
+
+  isReverse: {
+    type: Boolean,
+    default: false,
+  },
+
+  isBig: {
+    type: Boolean,
+    default: false,
+  },
 })
 </script>
 
@@ -36,6 +54,21 @@ defineProps({
     @include extra_small;
     color: $grayText;
     text-decoration: line-through;
+  }
+
+  &--reverse{
+    flex-direction: row-reverse;
+  }
+
+  &--big {
+    grid-gap: 20px;
+
+    @include h2;
+
+    small {
+      @include text_normal;
+      font-weight: 500;
+    }
   }
 }
 </style>
