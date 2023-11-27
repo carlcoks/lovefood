@@ -186,7 +186,7 @@
                   Вес продукта
                 </span>
                 <span>
-                  {{ productWeight }} {{ productSubMeasureUnit }}
+                  {{ productWeight }}
                 </span>
               </p>
               <p
@@ -238,51 +238,7 @@
         </div>
       </div>
 
-      <!-- <div class="modal-product__else modal-product-else">
-        <p class="modal-product__title modal-product__title--else">
-          Что нибудь ещё?
-        </p>
-
-        <Swiper
-          :slides-per-view="'auto'"
-          :space-between="15"
-          class="modal-product-else__slider"
-        >
-          <SwiperSlide
-            v-for="i in 5"
-            :key="i"
-            class="modal-product-else__slide"
-          >
-            <div class="modal-product-else-item">
-              <div class="modal-product-else-item__image">
-                <img src="@/assets/images/menu-card-example.png" alt="">
-                <p class="modal-product-else-item__discount">
-                  -25%
-                </p>
-              </div>
-              <div class="modal-product-else-item__content">
-                <p class="modal-product-else-item__title">
-                  Название блюда
-                </p>
-                <p class="modal-product-else-item__price">
-                  1 680 ₽
-                  <small>
-                    1 880 ₽
-                  </small>
-                </p>
-                <UIButton
-                  color="gray"
-                  size="small"
-                  class="modal-product-else-item__button"
-                >
-                  <UIIcon name="add" />
-                  В корзину
-                </UIButton>
-              </div>
-            </div>
-          </SwiperSlide>
-        </Swiper>
-      </div> -->
+      <ModalsProductElse class="modal-product__else" />
     </div>
 
     <ModalsSupplements
@@ -296,8 +252,6 @@
 </template>
 
 <script setup>
-import { Swiper, SwiperSlide } from 'swiper/vue'
-
 import { useCatalogStore } from '@/store/catalog'
 import { useCartStore } from '@/store/cart'
 
@@ -629,10 +583,6 @@ const close = () => {
 
   &__title {
     @include h2;
-
-    &--else {
-      color: $black;
-    }
   }
 
   &__description {
@@ -645,6 +595,7 @@ const close = () => {
     flex-direction: column;
     grid-gap: 10px;
 
+    margin: auto 0 0;
     padding-top: 20px;
 
     border-top: 1px solid $grayBg;
@@ -946,101 +897,6 @@ const close = () => {
     @include text_small;
     font-weight: 500;
     color: $grayText;
-  }
-}
-
-.modal-product-else {
-  &__slider {
-    margin: 0 -30px;
-    padding: 0 30px;
-  }
-
-  &__slide {
-    width: auto;
-  }
-}
-
-.modal-product-else-item {
-  display: flex;
-  align-items: center;
-  grid-gap: 20px;
-
-  padding: 5px;
-
-  background: $white;
-  border-radius: 20px;
-
-  &__image {
-    position: relative;
-
-    width: 140px;
-    height: 100px;
-
-    border: 1px solid $grayBg;
-    border-radius: 20px;
-    overflow: hidden;
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-  }
-
-  &__discount {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 47px;
-    height: 19px;
-
-    @include extra_small;
-    font-weight: 600;
-
-    background: $grayBg;
-    border-radius: 16px;
-  }
-
-  &__content {
-    display: flex;
-    flex-direction: column;
-  }
-
-  &__title {
-    margin-bottom: 9px;
-
-    @include overflow-text;
-    @include text_normal;
-    font-weight: 600;
-  }
-
-  &__price {
-    display: flex;
-    align-items: center;
-    grid-gap: 6px;
-
-    @include text_normal;
-    font-weight: 600;
-    color: $orange;
-
-    small {
-      @include extra_small;
-      color: $grayText;
-      text-decoration: line-through;
-    }
-  }
-
-  &__button {
-    width: 135px;
-
-    margin-top: 15px;
-
-    font-weight: 500;
   }
 }
 </style>

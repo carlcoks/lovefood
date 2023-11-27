@@ -49,7 +49,7 @@
     </div>
 
     <div
-      v-if="Object.keys(item.supplements).length"
+      v-if="item.supplements && Object.keys(item.supplements).length"
       class="modal-cart-item__supplements"
     >
       <div

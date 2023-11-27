@@ -58,6 +58,7 @@ defineProps({
 
   &--reverse{
     flex-direction: row-reverse;
+    justify-content: flex-end;
   }
 
   &--big {

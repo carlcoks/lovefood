@@ -91,7 +91,7 @@
       </div>
 
       <UICounter
-        v-if="count"
+        v-if="productType === 'simple' && count"
         :count="count"
         @increment="increment()"
         @decrement="decrement()"
@@ -102,7 +102,7 @@
         v-else
         color="gray"
         :class="['index-menu-card__button', { 'index-menu-card__button--arrow' : buttonLabel.icon === 'arrow'}]"
-        @click="buttonLabel.icon === 'add' ? addToCart() : openProduct()"
+        @click="productType === 'simple' ? addToCart() : openProduct()"
       >
         <UIIcon
           v-if="buttonLabel.icon === 'add'"
@@ -157,24 +157,29 @@ const count = computed(() => {
   return item?.count || 0
 })
 
-const buttonLabel = computed(() => {
-  const variants = ['variable', 'group_variable', 'group_variable_2']
+// Тип продукта
+const productType = computed(() => {
+  return props.item?.type
+})
 
-  if (props.item.type === 'supplements') {
+const buttonLabel = computed(() => {
+  // const variants = ['variable', 'group_variable', 'group_variable_2']
+
+  if (productType.value === 'simple') {
+    return {
+      text: 'В корзину',
+      icon: 'add'
+    }
+  } else if (productType.value === 'supplements') {
     return {
       text: 'Собрать',
-      icon: ''
-    }
-  } else if (variants.includes(props.item.type)) {
-    return {
-      text: 'Выбрать',
       icon: 'arrow'
     }
   }
 
   return {
-    text: 'В корзину',
-    icon: 'add'
+    text: 'Выбрать',
+    icon: 'arrow'
   }
 })
 
