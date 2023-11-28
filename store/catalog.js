@@ -8,7 +8,7 @@ export const useCatalogStore = defineStore('catalogStore', {
 
   actions: {
     async getCatalog () {
-      const { data } = await useMyFetch('/wp-content/uploads/app_sync/prodcat.json')
+      const { data } = await useMyFetch('/wp-json/hot/products')
 
       const catalog = (data?.value || []).map(item => {
         const products = item.products.filter(product => product)

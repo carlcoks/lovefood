@@ -292,11 +292,11 @@ const productImage = computed(() => {
 })
 
 const productPrice = computed(() => {
-  return supplementsPrice.value + product.value.price
+  return +supplementsPrice.value + +product.value.price
 })
 
 const productRegularPrice = computed(() => {
-  return supplementsPrice.value + product.value.regular_price
+  return +supplementsPrice.value + +product.value.regular_price
 })
 
 const discount = computed(() => {
