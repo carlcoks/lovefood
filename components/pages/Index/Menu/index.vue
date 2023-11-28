@@ -14,9 +14,23 @@
           :id="`block_${block.id}`"
           class="index-menu__block"
         >
-          <h2 class="index-menu__title">
-            {{ block.name }}
-          </h2>
+          <div class="index-menu__header">
+            <h2 class="index-menu__title">
+              {{ block.name }}
+            </h2>
+
+            <div
+              v-if="block.id === 140 || block.id === 16"
+              class="index-menu__arrows"
+            >
+              <div :ref="block.id === 140 ? 'prev1' : 'prev2'" class="index-menu__arrow index-menu__arrow--prev">
+                <UIIcon name="arrow" />
+              </div>
+              <div :ref="block.id === 140 ? 'next1' : 'next2'" class="index-menu__arrow index-menu__arrow--next">
+                <UIIcon name="arrow" />
+              </div>
+            </div>
+          </div>
 
           <Swiper
             v-if="block.id === 140 || block.id === 16"
@@ -46,13 +60,6 @@
                 :is-promo="block.id === 140"
               />
             </SwiperSlide>
-
-            <div :ref="block.id === 140 ? 'prev1' : 'prev2'" class="index-menu__arrow index-menu__arrow--prev">
-              <UIIcon name="arrow" />
-            </div>
-            <div :ref="block.id === 140 ? 'next1' : 'next2'" class="index-menu__arrow index-menu__arrow--next">
-              <UIIcon name="arrow" />
-            </div>
           </Swiper>
 
           <div
@@ -128,6 +135,12 @@ const next2 = ref(null)
     }
   }
 
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
   &__title {
     @include text_large;
     font-weight: 700;
@@ -162,48 +175,34 @@ const next2 = ref(null)
     }
   }
 
+  &__arrows {
+    display: flex;
+    align-items: center;
+    grid-gap: 20px;
+  }
+
   &__arrow {
-    display: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    @include mq($bp-small) {
-      position: absolute;
-      top: 144px;
+    width: 48px;
+    height: 48px;
 
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    background: $white;
+    border-radius: 14px;
+    border: 2px solid $yellow;
 
-      width: 60px;
-      height: 60px;
+    cursor: pointer;
 
-      background: $white;
-      border-radius: 50%;
-      box-shadow: 1px 0px 10px 0px rgba(0, 0, 0, 0.05);
-
-      transition: opacity 0.3s;
-      cursor: pointer;
-      z-index: 1;
-
-      ::v-deep(.ui-icon) svg {
-        width: 40px;
-        height: 40px;
+    &--prev {
+      .ui-icon {
+        transform: rotate(180deg);
       }
+    }
 
-      &--prev {
-        left: -30px;
-
-        .ui-icon {
-          transform: rotate(180deg);
-        }
-      }
-
-      &--next {
-        right: -30px;
-      }
-
-      &.swiper-button-lock {
-        display: none;
-      }
+    &.swiper-button-lock {
+      display: none;
     }
   }
 }

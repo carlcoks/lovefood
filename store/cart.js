@@ -112,5 +112,7 @@ export const useCartStore = defineStore('cartStore', {
         return acc
       }, 0)
     }
-  }
+  },
+
+  persist: true,
 })

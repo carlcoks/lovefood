@@ -44,14 +44,15 @@ const cartNotifications = computed(() => cartStore.notifications)
   align-items: center;
   grid-gap: 20px;
 
-  padding: 13px 40px;
+  padding: 12px 40px;
 
   @include text_normal;
   font-weight: 500;
   color: $green;
 
-  border-radius: 20px;
   background: $greenLight;
+  border-radius: 20px;
+  border: 1px solid $greenDark;
 
   box-shadow: 0px 0px 50px 0px rgba(0, 0, 0, 0.08);
 

@@ -57,6 +57,7 @@ export default defineNuxtConfig({
 
   modules: [
     '@pinia/nuxt',
+    '@pinia-plugin-persistedstate/nuxt',
     'vue-yandex-maps/nuxt',
     'nuxt-lazy-load',
   ],

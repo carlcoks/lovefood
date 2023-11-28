@@ -57,4 +57,8 @@ export const useCommonStore = defineStore('commonStore', {
       return state.locations.find(item => item.id === 'local_pickup')?.pickup_locations || []
     }
   },
+
+  persist: {
+    paths: ['deliveryType', 'selectedLocation']
+  },
 })

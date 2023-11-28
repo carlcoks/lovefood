@@ -257,11 +257,15 @@ const order = async () => {
     body: obj
   })
 
+  const response = data?.value || null
+
   isLoading.value = false
 
-  console.log('data', data)
-
   cartStore.clearCart()
+
+  if (response) {
+    navigateTo(`/order/${response.id}`)
+  }
 
   // axios.post(config.api.newOrder + '?' + query, data).then(res => {
   //   this.loading = false
