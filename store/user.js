@@ -18,4 +18,6 @@ export const useUserStore = defineStore("userStore", {
       return (state.user?.firstname || state.user?.lastname) ? `${state.user.firstname} ${state.user.lastname}` : state.user?.displayname
     }
   },
+
+  persist: true
 });
