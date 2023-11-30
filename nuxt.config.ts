@@ -85,6 +85,8 @@ export default defineNuxtConfig({
     public: {
       BASE_URL: process.env.BASE_URL,
       YMAPS_KEY: process.env.YMAPS_KEY,
+      CONSUMER_KEY: process.env.CONSUMER_KEY,
+      CONSUMER_SECRET: process.env.CONSUMER_SECRET
     },
   },
 })

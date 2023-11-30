@@ -1,5 +1,5 @@
 <template>
-  <div class="loader">
+  <div :class="['loader', { 'loader--big' : isBig }]">
     <svg class="circular-loader" viewBox="25 25 50 50">
       <circle
         class="loader-path"
@@ -14,6 +14,12 @@
 </template>
 
 <script setup>
+defineProps({
+  isBig: {
+    type: Boolean,
+    default: false,
+  },
+})
 </script>
 
 <style lang="scss" scoped>
@@ -21,6 +27,11 @@
   position: relative;
   width: 30px;
   height: 30px;
+
+  &--big {
+    width: 50px;
+    height: 50px;
+  }
 
   &:before {
     display: block;

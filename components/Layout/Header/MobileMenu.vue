@@ -1,19 +1,28 @@
 <template>
   <div class="mobile-menu">
-    <div class="mobile-menu__top">
+    <div class="mobile-menu__content">
       <div class="mobile-menu__header">
-        <UIIcon name="logo" />
+        <a
+          href="/"
+          class="mobile-menu-logo"
+          @click.prevent="goTo('/')"
+        >
+          <UIIcon name="logo" />
+        </a>
 
         <a
           href="#"
           class="mobile-menu__close"
           @click.prevent="close()"
         >
-        <UIIcon name="close" />
+          <UIIcon name="close" />
         </a>
       </div>
 
-      <div class="mobile-menu-auth">
+      <div
+        v-if="!userStore.isAuth"
+        class="mobile-menu-auth"
+      >
         <p class="mobile-menu-auth__title">
           Войдите в личный кабинет
         </p>
@@ -29,6 +38,16 @@
           Войти
         </UIButton>
       </div>
+      <PagesLkUserBlock
+        v-else
+        is-mobile-menu
+      />
+
+      <PagesLkNavigation
+        v-if="userStore.isAuth"
+        is-mobile-menu
+        @click="close()"
+      />
     </div>
 
     <div class="mobile-menu__footer">
@@ -51,16 +70,33 @@
 </template>
 
 <script setup>
+import { useUserStore } from '@/store/user'
+
+const userStore = useUserStore()
+
 const emits = defineEmits(['close', 'auth'])
 
+// Methods
 const close = () => {
+  document.body.classList.remove('overflow-hidden')
+
   emits('close')
 }
 
 const auth = () => {
-  close()
   emits('auth')
+
+  close()
 }
+
+const goTo = (link) => {
+  navigateTo(link)
+  close()
+}
+
+onMounted(() => {
+  document.body.classList.add('overflow-hidden')
+})
 </script>
 
 <style lang="scss" scoped>
@@ -73,13 +109,15 @@ const auth = () => {
 
   display: flex;
   flex-direction: column;
+  grid-gap: 20px;
 
   padding: 0 20px;
 
   background: $grayBg2;
+  overflow-y: auto;
   z-index: 2000;
 
-  &__top {
+  &__content {
     flex: 1 1 auto;
 
     display: flex;
@@ -93,6 +131,8 @@ const auth = () => {
     justify-content: space-between;
 
     padding: 20px 0;
+
+    border-bottom: 1px solid $grayText2;
   }
 
   &__close {
@@ -141,6 +181,11 @@ const auth = () => {
 
     margin-bottom: 20px;
   }
+}
+
+.mobile-menu-logo {
+  width: 134px;
+  height: 30px;
 }
 
 .mobile-menu-auth {

@@ -120,11 +120,12 @@
 <script setup>
 import { useCartStore } from '@/store/cart'
 import { useCommonStore } from '@/store/common'
+import { useUserStore } from '@/store/user'
 
 const cartStore = useCartStore()
 const commonStore = useCommonStore()
-
-const { cartItems, cartItemsLength } = storeToRefs(cartStore)
+const userStore = useUserStore()
+const config = useRuntimeConfig()
 
 const deliveryTypes = [
   { label: 'Доставка', type: 'delivery' },
@@ -154,6 +155,7 @@ const userData = reactive({
 const paymentMethods = ref([])
 const paymentMethod = ref(null)
 
+const user = computed(() => userStore.user)
 const selectedLocation = computed(() => commonStore.selectedLocation)
 const currentDeliveryType = computed(() => commonStore.deliveryType)
 const selectedPaymentMethod = computed(() => paymentMethods.value.find(item => item.id === paymentMethod.value))
@@ -205,7 +207,7 @@ const order = async () => {
   }
 
   
-  obj.line_items = cartItems.value.map(item => {
+  obj.line_items = cartStore.cartItems.map(item => {
     return {
       product_id: item.id,
       quantity: item.count,
@@ -233,12 +235,12 @@ const order = async () => {
   // }
   obj.bonuses = bonuses
 
-  // if (this.$root.user.auth) {
-  //   data.customer_id = this.$root.userData.id
-  // }
+  if (user.value) {
+    obj.customer_id = user.value.id
+  }
 
-  const consumer_key = 'ck_8e9043f849e95e6d003c3cc2474fc22b2ed01eec'
-  const consumer_secret = 'cs_74c746f821c405606c0950997a33b194ffc06876'
+  const consumer_key = config.public.CONSUMER_KEY
+  const consumer_secret = config.public.CONSUMER_SECRET
 
   let query = {
     consumer_key,
@@ -300,7 +302,15 @@ const getPaymentMethods = async () => {
   }
 }
 
+const setUserData = () => {
+  if (user.value) {
+    userData.phone = user.value.username
+  }
+}
+
 onMounted(() => {
+  setUserData()
+
   if (currentDeliveryType.value) {
     deliveryType.value = currentDeliveryType.value
   }

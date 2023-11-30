@@ -20,7 +20,7 @@
       <span>
       Оформить заказ
       </span>
-      {{ cartItemsPrice.toLocaleString() }} ₽
+      {{ cartStore.cartItemsPrice.toLocaleString() }} ₽
     </UIButton>
   </div>
 </template>
@@ -29,8 +29,6 @@
 import { useCartStore } from '@/store/cart'
 
 const cartStore = useCartStore()
-
-const { cartItemsPrice } = storeToRefs(cartStore)
 
 defineProps({
   isLoading: {

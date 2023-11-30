@@ -19,32 +19,9 @@
           </h1>
 
           <div class="page-lk__content">
-            <nav class="page-lk-nav page-lk__nav">
-              <ul class="page-lk-nav__list">
-                <li
-                  v-for="(item, i) in nav"
-                  :key="i"
-                  class="page-lk-nav__item"
-                >
-                  <NuxtLink
-                    :to="item.link"
-                    class="page-lk-nav-link page-lk-nav__link"
-                  >
-                    <span class="page-lk-nav-link__value">
-                      <UIIcon
-                        :name="item.icon"
-                        class="page-lk-nav-link__icon"
-                      />
-                      {{ item.label }}
-                    </span>
-                    <UIIcon
-                      name="arrow"
-                      class="page-lk-nav-link__arrow"
-                    />
-                  </NuxtLink>
-                </li>
-              </ul>
-            </nav>
+            <PagesLkNavigation
+              class="page-lk__navigation"
+            />
 
             <div class="page-lk__page">
               <NuxtPage :page-key="route => route.fullPath" class="page-lk__page" />
@@ -57,22 +34,15 @@
 </template>
 
 <script setup>
-const nav = [
-  { label: 'Личная информация', link: '/lk', icon: 'person' },
-  { label: 'Избранное', link: '/lk/favorite', icon: 'heart' },
-  { label: 'Доступные купоны', link: '/lk/promocodes', icon: 'gift' },
-  { label: 'Бонусная система', link: '/lk/bonuses', icon: 'bonuses' },
-  { label: 'Реферальная система', link: '/lk/referals', icon: 'referals' },
-  { label: 'Предпочтения', link: '/lk/preferences', icon: 'preferences' },
-  { label: 'История заказов', link: '/lk/orders', icon: 'orders' },
-  { label: 'Колесо фортуны', link: '/lk/game', icon: 'wheel' },
-  { label: 'История уведомлений', link: '/lk/notifications', icon: 'notifications' },
-]
 </script>
 
 <style lang="scss" scoped>
 .page-lk {
-  padding: 40px 0;
+  padding: 10px 0 40px;
+
+  @include mq($bp-medium) {
+    padding: 40px 0;
+  }
 
   &__box {
     display: flex;
@@ -81,7 +51,12 @@ const nav = [
   }
 
   &__aside {
-    flex: 0 0 168px;
+    display: none;
+
+    @include mq($bp-medium) {
+      display: block;
+      flex: 0 0 168px;
+    }
   }
 
   &__section {
@@ -90,11 +65,18 @@ const nav = [
     display: grid;
     grid-gap: 40px;
 
-    padding-top: 3px;
+    @include mq($bp-medium) {
+      padding-top: 3px;
+    }
   }
 
   &__title {
-    @include h2;
+    display: none;
+
+    @include mq($bp-medium) {
+      display: block;
+      @include h2;
+    }
   }
 
   &__content {
@@ -103,14 +85,21 @@ const nav = [
     grid-gap: 55px;
   }
 
-  &__nav {
-    flex: 0 0 395px;
+  &__navigation {
+    display: none;
+
+    @include mq($bp-medium) {
+      display: block;
+      flex: 0 0 395px;
+    }
   }
 
   &__page {
     flex: 1 1 auto;
 
-    padding-top: 40px;
+    @include mq($bp-medium) {
+      padding-top: 40px;
+    }
   }
 }
 
@@ -122,80 +111,6 @@ const nav = [
 
     .ui-icon {
       transform: rotate(180deg);
-    }
-  }
-}
-
-.page-lk-nav {
-  padding: 20px 40px;
-
-  background: $white;
-  border-radius: 20px;
-  box-shadow: 0px 0px 50px 0px rgba(0, 0, 0, 0.08);
-
-  &__list {
-    display: grid;
-    grid-gap: 16px;
-  }
-}
-
-.page-lk-nav-link {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 20px 0;
-
-  @include text_big;
-  font-weight: 600;
-
-  border-bottom: 1px solid $grayText2;
-
-  transition: border-color 0.3s;
-
-  &.router-link-exact-active {
-    border-color: $orange;
-
-    .page-lk-nav-link {
-      &__icon {
-        ::v-deep svg path {
-          fill: $orange;
-        }
-      }
-
-      &__arrow {
-        transform: rotate(180deg);
-
-        ::v-deep svg path {
-          fill: $blackText;
-        }
-      }
-    }
-  }
-
-  &__value {
-    display: flex;
-    align-items: center;
-    grid-gap: 16px;
-  }
-
-  &__icon {
-    ::v-deep svg path {
-      fill: $grayText2;
-    }
-  }
-
-  &__label {
-    display: flex;
-    align-items: center;
-    grid-gap: 8px;
-  }
-
-  &__arrow {
-    transition: transform 0.3s;
-
-    ::v-deep svg path {
-      fill: $grayText2;
     }
   }
 }

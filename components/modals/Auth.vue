@@ -26,11 +26,11 @@
           v-if="step === 'code'"
           class="modal-auth__number"
         >
-          {{ phone }}
+          {{ phoneObj.formatted }}
           <a
             href="#"
             rel="nofollow"
-            @click.prevent="step = 'phone'"
+            @click.prevent="toPrevStep()"
           >
             изменить
           </a>
@@ -58,7 +58,7 @@
             <vue-tel-input
               v-model="phone"
               mode="international"
-              :auto-format="true"
+              :auto-format="false"
               :dropdown-options="{
                 showFlags: true,
                 showDialCodeInList: true,
@@ -69,6 +69,7 @@
                 placeholder: 'Телефон',
                 required: true
               }"
+              @on-input="onInputTel"
             />
           </div>
 
@@ -81,6 +82,7 @@
               :field-width="48"
               :field-height="48"
               :is-error="isCodeError"
+              :disabled="isLoading"
               @change="onChangeCode"
               @complete="onCompleteCode"
             />
@@ -100,6 +102,8 @@
         <UIButton
           type="submit"
           color="yellow"
+          :is-loading="isLoading"
+          :disabled="isDisableButton"
           class="modal-auth__button"
         >
           Продолжить
@@ -110,37 +114,127 @@
 </template>
 
 <script setup lang="ts">
+interface PhoneObj {
+  countryCallingCode: String
+  countryCode: String
+  formatted: String
+  nationalNumber: String
+  number: String
+  valid: Boolean
+}
+
 import { VueTelInput } from 'vue-tel-input'
 import 'vue-tel-input/vue-tel-input.css'
 
 import { useCommonStore } from '@/store/common'
+import { useUserStore } from '@/store/user'
 
 const commonStore = useCommonStore()
+const userStore = useUserStore()
+const config = useRuntimeConfig()
+
+const consumer_key = config.public.CONSUMER_KEY
+const consumer_secret = config.public.CONSUMER_SECRET
 
 const isShow = ref(true)
 
 const step = ref<'phone' | 'code'>('phone')
-const phone = ref(null)
-const code = ref(null)
-const isCodeError = ref(false)
+const phone = ref<String | null>(null)
+const phoneObj = ref<PhoneObj | null>(null)
+const code = ref<String | null>(null)
+const isCodeError = ref<Boolean>(false)
+const isLoading = ref<Boolean>(false)
+
+watch(() => code.value, () => {
+  isCodeError.value = false
+})
+
+const isDisableButton = computed(() => {
+  if (step.value === 'phone') {
+    return !(phoneObj.value?.valid)
+  } else if (step.value === 'code') {
+    return !code.value || (code.value && code.value.length !== 4)
+  }
+
+  return false
+})
 
 const closeModal = () => {
   isShow.value = false
 }
 
-const sendSms = () => {
-  step.value = 'code'
+const onInputTel = (tel: String, obj: PhoneObj) => {
+  phoneObj.value = obj
 }
 
-const checkCode = () => {
-  navigateTo('/lk')
-  closeModal()
-  // isCodeError.value = true
+const onChangeCode = (val: String) => {
+  code.value = val
+}
+
+const onCompleteCode = () => {
+}
+
+const toPrevStep = () => {
+  step.value = 'phone'
+  isCodeError.value = false
+}
+
+const sendCode = async () => {
+  isLoading.value = true
+
+  const obj = {
+    phone: phoneObj.value?.number
+  }
+
+  const { data } = await useMyFetch('/wp-json/wc/auth/send_code', {
+    query: {
+      consumer_key,
+      consumer_secret
+    },
+    method: 'POST',
+    body: obj
+  })
+
+  isLoading.value = false
+
+  if (data?.value?.success) {
+    step.value = 'code'
+  }
+}
+
+const checkCode = async () => {
+  isLoading.value = true
+
+  const obj = {
+    phone: phoneObj.value?.number,
+    'auth-sms-code': code.value
+  }
+
+  const { data } = await useMyFetch('/wp-json/wc/auth/check_code', {
+    query: {
+      consumer_key,
+      consumer_secret
+    },
+    method: 'POST',
+    body: obj
+  })
+
+  isLoading.value = false
+
+  if (data?.value?.success) {
+    userStore.setUser(data.value.user)
+
+    navigateTo('/lk')
+    closeModal()
+  } else {
+    isCodeError.value = true
+    return false
+  }
 }
 
 const onSubmit = () => {
-  if (step.value === 'phone') {
-    sendSms()
+  if (step.value === 'phone' && phoneObj.value?.valid) {
+    sendCode()
   } else if (step.value === 'code') {
     checkCode()
   }

@@ -60,6 +60,7 @@
               class="header__side header__side--right"
             >
               <UIButton
+                v-if="!userStore.isAuth"
                 class="header__button"
                 color="gray"
                 @click.prevent="commonStore.toggleShowAuthModal(true)"
@@ -67,6 +68,13 @@
                 <UIIcon name="person-outline" />
                 Войти
               </UIButton>
+              <NuxtLink
+                v-else
+                to="/lk"
+                class="header-user"
+              >
+                C
+              </NuxtLink>
 
               <div />
 
@@ -91,8 +99,10 @@
 
 <script setup lang="ts">
 import { useCommonStore } from '@/store/common'
+import { useUserStore } from '@/store/user'
 
 const commonStore = useCommonStore()
+const userStore = useUserStore()
 const route = useRoute()
 
 const isShowMobileMenu = ref<true | false>(false)
@@ -105,6 +115,8 @@ const isMobileOrTablet = computed(() => commonStore.isMobileOrTablet)
 const pageTitle = computed(() => {
   if (route.fullPath === '/order') {
     return 'Оформление заказа'
+  } else if (route.fullPath === '/lk') {
+    return 'Личная информация'
   }
   return ''
   // return 'Рестораны'
@@ -168,7 +180,11 @@ onMounted(() => {
 
     align-items: center;
     justify-content: space-between;
-    grid-gap: 40px;
+    grid-gap: 20px;
+
+    @include mq($bp-medium) {
+      grid-gap: 40px;
+    }
 
     &--right {
       display: none;
@@ -262,5 +278,22 @@ onMounted(() => {
       display: flex;
     }
   }
+}
+
+.header-user {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 48px;
+  height: 48px;
+
+  @include text_large;
+  font-weight: 700;
+  color: $blue;
+
+  background: $grayBg2;
+  border: 2px solid $blue;
+  border-radius: 50px;
 }
 </style>

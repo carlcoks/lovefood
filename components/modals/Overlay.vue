@@ -58,6 +58,7 @@ const props = defineProps({
 
 const emits = defineEmits(['close'])
 
+const isOverflowAdded = ref(false)
 const isVisible = ref(false)
 
 watch(() => props.isShow, (data) => {
@@ -69,6 +70,11 @@ watch(() => props.isShow, (data) => {
 const onClose = () => {
   isVisible.value = false
 
+  if (isOverflowAdded.value) {
+    isOverflowAdded.value = false
+    document.body.classList.remove('overflow-hidden')
+  }
+
   setTimeout(() => {
     emits('close')
   }, 300)
@@ -76,11 +82,11 @@ const onClose = () => {
 
 onMounted(() => {
   isVisible.value = true
-  document.body.style = 'overflow: hidden'
-})
 
-onBeforeUnmount(() => {
-  document.body.style = ''
+  if (!document.body.classList.contains('overflow-hidden')) {
+    isOverflowAdded.value = true
+    document.body.classList.add('overflow-hidden')
+  }
 })
 </script>
 

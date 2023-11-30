@@ -15,7 +15,7 @@
     </div>
     <ul class="page-order-composition__list">
       <li
-        v-for="(item, i) in cartItems"
+        v-for="(item, i) in cartStore.cartItems"
         :key="i"
         class="page-order-composition__item page-order-composition__item--product"
       >
@@ -43,10 +43,10 @@
     <ul class="page-order-composition__list">
       <li class="page-order-composition__item">
         <p class="page-order-composition__value">
-          {{ cartItemsLength }} {{ declOfNum(cartItemsLength, ['товар', 'товара', 'товаров']) }}
+          {{ cartStore.cartItemsLength }} {{ declOfNum(cartStore.cartItemsLength, ['товар', 'товара', 'товаров']) }}
         </p>
         <p class="page-order-composition__value">
-          {{ cartItemsPrice.toLocaleString() }} ₽
+          {{ cartStore.cartItemsPrice.toLocaleString() }} ₽
         </p>
       </li>
       <!-- <li class="page-order-composition__item">
@@ -77,7 +77,7 @@
           Сумма заказа
         </p>
         <p class="page-order-composition__value">
-          {{ cartItemsPrice.toLocaleString() }} ₽
+          {{ cartStore.cartItemsPrice.toLocaleString() }} ₽
         </p>
       </li>
       <!-- <li class="page-order-composition__item">
@@ -100,8 +100,6 @@ import { useCartStore } from '@/store/cart'
 import declOfNum from '@/utils/declOfNum'
 
 const cartStore = useCartStore()
-
-const { cartItems, cartItemsPrice, cartItemsLength } = storeToRefs(cartStore)
 </script>
 
 <style lang="scss" scoped>

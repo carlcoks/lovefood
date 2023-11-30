@@ -4,24 +4,7 @@
       Личная информация
     </h2>
 
-    <div class="page-lk-personal-user">
-      <div class="page-lk-personal-user__info">
-        <div class="page-lk-personal-user__image">
-          C
-        </div>
-        <p class="page-lk-personal-user__name">
-          Светлана Длиннаяфамилия
-        </p>
-      </div>
-
-      <button
-        class="page-lk-personal-user__button"
-        @click.prevent="logout()"
-      >
-        <UIIcon name="logout" />
-        Выйти
-      </button>
-    </div>
+    <PagesLkUserBlock />
 
     <form class="page-lk-personal__form">
       <div class="page-lk-personal__line">
@@ -30,7 +13,7 @@
         </p>
         <div class="page-lk-personal__value">
           <UIInput
-            value="Антон"
+            value=""
             color="white"
           />
           <UIIcon
@@ -45,7 +28,7 @@
         </p>
         <div class="page-lk-personal__value">
           <UIInput
-            value="+7 999 000 00 00"
+            :value="user?.displayname"
             color="white"
             disabled
           />
@@ -58,7 +41,7 @@
         </p>
         <div class="page-lk-personal__value">
           <UIInput
-            value="Huhbu729@gmail.com"
+            value=""
             color="white"
           />
           <UIIcon
@@ -74,7 +57,7 @@
         </p>
         <div class="page-lk-personal__value">
           <UIInput
-            value="25 Июля 1989"
+            value=""
             color="white"
             disabled
           />
@@ -86,7 +69,7 @@
         </p>
         <div class="page-lk-personal__value">
           <UIInput
-            value="Мужской"
+            value=""
             color="white"
             disabled
           />
@@ -96,7 +79,7 @@
 
     <div class="page-lk-personal-addresses">
       <div class="page-lk-personal-addresses__header">
-        <p class="page-lk-personal-addresses__titl">
+        <p class="page-lk-personal-addresses__title">
           Сохраненные адреса
         </p>
 
@@ -182,19 +165,31 @@
 </template>
 
 <script setup>
+import { useUserStore } from '@/store/user'
+
+const userStore = useUserStore()
+
+const user = computed(() => userStore.user)
 </script>
 
 <style lang="scss" scoped>
 .page-lk-personal {
-  max-width: 770px;
-
   display: grid;
   grid-gap: 40px;
 
+  @include mq($bp-medium) {
+    max-width: 770px;
+  }
+
   &__title {
-    @include text_large;
-    font-weight: 700;
-    color: $black;
+    display: none;
+
+    @include mq($bp-medium) {
+      display: block;
+      @include text_large;
+      font-weight: 700;
+      color: $black;
+    }
   }
 
   &__form {
@@ -204,20 +199,37 @@
 
   &__line {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
+    flex-direction: column;
+
+    @include mq($bp-medium) {
+      flex-direction: row;
+      align-items: center;
+    }
   }
 
   &__label {
+    padding: 0 0 8px 16px;
+
     display: flex;
     align-items: center;
     grid-gap: 10px;
 
-    @include text_normal;
+    @include text_small;
     font-weight: 500;
+    color: $grayText;
 
     ::v-deep(.ui-icon) svg path {
       fill: $grayText2;
+    }
+
+    @include mq($bp-medium) {
+      padding: 0;
+
+      @include text_normal;
+      font-weight: 500;
+      color: $black;
     }
   }
 
@@ -245,57 +257,6 @@
   }
 }
 
-.page-lk-personal-user {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 20px 30px;
-
-  @include text_normal;
-
-  background: $grayBg2;
-  border-radius: 20px;
-
-  &__info {
-    display: flex;
-    align-items: center;
-    grid-gap: 12px;
-  }
-
-  &__image {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 48px;
-    height: 48px;
-
-    @include text_large;
-    font-weight: 700;
-    color: $blue;
-
-    background: $white;
-    border: 2px solid $blue;
-    border-radius: 50%;
-  }
-
-  &__name {
-    @include overflow-text;
-    font-weight: 600;
-  }
-
-  &__button {
-    display: flex;
-    align-items: center;
-    grid-gap: 10px;
-    
-    font-weight: 500;
-
-    color: $grayText;
-  }
-}
-
 .page-lk-personal-addresses {
   display: flex;
   flex-direction: column;
@@ -313,7 +274,12 @@
   }
 
   &__button {
-    font-weight: 500;
+    display: none;
+
+    @include mq($bp-medium) {
+      display: flex;
+      font-weight: 500;
+    }
   }
 
   &__list {

@@ -10,6 +10,10 @@ body {
   font-size: 16px;
   font-family: 'Gilroy';
   color: $blackText;
+
+  &.overflow-hidden {
+    overflow: hidden;
+  }
 }
 
 button {

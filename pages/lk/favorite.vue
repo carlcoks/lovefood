@@ -5,10 +5,10 @@
     </h2>
 
     <div class="page-lk-favorite__list">
-      <CommonProductCard
+      <!-- <CommonProductCard
         v-for="i in 9"
         :key="i"
-      />
+      /> -->
     </div>
   </div>
 </template>

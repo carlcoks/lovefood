@@ -8,7 +8,7 @@
       },
     ]"
   >
-    <small v-if="+regularPrice !== +price">
+    <small v-if="regularPrice && +regularPrice !== +price">
       {{ regularPrice.toLocaleString() }} ₽
     </small>
     {{ price.toLocaleString() }} ₽

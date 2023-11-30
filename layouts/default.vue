@@ -7,7 +7,7 @@
     <LayoutFooter />
 
     <LazyModalsProduct
-      v-if="isShowProductModal"
+      v-if="catalogStore.isShowProductModal"
     />
 
     <LazyModalsCart
@@ -42,7 +42,6 @@ import { useCartStore } from '@/store/cart'
 import { useCommonStore } from '@/store/common'
 
 const catalogStore = useCatalogStore()
-const { isShowProductModal } = storeToRefs(catalogStore)
 
 const cartStore = useCartStore()
 const commonStore = useCommonStore()
