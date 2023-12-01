@@ -239,7 +239,11 @@
         </div>
       </div>
 
-      <ModalsProductElse class="modal-product__else" />
+      <ModalsProductElse
+        v-if="relatedArray.length"
+        :related="relatedArray"
+        class="modal-product__else"
+      />
     </div>
 
     <ModalsSupplements
@@ -258,6 +262,8 @@ import { useCartStore } from '@/store/cart'
 
 const catalog = useCatalogStore()
 const cart = useCartStore()
+
+const { relatedItems } = storeToRefs(catalog)
 
 const isShow = ref(true)
 const isFavorite = ref(false)
@@ -306,6 +312,10 @@ const discount = computed(() => {
   }
 
   return 0
+})
+
+const relatedArray = computed(() => {
+  return relatedItems.value(product.value.related_ids)
 })
 
 const isCountable = computed(() => {

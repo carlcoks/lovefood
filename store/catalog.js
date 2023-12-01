@@ -62,6 +62,25 @@ export const useCatalogStore = defineStore('catalogStore', {
       return state.catalog.find(item => item.id === 135)?.products || []
     },
 
+    relatedItems: (state) => {
+      return (related) => {
+        const array = []
+
+        related.forEach(id => {
+          state.catalog.find(item => {
+            const product = item.products.find(product => +product.id === +id)
+            if (product) {
+              array.push(product)
+              return true
+            }
+            return false
+          })
+        })
+
+        return array
+      }
+    },
+
     isShowProductModal: (state) => {
       return !!state.product
     },

@@ -10,25 +10,29 @@
       class="modal-product-else__slider"
     >
       <SwiperSlide
-        v-for="i in 5"
+        v-for="(item, i) in related"
         :key="i"
         class="modal-product-else__slide"
       >
         <div class="modal-product-else-item">
           <div class="modal-product-else-item__image">
-            <img src="@/assets/images/menu-card-example.png" alt="">
-            <p class="modal-product-else-item__discount">
+            <img
+              v-lazy-load
+              :data-src="item?.images[0]"
+              alt=""
+            >
+            <!-- <p class="modal-product-else-item__discount">
               -25%
-            </p>
+            </p> -->
           </div>
           <div class="modal-product-else-item__content">
             <p class="modal-product-else-item__title">
-              Название блюда
+              {{ item.name }}
             </p>
 
             <CommonPriceBlock
-              :regular-price="1880"
-              :price="1680"
+              :regular-price="+item.regular_price"
+              :price="+item.price"
               is-reverse
             />
 
@@ -49,6 +53,13 @@
 
 <script setup>
 import { Swiper, SwiperSlide } from 'swiper/vue'
+
+defineProps({
+  related: {
+    type: Array,
+    default: () => ([]),
+  },
+})
 </script>
 
 <style lang="scss" scoped>
