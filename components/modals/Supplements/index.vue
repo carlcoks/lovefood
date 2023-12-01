@@ -5,64 +5,43 @@
   >
     <div class="modal-supplements">
       <div class="modal-supplements__header">
-        <p class="modal-supplements__title">
-          {{ item.title }}
-        </p>
+        <div class="modal-supplements__header-line">
+          <p class="modal-supplements__title">
+            {{ item.title }}
+          </p>
 
-        <a
-          href="#"
-          rel="nofollow"
-          class="modal-supplements__close"
-          @click.prevent="closeModal()"
+          <a
+            href="#"
+            rel="nofollow"
+            class="modal-supplements__close"
+            @click.prevent="closeModal()"
+          >
+            <UIIcon name="close" />
+          </a>
+        </div>
+
+        <p
+          v-if="description"
+          class="modal-supplements__text"
         >
-          <UIIcon name="close" />
-        </a>
+          {{ description }}
+        </p>
       </div>
 
       <div class="modal-supplements__body">
-        <div
+        <ModalsSupplementsProduct
           v-for="(product, i) in products"
           :key="i"
-          :class="['modal-supplements-item', { 'active' : supplement.find(item => item.id === product.id) }]"
-          @click="selectProduct(product)"
-        >
-          <span
-            v-if="supplement.find(item => item.id === product.id)"
-            class="modal-supplements-item__check"
-          >
-            <UIIcon name="check" />
-          </span>
-          <div class="modal-supplements-item__image">
-            <img :src="product.images[0]" alt="">
-          </div>
-          <p class="modal-supplements-item__title">
-            {{ product.name }}
-          </p>
-
-          <div
-            v-if="supplement.find(item => item.id === product.id)"
-            class="modal-supplements-item__counter"
-          >
-            <button
-              @click.prevent.stop="decrement(product.id)"
-            >
-              <UIIcon name="minus" />
-            </button>
-            {{ supplement.find(item => item.id === product.id)?.count || 0 }}
-            <button
-              @click.prevent.stop="increment(product.id)"
-            >
-              <UIIcon name="plus" />
-            </button>
-          </div>
-          <div
-            v-else
-            class="modal-supplements-item__counter"
-          >
-            <UIIcon name="plus" />
-            {{ product.price.toLocaleString() }} ₽
-          </div>
-        </div>
+          :item="product"
+          :supplement="supplement"
+          :quantity="item.quantity"
+          :max="+item.quantity_max || 10"
+          :min="+item.quantity_min"
+          :remains="countRemains"
+          @select="selectProduct"
+          @increment="increment"
+          @decrement="decrement"
+        />
       </div>
 
       <div class="modal-supplements__footer">
@@ -70,6 +49,7 @@
           type="submit"
           color="yellow"
           class="modal-supplements__button"
+          :disabled="isButtonDisabled"
           @click="submit()"
         >
           Подтвердить
@@ -100,9 +80,37 @@ const props = defineProps({
 const emits = defineEmits(['close', 'submit'])
 
 const isShow = ref(true)
-const supplement = ref(props.selected)
+const supplement = ref([])
 
 // Computed
+const quantityMax = computed(() => {
+  return +(props.item?.quantity_max || 0)
+})
+
+const quantityMin = computed(() => {
+  return +(props.item?.quantity_min || 0)
+})
+
+const description = computed(() => {
+  let str = 'Добавьте'
+
+  if (quantityMax.value || quantityMin.value) {
+    if (quantityMax.value) {
+      str += ` не более ${quantityMax.value} шт.`
+    }
+    if (quantityMax.value && quantityMin.value > 0) {
+      str += ` но`
+    }
+    if (quantityMin.value > 0) {
+      str += ` не менее ${quantityMin.value} шт.`
+    }
+
+    return str
+  }
+
+  return null
+})
+
 const products = computed(() => {
   const products = props.item?.products || []
 
@@ -111,13 +119,40 @@ const products = computed(() => {
   })
 })
 
+// Кол-во выбранных
+const countSelected = computed(() => {
+  return supplement.value.reduce((acc, item) => {
+    acc += item.count
+
+    return acc
+  }, 0)
+})
+
+// 
+const countRemains = computed(() => {
+  if (quantityMax.value) {
+    return quantityMax.value - countSelected.value
+  }
+
+  return null
+})
+
+const isButtonDisabled = computed(() => {
+  if (quantityMin.value) {
+    return countSelected.value < quantityMin.value
+  }
+  return false
+})
+
 // Methods
 const closeModal = () => {
   isShow.value = false
 }
 
 const submit = () => {
-  emits('submit', supplement.value)
+  if (!isButtonDisabled.value) {
+    emits('submit', supplement.value)
+  }
 }
 
 const selectProduct = (obj) => {
@@ -172,6 +207,10 @@ const decrement = (id) => {
     return false
   })
 }
+
+onMounted(() => {
+  supplement.value = props.selected.slice()
+})
 </script>
 
 <style lang="scss" scoped>
@@ -201,6 +240,12 @@ const decrement = (id) => {
 
   &__header {
     display: flex;
+    flex-direction: column;
+    grid-gap: 10px;
+  }
+
+  &__header-line {
+    display: flex;
     align-items: center;
     justify-content: space-between;
   }
@@ -222,89 +267,6 @@ const decrement = (id) => {
   &__button {
     width: 100%;
     font-weight: 500;
-  }
-}
-
-.modal-supplements-item {
-  position: relative;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  padding: 6px 9px;
-
-  border-radius: 20px;
-  outline: 1px solid $grayBg;
-  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
-
-  cursor: pointer;
-
-  &.active {
-    outline-width: 2px;
-    outline-color: #F2A32C;
-  }
-
-  input {
-    display: none;
-  }
-
-  &__check {
-    position: absolute;
-    top: 6px;
-    right: 7px;
-
-    ::v-deep(.ui-icon) svg {
-      width: 24px;
-      height: 24px;
-
-      path {
-        fill: #F2A32C;
-      }
-    }
-  }
-
-  &__image {
-    width: 72px;
-    height: 72px;
-
-    margin-bottom: 4px;
-
-    border-radius: 8px;
-    overflow: hidden;
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-  }
-
-  &__title {
-    width: 100%;
-
-    @include text_mini;
-    text-align: center;
-
-    margin-bottom: 8px;
-  }
-
-  &__counter {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    grid-gap: 10px;
-
-    width: 100%;
-    height: 32px;
-
-    margin: auto 0 0 0;
-
-    @include text_normal;
-    font-weight: 500;
-
-    background: $grayBg;
-    border-radius: 14px;
   }
 }
 </style>

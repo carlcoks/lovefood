@@ -14,28 +14,11 @@
       </a>
     </div>
     <ul class="page-order-composition__list">
-      <li
+      <PagesOrderCompositionProduct
         v-for="(item, i) in cartStore.cartItems"
         :key="i"
-        class="page-order-composition__item page-order-composition__item--product"
-      >
-        <div class="page-order-composition__line">
-          <p class="page-order-composition__label">
-            {{ item.name }}
-          </p>
-          <p class="page-order-composition__value">
-            {{ item.regular_price.toLocaleString() }} ₽
-          </p>
-        </div>
-        <p class="page-order-composition__supplements">
-          <span
-            v-for="(supplement, s) in item.supplements"
-            :key="s"
-          >
-            {{ supplement.name }}
-          </span>
-        </p>
-      </li>
+        :item="item"
+      />
     </ul>
 
     <div class="page-order-composition__divider" />
@@ -152,21 +135,6 @@ const cartStore = useCartStore()
     align-items: center;
     justify-content: space-between;
     grid-gap: 20px;
-
-    &--product {
-      display: flex;
-      align-items: flex-start;
-      flex-direction: column;
-      grid-gap: 4px;
-    }
-  }
-
-  &__line {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    grid-gap: 20px;
   }
 
   &__label {
@@ -194,29 +162,6 @@ const cartStore = useCartStore()
 
       ::v-deep(.ui-icon) svg path {
         fill: $orange;
-      }
-    }
-  }
-
-  &__supplements {
-    display: flex;
-    align-items: flex-start;
-    flex-wrap: wrap;
-
-    @include text_mini;
-    color: $black;
-
-    span {
-      &:after {
-        content: ',';
-        
-        margin-right: 4px;
-      }
-
-      &:last-child {
-        &:after {
-          display: none;
-        }
       }
     }
   }

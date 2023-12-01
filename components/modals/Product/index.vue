@@ -87,11 +87,11 @@
               <div
                 v-for="(supplement, s) in productSupplements"
                 :key="s"
-                :class="['modal-product-add-item', { 'active' : !!selectedSupplements[s] }]"
+                :class="['modal-product-add-item', { 'active' : selectedSupplements[s]?.length }]"
                 @click="openSupplementsModal(supplement, s)"
               >
                 <div
-                  v-if="!!selectedSupplements[s]"
+                  v-if="selectedSupplements[s]?.length"
                   class="modal-product-add-item__selected"
                 >
                   <span>
@@ -220,6 +220,7 @@
                 v-if="!count"
                 color="gray"
                 class="modal-product__button"
+                :disabled="isButtonDisabled"
                 @click="addToCart()"
               >
                 <UIIcon name="add" />
@@ -355,11 +356,32 @@ const productSupplements = computed(() => {
 const count = computed(() => {
   const item = cart.cart.find(item => +item.id === +product.value.id)
 
+  if (item?.supplements?.length) {
+    return 0
+  }
+
   return item?.count || 0
+})
+
+const isButtonDisabled = computed(() => {
+  if (productSupplements.value.length) {
+    return productSupplements.value.find((item, i) => {
+      if (item.supplement_required === 'yes' && !selectedSupplements.value[i]?.length) {
+        return true
+      }
+      return false
+    })
+  }
+
+  return false
 })
 
 // Methods
 const addToCart = () => {
+  if (isButtonDisabled.value) {
+    return false
+  }
+
   const obj = selectedSupplements.value
   const supplements = []
   for (const key in obj) {
@@ -370,8 +392,6 @@ const addToCart = () => {
 
   cart.addToCart({
     ...product.value,
-    price: productPrice.value,
-    regular_price: productRegularPrice.value,
     supplements
   })
 }

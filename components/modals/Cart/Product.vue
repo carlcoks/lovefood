@@ -99,12 +99,20 @@ const productImage = computed(() => {
   return props.item?.images[0] || ''
 })
 
+const supplementsPrice = computed(() => {
+  return props.item.supplements.reduce((acc, item) => {
+    acc += item.count * item.price
+
+    return acc
+  }, 0)
+})
+
 const itemRegularPrice = computed(() => {
-  return props.item.regular_price * props.item.count
+  return (supplementsPrice.value + +props.item.regular_price) * props.item.count
 })
 
 const itemPrice = computed(() => {
-  return props.item.price * props.item.count
+  return (supplementsPrice.value + +props.item.price) * props.item.count
 })
 
 // Methods

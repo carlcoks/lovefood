@@ -100,7 +100,16 @@ export const useCartStore = defineStore('cartStore', {
     // Сумма всех товаров с учетом скидки
     cartItemsPrice: (state) => {
       return state.cart.reduce((acc, item) => {
-        acc += item.count * item.price
+        let price = item.price
+
+        if (item?.supplements?.length) {
+          price += item.supplements.reduce((acc2, item2) => {
+            acc2 += item2.price * item2.count
+            return acc2
+          }, 0)
+        }
+
+        acc += item.count * price
         return acc
       }, 0)
     },
@@ -108,7 +117,16 @@ export const useCartStore = defineStore('cartStore', {
     // Сумма всех товаров без скидки
     cartItemsRegularPrice: (state) => {
       return state.cart.reduce((acc, item) => {
-        acc += item.count * item.regular_price
+        let price = item.regular_price
+
+        if (item?.supplements?.length) {
+          price += item.supplements.reduce((acc2, item2) => {
+            acc2 += item2.price * item2.count
+            return acc2
+          }, 0)
+        }
+
+        acc += item.count * price
         return acc
       }, 0)
     }

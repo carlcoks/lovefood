@@ -114,7 +114,7 @@ const isDisabled = computed(() => {
   &--gray {
     background: $grayBg;
 
-    &:hover {
+    &:hover:enabled {
       background: $grayBg2;
     }
   }
@@ -122,6 +122,10 @@ const isDisabled = computed(() => {
   &--orange {
     color: $white;
     background: $orange;
+  }
+
+  &:disabled {
+    cursor:not-allowed;
   }
 }
 </style>
