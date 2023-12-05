@@ -8,7 +8,10 @@
         {{ regularPrice.toLocaleString() }} ₽
       </p>
     </div>
-    <p class="page-order-composition-product__supplements">
+    <p
+      v-if="item?.supplements?.length"
+      class="page-order-composition-product__supplements"
+    >
       <span
         v-for="(supplement, s) in item.supplements"
         :key="s"
@@ -29,11 +32,15 @@ const props = defineProps({
 
 // Computed
 const supplementsPrice = computed(() => {
-  return props.item.supplements.reduce((acc, item) => {
-    acc += item.count * item.price
+  if (props.item?.supplements?.length) {
+    return props.item.supplements.reduce((acc, item) => {
+      acc += item.count * item.price
 
-    return acc
-  }, 0)
+      return acc
+    }, 0)
+  }
+
+  return 0
 })
 
 const regularPrice = computed(() => {

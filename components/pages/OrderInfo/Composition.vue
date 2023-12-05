@@ -7,7 +7,7 @@
     </div>
     <ul class="page-order-composition__list">
       <li
-        v-for="(item, i) in items"
+        v-for="(item, i) in itemsList"
         :key="i"
         class="page-order-composition__item page-order-composition__item--product"
       >
@@ -106,6 +106,10 @@ const totalPrice = computed(() => {
 
     return acc
   }, 0)
+})
+
+const itemsList = computed(() => {
+  return props.items.filter(item => item.product_type !== 'supplements_options')
 })
 </script>
 

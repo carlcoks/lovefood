@@ -90,6 +90,16 @@
         />
       </div>
 
+      <!-- <CommonAddButton
+        :count="count"
+        :product-type="productType"
+        @increment="increment()"
+        @decrement="decrement()"
+        @add="addToCart()"
+        @click="openProduct()"
+        class="index-menu-card__button"
+      /> -->
+
       <UICounter
         v-if="productType === 'simple' && count"
         :count="count"

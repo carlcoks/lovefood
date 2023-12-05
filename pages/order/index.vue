@@ -206,12 +206,25 @@ const order = async () => {
     },
   }
 
-  
-  obj.line_items = cartStore.cartItems.map(item => {
-    return {
+  obj.line_items = []
+
+  cartStore.cartItems.forEach((item, i) => {
+    obj.line_items.push({
       product_id: item.id,
       quantity: item.count,
-      type: 'main'
+      type: 'main',
+    })
+
+    if (item?.supplements?.length) {
+      item.supplements.forEach(supplement => {
+        obj.line_items.push({
+          product_id: supplement.id,
+          quantity: supplement.count,
+          type: 'ingredient',
+          parent_id: item.id,
+          cart_item_index: i,
+        })
+      })
     }
   })
 

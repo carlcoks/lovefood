@@ -49,7 +49,7 @@
     </div>
 
     <div
-      v-if="item.supplements && Object.keys(item.supplements).length"
+      v-if="item?.supplements?.length"
       class="modal-cart-item__supplements"
     >
       <div
@@ -100,11 +100,15 @@ const productImage = computed(() => {
 })
 
 const supplementsPrice = computed(() => {
-  return props.item.supplements.reduce((acc, item) => {
-    acc += item.count * item.price
+  if (props.item?.supplements?.length) {
+    return props.item.supplements.reduce((acc, item) => {
+      acc += item.count * item.price
 
-    return acc
-  }, 0)
+      return acc
+    }, 0)
+  }
+
+  return 0
 })
 
 const itemRegularPrice = computed(() => {

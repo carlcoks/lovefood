@@ -129,7 +129,25 @@ export const useCartStore = defineStore('cartStore', {
         acc += item.count * price
         return acc
       }, 0)
-    }
+    },
+
+    // productInCart: (state) => {
+    //   return (id, supplements) => {
+    //     let idx = null
+    //     const item = state.cart.find((item, i) => {
+    //       if (+item.id === +id) {
+    //         item.supplements
+    //       }
+
+    //       return false
+    //     })
+
+    //     return {
+    //       item,
+    //       idx
+    //     }
+    //   }
+    // }
   },
 
   persist: {
