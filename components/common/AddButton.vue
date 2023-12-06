@@ -133,7 +133,7 @@ const decrement = () => {
   &--small {
     height: 32px;
 
-    padding: 0 15px;
+    padding: 0;
 
     @include text_small;
     font-weight: 500;

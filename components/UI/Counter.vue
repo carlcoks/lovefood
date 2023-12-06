@@ -51,5 +51,9 @@ const emits = defineEmits(['increment', 'decrement'])
 
     padding: 6px 10px;
   }
+
+  &__count {
+    white-space: nowrap;
+  }
 }
 </style>
