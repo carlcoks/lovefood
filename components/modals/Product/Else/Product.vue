@@ -25,7 +25,7 @@
       />
 
       <CommonAddButton
-        :count="productCount"
+        :item="currentProductInCart.item"
         :product-type="productType"
         is-small
         @increment="increment()"
@@ -68,10 +68,6 @@ const currentProductInCart = computed(() => {
   return {
     idx: null
   }
-})
-
-const productCount = computed(() => {
-  return currentProductInCart.value?.item?.count || 0
 })
 
 const itemImage = computed(() => {

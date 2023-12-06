@@ -14,6 +14,7 @@
       :value="modelValue"
       :placeholder="placeholder"
       :disabled="disabled"
+      :autocomplete="autocomplete"
       :class="[
         'input__area',
         color ? `input__area--${color}` : ''
@@ -54,6 +55,10 @@ defineProps({
   color: {
     type: String,
     default: '',
+  },
+  autocomplete: {
+    type: String,
+    default: 'off',
   },
 })
 

@@ -26,6 +26,8 @@ export const useCartStore = defineStore('cartStore', {
         regular_price: item.regular_price,
         images: item.images,
         count: 1,
+        measure_unit: item.measure_unit,
+        portion_nat_size: item.portion_nat_size,
         supplements: item?.supplements || [],
       })
 
@@ -92,9 +94,9 @@ export const useCartStore = defineStore('cartStore', {
     // Сумма всех товаров с учетом скидки
     cartItemsPrice: (state) => {
       return state.cart.reduce((acc, item) => {
-        let price = item.price
+        let price = +item.price
 
-        if (item?.supplements?.length) {
+        if (item.supplements.length) {
           price += item.supplements.reduce((acc2, item2) => {
             acc2 += item2.price * item2.count
             return acc2
@@ -109,9 +111,9 @@ export const useCartStore = defineStore('cartStore', {
     // Сумма всех товаров без скидки
     cartItemsRegularPrice: (state) => {
       return state.cart.reduce((acc, item) => {
-        let price = item.regular_price
+        let price = +item.regular_price
 
-        if (item?.supplements?.length) {
+        if (item.supplements.length) {
           price += item.supplements.reduce((acc2, item2) => {
             acc2 += item2.price * item2.count
             return acc2

@@ -1,7 +1,7 @@
 <template>
   <UICounter
-    v-if="count"
-    :count="count"
+    v-if="!!item"
+    :count="countLabel"
     @increment="increment()"
     @decrement="decrement()"
     :class="['add-button add-button--counter active', { 'add-button--small' : isSmall }]"
@@ -29,9 +29,9 @@
 
 <script setup>
 const props = defineProps({
-  count: {
-    type: Number,
-    default: 0,
+  item: {
+    type: Object,
+    default: null,
   },
 
   productType: {
@@ -53,6 +53,15 @@ const props = defineProps({
 const emits = defineEmits(['increment', 'decrement', 'click', 'add'])
 
 // <!-- Computed -->
+const countLabel = computed(() => {
+  if (props.item) {
+    const value = parseInt((+props.item.portion_nat_size * +props.item.count) * 100) / 100
+    return `${value} ${props.item.measure_unit}`
+  }
+
+  return null
+})
+
 const buttonLabel = computed(() => {
   switch (props.productType) {
     case 'simple':
@@ -123,6 +132,8 @@ const decrement = () => {
 
   &--small {
     height: 32px;
+
+    padding: 0 15px;
 
     @include text_small;
     font-weight: 500;

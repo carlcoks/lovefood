@@ -85,7 +85,7 @@
       </div>
 
       <CommonAddButton
-        :count="productCount"
+        :item="currentProductInCart.item"
         :product-type="productType"
         @increment="increment()"
         @decrement="decrement()"
@@ -143,12 +143,9 @@ const currentProductInCart = computed(() => {
   }
 
   return {
-    idx: null
+    idx: null,
+    item: null,
   }
-})
-
-const productCount = computed(() => {
-  return currentProductInCart.value?.item?.count || 0
 })
 
 const isCountable = computed(() => {

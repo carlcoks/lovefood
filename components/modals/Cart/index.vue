@@ -45,7 +45,7 @@
             </button>
           </div>
           <p class="modal-cart__count">
-            {{ cartItemsLength }} товара на <span>{{ cartItemsPrice }} ₽</span>
+            {{ cartItemsLength }} товара на <span>{{ cartItemsPrice.toLocaleString() }} ₽</span>
           </p>
         </div>
 

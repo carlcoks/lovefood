@@ -217,7 +217,7 @@
               />
 
               <CommonAddButton
-                :count="productCount"
+                :item="currentProductInCart.item"
                 product-type="simple"
                 :disabled="isButtonDisabled"
                 @increment="increment()"
@@ -367,11 +367,6 @@ const supplementsArray = computed(() => {
 
 const currentProductInCart = computed(() => {
   return productInCart.value(+product.value.id, supplementsArray.value)
-})
-
-// Кол-во добавленных в корзину
-const productCount = computed(() => {
-  return currentProductInCart.value?.item?.count || 0
 })
 
 const isButtonDisabled = computed(() => {

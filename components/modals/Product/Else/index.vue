@@ -78,6 +78,8 @@ const next = ref(null)
   &__slider {
     margin: 0 -30px;
     padding: 0 30px;
+
+    overflow: hidden;
   }
 
   &__slide {

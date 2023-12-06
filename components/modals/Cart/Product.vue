@@ -39,7 +39,7 @@
           </div>
 
           <UICounter
-            :count="item.count"
+            :count="counterLabel"
             @increment="increment()"
             @decrement="decrement()"
             class="modal-cart-item__counter"
@@ -96,6 +96,11 @@ const props = defineProps({
 })
 
 // Computed
+const counterLabel = computed(() => {
+  const value = parseInt((+props.item.portion_nat_size * +props.item.count) * 100) / 100
+  return `${value} ${props.item.measure_unit}`
+})
+
 const currentProductInCart = computed(() => {
   return productInCart.value(+props.item.id, props.item.supplements)
 })
