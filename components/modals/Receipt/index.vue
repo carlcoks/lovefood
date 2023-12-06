@@ -35,6 +35,8 @@ te<template>
             />
             <ModalsReceiptPickup
               v-else-if="currentType === 'pickup'"
+              :current-address="currentAddress"
+              @update="currentAddress = $event"
               @close="closeModal()"
             />
             <ModalsReceiptLounge
@@ -46,6 +48,8 @@ te<template>
 
       <ModalsReceiptMap
         :delivery-type="currentType"
+        :current-address="currentAddress"
+        @update="currentAddress = $event"
         class="modal-receipt__map"
       />
     </div>
@@ -57,17 +61,22 @@ import { useCommonStore } from '@/store/common'
 
 const commonStore = useCommonStore()
 
-const isShow = ref(true)
-
 const types = [
   { label: 'Доставка', type: 'delivery' },
   { label: 'Самовывоз', type: 'pickup' },
   { label: 'В зале', type: 'lounge' },
 ]
+
+const isShow = ref(true)
 const currentType = ref('delivery')
 
-const deliveryType = computed(() => commonStore.deliveryType)
+const currentAddress = ref(null)
 
+// <!-- Computed -->
+const deliveryType = computed(() => commonStore.deliveryType)
+const selectedLocation = computed(() => commonStore.selectedLocation)
+
+// <!-- Methods -->
 const closeModal = () => {
   isShow.value = false
 }
@@ -75,6 +84,10 @@ const closeModal = () => {
 onMounted(() => {
   if (deliveryType.value) {
     currentType.value = deliveryType.value
+  }
+
+  if (selectedLocation.value) {
+    currentAddress.value = selectedLocation.value
   }
 })
 </script>

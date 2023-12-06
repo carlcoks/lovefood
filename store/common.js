@@ -1,3 +1,5 @@
+import trimStr from '@/utils/trimStr'
+
 export const useCommonStore = defineStore('commonStore', {
   state: () => ({
     isMobileOrTablet: false,
@@ -54,7 +56,15 @@ export const useCommonStore = defineStore('commonStore', {
 
   getters: {
     pickupLocations: (state) => {
-      return state.locations.find(item => item.id === 'local_pickup')?.pickup_locations || []
+      const array = state.locations.find(item => item.id === 'local_pickup')?.pickup_locations || []
+
+      return array.map(item => {
+        return {
+          ...item,
+          id: item.id.toString(),
+          coordinates: trimStr(item.coord).split(',').reverse().map(item => item * 1)
+        }
+      })
     }
   },
 

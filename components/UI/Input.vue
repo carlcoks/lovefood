@@ -11,14 +11,16 @@
     <input
       :id="id"
       :type="type"
-      :value="value"
+      :value="modelValue"
       :placeholder="placeholder"
       :disabled="disabled"
       :class="[
         'input__area',
         color ? `input__area--${color}` : ''
       ]"
-      @input="$emit('update:modelValue', $event.target.value)"
+      @input="emits('update:modelValue', $event.target.value)"
+      @blur="emits('blur')"
+      @focus="emits('focus')"
     >
   </div>
 </template>
@@ -45,10 +47,6 @@ defineProps({
     type: String,
     default: '',
   },
-  value: {
-    type: String,
-    default: '',
-  },
   disabled: {
     type: Boolean,
     default: false,
@@ -58,6 +56,8 @@ defineProps({
     default: '',
   },
 })
+
+const emits = defineEmits(['update:modelValue', 'blur', 'focus'])
 </script>
 
 <style lang="scss" scoped>
@@ -82,6 +82,7 @@ defineProps({
 
     @include text_normal;
     font-weight: 500;
+    color: $black;
 
     background: $grayBg2;
     border-radius: 14px;

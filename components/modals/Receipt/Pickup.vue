@@ -24,7 +24,7 @@
         v-for="(item, i) in filteredLocations"
         :key="i"
         :class="['modal-receipt-pickup-item', { 'active' : currentAddress?.id === item.id }]"
-        @click="currentAddress?.id === item.id ? currentAddress = null : currentAddress = item"
+        @click="currentAddress?.id === item.id ? emits('update', null) : emits('update', item)"
       >
         <div class="modal-receipt-pickup-item__left">
           <UIIcon
@@ -65,12 +65,18 @@ import { useCommonStore } from '@/store/common'
 
 const commonStore = useCommonStore()
 
-const emits = defineEmits(['close'])
+const props = defineProps({
+  currentAddress: {
+    type: undefined,
+    default: null,
+  },
+})
+
+const emits = defineEmits(['close', 'update'])
 
 const search = ref('')
-const currentAddress = ref(null)
 
-const selectedLocation = computed(() => commonStore.selectedLocation)
+// <!-- Computed -->
 const pickupLocations = computed(() => commonStore.pickupLocations)
 
 const filteredLocations = computed(() => {
@@ -81,16 +87,10 @@ const filteredLocations = computed(() => {
 
 const submit = () => {
   commonStore.setDeliveryType('pickup')
-  commonStore.setLocation(currentAddress.value)
+  commonStore.setLocation(props.currentAddress)
 
   emits('close')
 }
-
-onMounted(() => {
-  if (selectedLocation.value) {
-    currentAddress.value = selectedLocation.value
-  }
-})
 </script>
 
 <style lang="scss" scoped>
