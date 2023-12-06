@@ -75,12 +75,6 @@
           <span>
             {{ productBasePortionSize }} {{ productSubMeasureUnit }}
           </span>
-          <!-- <span>
-            1 шт
-          </span>
-          <span>
-            367 гр
-          </span> -->
         </p>
 
         <CommonPriceBlock
@@ -90,40 +84,15 @@
         />
       </div>
 
-      <!-- <CommonAddButton
-        :count="count"
+      <CommonAddButton
+        :count="productCount"
         :product-type="productType"
         @increment="increment()"
         @decrement="decrement()"
         @add="addToCart()"
         @click="openProduct()"
         class="index-menu-card__button"
-      /> -->
-
-      <UICounter
-        v-if="productType === 'simple' && count"
-        :count="count"
-        @increment="increment()"
-        @decrement="decrement()"
-        class="index-menu-card__counter"
       />
-
-      <UIButton
-        v-else
-        color="gray"
-        :class="['index-menu-card__button', { 'index-menu-card__button--arrow' : buttonLabel.icon === 'arrow'}]"
-        @click="productType === 'simple' ? addToCart() : openProduct()"
-      >
-        <UIIcon
-          v-if="buttonLabel.icon === 'add'"
-          :name="buttonLabel.icon"
-        />
-        {{ buttonLabel.text }}
-        <UIIcon
-          v-if="buttonLabel.icon === 'arrow'"
-          :name="buttonLabel.icon"
-        />
-      </UIButton>
     </div>
   </div>
 </template>
@@ -134,6 +103,8 @@ import { useCartStore } from '@/store/cart'
 
 const catalog = useCatalogStore()
 const cart = useCartStore()
+
+const { productInCart } = storeToRefs(cart)
 
 const props = defineProps({
   item: {
@@ -148,7 +119,7 @@ const props = defineProps({
 
 const isFavorite = ref(false)
 
-// Computed
+// <!-- Computed -->
 const productImage = computed(() => {
   return props.item?.images[0] || ''
 })
@@ -161,36 +132,23 @@ const discount = computed(() => {
   return 0
 })
 
-const count = computed(() => {
-  const item = cart.cart.find(item => +item.id === +props.item.id)
-
-  return item?.count || 0
-})
-
 // Тип продукта
 const productType = computed(() => {
   return props.item?.type
 })
 
-const buttonLabel = computed(() => {
-  // const variants = ['variable', 'group_variable', 'group_variable_2']
-
+const currentProductInCart = computed(() => {
   if (productType.value === 'simple') {
-    return {
-      text: 'В корзину',
-      icon: 'add'
-    }
-  } else if (productType.value === 'supplements') {
-    return {
-      text: 'Собрать',
-      icon: 'arrow'
-    }
+    return productInCart.value(+props.item.id)
   }
 
   return {
-    text: 'Выбрать',
-    icon: 'arrow'
+    idx: null
   }
+})
+
+const productCount = computed(() => {
+  return currentProductInCart.value?.item?.count || 0
 })
 
 const isCountable = computed(() => {
@@ -223,9 +181,9 @@ const badges = computed(() => {
   return props.item?.acf['product-badge'] || []
 })
 
-// Methods
+// <!-- Methods -->
 const openProduct = () => {
-  catalog.setProduct(props.item)
+  catalog.setProduct(+props.item.id)
 }
 
 const addToCart = () => {
@@ -233,11 +191,11 @@ const addToCart = () => {
 }
 
 const increment = () => {
-  cart.incrementItem(props.item.id)
+  cart.incrementItem(currentProductInCart.value.idx)
 }
 
 const decrement = () => {
-  cart.decrementItem(props.item.id)
+  cart.decrementItem(currentProductInCart.value.idx)
 }
 </script>
 
@@ -380,18 +338,6 @@ const decrement = () => {
 
     &--gray {
       color: $grayText;
-    }
-  }
-
-  &__button {
-    font-weight: 500;
-
-    &--arrow {
-      ::v-deep(.ui-icon) {
-        svg path {
-          fill: $blackText3;
-        }
-      }
     }
   }
 

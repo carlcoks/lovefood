@@ -20,47 +20,39 @@ export const useCartStore = defineStore('cartStore', {
       }
 
       this.cart.push({
-        ...item,
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        regular_price: item.regular_price,
+        images: item.images,
         count: 1,
+        supplements: item?.supplements || [],
       })
 
       this.addNotification()
     },
 
-    incrementItem (id) {
-      this.cart.find(item => {
-        if (+item.id === +id) {
-          item.count++
-
-          this.addNotification()
-          return true
-        }
-
-        return false
-      })
+    incrementItem (idx) {
+      this.cart[idx].count++
+      this.addNotification()
     },
 
-    decrementItem (id) {
-      this.cart.find((item, i) => {
-        if (+item.id === +id) {
-          if (item.count > 1) {
-            item.count--
-          } else {
-            this.cart.splice(i, 1)
-          }
+    decrementItem (idx) {
+      this.cart[idx].count--
 
-          return true
-        }
-
-        return false
-      })
+      if (this.cart[idx].count === 0) {
+        this.cart.splice(idx, 1)
+      }
     },
 
-    removeFromCart (id) {
-      this.cart.find((item, i) => {
-        if (+item.id === +id) {
-          this.cart.splice(i, 1)
+    removeFromCart (idx) {
+      this.cart.splice(idx, 1)
+    },
 
+    removeSupplementFromProduct (idx, supplementId) {
+      this.cart[idx].supplements.find((item, i) => {
+        if (+item.id === +supplementId) {
+          this.cart[idx].supplements.splice(i, 1)
           return true
         }
 
@@ -131,23 +123,33 @@ export const useCartStore = defineStore('cartStore', {
       }, 0)
     },
 
-    // productInCart: (state) => {
-    //   return (id, supplements) => {
-    //     let idx = null
-    //     const item = state.cart.find((item, i) => {
-    //       if (+item.id === +id) {
-    //         item.supplements
-    //       }
+    getUserById: (state) => {
+      return (userId) => state.users.find((user) => user.id === userId)
+    },
 
-    //       return false
-    //     })
+    productInCart: (state) => {
+      return (id, supplements = []) => {
+        let idx = null
 
-    //     return {
-    //       item,
-    //       idx
-    //     }
-    //   }
-    // }
+        const item = state.cart.find((item, i) => {
+          if (
+            +item.id === +id &&
+            supplements.length === item.supplements.length &&
+            item.supplements.every(itemSupplement => supplements.find(supplement => supplement.id === itemSupplement.id && supplement.count === itemSupplement.count))
+          ) {
+            idx = i
+            return true
+          }
+
+          return false
+        })
+
+        return {
+          item,
+          idx
+        }
+      }
+    }
   },
 
   persist: {

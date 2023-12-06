@@ -86,6 +86,7 @@
 <script setup>
 import { Navigation } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/vue'
+
 import { useCatalogStore } from '@/store/catalog'
 
 const catalogStore = useCatalogStore()

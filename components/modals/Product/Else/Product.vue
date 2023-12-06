@@ -24,42 +24,54 @@
         is-reverse
       />
 
-      <!-- <CommonAddButton /> -->
-
-      <UICounter
-        v-if="productType === 'simple' && count"
-        :count="count"
+      <CommonAddButton
+        :count="productCount"
+        :product-type="productType"
+        is-small
         @increment="increment()"
         @decrement="decrement()"
-        class="modal-product-else-item__counter"
+        @add="addToCart()"
+        @click="openProduct()"
+        class="modal-product-else-item__button"
       />
-      <UIButton
-        v-else
-        color="gray"
-        size="small"
-        :class="['modal-product-else-item__button', { 'modal-product-else-item__button--arrow' : buttonLabel.icon === 'arrow'}]"
-        @click="productType === 'simple' ? addToCart() : openProduct()"
-      >
-        <UIIcon
-          v-if="buttonLabel.icon === 'add'"
-          :name="buttonLabel.icon"
-        />
-        {{ buttonLabel.text }}
-        <UIIcon
-          v-if="buttonLabel.icon === 'arrow'"
-          :name="buttonLabel.icon"
-        />
-      </UIButton>
     </div>
   </div>
 </template>
 
 <script setup>
+import { useCatalogStore } from '@/store/catalog'
+import { useCartStore } from '@/store/cart'
+
+const catalog = useCatalogStore()
+const cart = useCartStore()
+
+const { productInCart } = storeToRefs(cart)
+
 const props = defineProps({
   item: {
     type: Object,
     default: () => ({}),
   },
+})
+
+// <!-- Computed -->
+// Тип продукта
+const productType = computed(() => {
+  return props.item?.type
+})
+
+const currentProductInCart = computed(() => {
+  if (productType.value === 'simple') {
+    return productInCart.value(+props.item.id)
+  }
+
+  return {
+    idx: null
+  }
+})
+
+const productCount = computed(() => {
+  return currentProductInCart.value?.item?.count || 0
 })
 
 const itemImage = computed(() => {
@@ -82,31 +94,22 @@ const discount = computed(() => {
   return 0
 })
 
-// Тип продукта
-const productType = computed(() => {
-  return props.item?.type
-})
+// <!-- Methods -->
+const openProduct = () => {
+  catalog.setProduct(+props.item.id)
+}
 
-const buttonLabel = computed(() => {
-  // const variants = ['variable', 'group_variable', 'group_variable_2']
+const addToCart = () => {
+  cart.addToCart(props.item)
+}
 
-  if (props.productType === 'simple') {
-    return {
-      text: 'В корзину',
-      icon: 'add'
-    }
-  } else if (props.productType === 'supplements') {
-    return {
-      text: 'Собрать',
-      icon: 'arrow'
-    }
-  }
+const increment = () => {
+  cart.incrementItem(currentProductInCart.value.idx)
+}
 
-  return {
-    text: 'Выбрать',
-    icon: 'arrow'
-  }
-})
+const decrement = () => {
+  cart.decrementItem(currentProductInCart.value.idx)
+}
 </script>
 
 <style lang="scss" scoped>
@@ -115,6 +118,8 @@ const buttonLabel = computed(() => {
   align-items: center;
   grid-gap: 20px;
 
+  width: 310px;
+
   padding: 5px;
 
   background: $white;
@@ -122,6 +127,7 @@ const buttonLabel = computed(() => {
 
   &__image {
     position: relative;
+    flex: 0 0 auto;
 
     width: 140px;
     height: 100px;
@@ -157,8 +163,8 @@ const buttonLabel = computed(() => {
   }
 
   &__content {
-    display: flex;
-    flex-direction: column;
+    flex: 1 1 auto;
+    display: grid;
   }
 
   &__title {
@@ -170,11 +176,11 @@ const buttonLabel = computed(() => {
   }
 
   &__button {
-    width: 135px;
+    // width: 135px;
 
     margin-top: 15px;
 
-    font-weight: 500;
+    // font-weight: 500;
   }
 }
 </style>

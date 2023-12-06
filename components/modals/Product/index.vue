@@ -216,23 +216,14 @@
                 is-big
               />
 
-              <UIButton
-                v-if="!count"
-                color="gray"
-                class="modal-product__button"
+              <CommonAddButton
+                :count="productCount"
+                product-type="simple"
                 :disabled="isButtonDisabled"
-                @click="addToCart()"
-              >
-                <UIIcon name="add" />
-                В корзину
-              </UIButton>
-
-              <UICounter
-                v-else
-                :count="count"
                 @increment="increment()"
                 @decrement="decrement()"
-                class="modal-product__counter"
+                @add="addToCart()"
+                class="modal-product__button"
               />
             </div>
           </div>
@@ -242,7 +233,6 @@
       <ModalsProductElse
         v-if="relatedArray.length"
         :related="relatedArray"
-        class="modal-product__else"
       />
     </div>
 
@@ -263,7 +253,8 @@ import { useCartStore } from '@/store/cart'
 const catalog = useCatalogStore()
 const cart = useCartStore()
 
-const { relatedItems } = storeToRefs(catalog)
+const { selectedProduct, relatedItems } = storeToRefs(catalog)
+const { productInCart } = storeToRefs(cart)
 
 const isShow = ref(true)
 const isFavorite = ref(false)
@@ -291,7 +282,7 @@ const supplementsPrice = computed(() => {
 })
 
 const product = computed(() => {
-  return catalog.product
+  return selectedProduct.value
 })
 
 const productImage = computed(() => {
@@ -362,15 +353,25 @@ const productSupplements = computed(() => {
   return productAcf.value['supplements'] || []
 })
 
-// Кол-во добавленных в корзину
-const count = computed(() => {
-  const item = cart.cart.find(item => +item.id === +product.value.id)
-
-  if (item?.supplements?.length) {
-    return 0
+const supplementsArray = computed(() => {
+  const obj = selectedSupplements.value
+  const supplements = []
+  for (const key in obj) {
+    obj[key].forEach(item => {
+      supplements.push(item)
+    })
   }
 
-  return item?.count || 0
+  return supplements
+})
+
+const currentProductInCart = computed(() => {
+  return productInCart.value(+product.value.id, supplementsArray.value)
+})
+
+// Кол-во добавленных в корзину
+const productCount = computed(() => {
+  return currentProductInCart.value?.item?.count || 0
 })
 
 const isButtonDisabled = computed(() => {
@@ -386,32 +387,24 @@ const isButtonDisabled = computed(() => {
   return false
 })
 
-// Methods
+// <!-- Methods -->
 const addToCart = () => {
   if (isButtonDisabled.value) {
     return false
   }
 
-  const obj = selectedSupplements.value
-  const supplements = []
-  for (const key in obj) {
-    obj[key].forEach(item => {
-      supplements.push(item)
-    })
-  }
-
   cart.addToCart({
     ...product.value,
-    supplements
+    supplements: supplementsArray.value
   })
 }
 
 const increment = () => {
-  cart.incrementItem(product.value.id)
+  cart.incrementItem(currentProductInCart.value.idx)
 }
 
 const decrement = () => {
-  cart.decrementItem(product.value.id)
+  cart.decrementItem(currentProductInCart.value.idx)
 }
 
 // Открыть модалку для выбора добавок
@@ -644,26 +637,7 @@ const close = () => {
   }
 
   &__button {
-    width: 240px;
-
-    font-weight: 500;
-  }
-
-  &__counter {
     max-width: 240px;
-    height: 48px;
-  }
-
-  &__else {
-    display: flex;
-    flex-direction: column;
-    grid-gap: 30px;
-
-    padding: 30px 20px;
-
-    @include mq($bp-small) {
-      padding: 30px 30px 40px;
-    }
   }
 }
 

@@ -1,18 +1,29 @@
 <template>
   <UICounter
-    v-if="productType === 'simple' && count"
+    v-if="count"
     :count="count"
     @increment="increment()"
     @decrement="decrement()"
-    class="add-button"
+    :class="['add-button add-button--counter active', { 'add-button--small' : isSmall }]"
   />
 
   <button
+    v-else
     type="submit"
-    class="add-button"
+    :disabled="disabled"
+    :class="[
+      'add-button',
+      {
+        'add-button--reverse' : props.productType === 'simple',
+        'add-button--small' : isSmall
+      }
+    ]"
     @click.prevent="click()"
   >
-
+    {{ buttonLabel }}
+    <UIIcon
+      :name="buttonIcon"
+    />
   </button>
 </template>
 
@@ -27,40 +38,103 @@ const props = defineProps({
     type: String,
     default: '',
   },
+
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
+
+  isSmall: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emits = defineEmits(['increment', 'decrement', 'click', 'add'])
 
 // <!-- Computed -->
 const buttonLabel = computed(() => {
-  // const variants = ['variable', 'group_variable', 'group_variable_2']
+  switch (props.productType) {
+    case 'simple':
+      return 'В корзину'
+    case 'supplements':
+      return 'Собрать'
+    default:
+      return 'Выбрать'
+  }
+})
+
+const buttonIcon = computed(() => {
+  let icon = 'arrow'
 
   if (props.productType === 'simple') {
-    return {
-      text: 'В корзину',
-      icon: 'add'
-    }
-  } else if (props.productType === 'supplements') {
-    return {
-      text: 'Собрать',
-      icon: 'arrow'
-    }
+    icon = 'add'
   }
 
-  return {
-    text: 'Выбрать',
-    icon: 'arrow'
-  }
+  return icon
 })
 
 // <!-- Methods -->
 const click = () => {
+  if (props.productType === 'simple') {
+    emits('add')
+  } else {
+    emits('click')    
+  }
+}
 
+const increment = () => {
+  emits('increment')
+}
+
+const decrement = () => {
+  emits('decrement')
 }
 </script>
 
 <style lang="scss" scoped>
 .add-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  grid-gap: 10px;
 
+  width: 100%;
+  height: 48px;
+
+  padding: 0 20px;
+
+  @include text_normal;
+  font-weight: 500;
+
+  background: $grayBg;
+  border: 2px solid transparent;
+  border-radius: 14px;
+
+  transition: border-color 0.3s, background-color 0.3s;
+
+  &--reverse {
+    flex-direction: row-reverse;
+  }
+
+  &--counter {
+    justify-content: space-between;
+  }
+
+  &--small {
+    height: 32px;
+
+    @include text_small;
+    font-weight: 500;
+  }
+
+  &:hover:enabled, &.active {
+    background: $white;
+    border-color: $yellowDark;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
 }
 </style>

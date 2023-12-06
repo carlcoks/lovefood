@@ -1,12 +1,28 @@
 <template>
   <div class="modal-product-else">
-    <p class="modal-product-else__title">
-      Что нибудь ещё?
-    </p>
+    <div class="modal-product-else__header">
+      <p class="modal-product-else__title">
+        Что нибудь ещё?
+      </p>
+
+      <div class="modal-product-else__arrows">
+        <div ref="prev" class="modal-product-else__arrow modal-product-else__arrow--prev">
+          <UIIcon name="arrow" />
+        </div>
+        <div ref="next" class="modal-product-else__arrow modal-product-else__arrow--next">
+          <UIIcon name="arrow" />
+        </div>
+      </div>
+    </div>
 
     <Swiper
+      :modules="[Navigation]"
       :slides-per-view="'auto'"
       :space-between="15"
+      :navigation="{
+        prevEl: prev,
+        nextEl: next,
+      }"
       class="modal-product-else__slider"
     >
       <SwiperSlide
@@ -23,6 +39,7 @@
 </template>
 
 <script setup>
+import { Navigation } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 
 defineProps({
@@ -31,10 +48,28 @@ defineProps({
     default: () => ([]),
   },
 })
+
+const prev = ref(null)
+const next = ref(null)
 </script>
 
 <style lang="scss" scoped>
 .modal-product-else {
+  display: grid;
+  grid-gap: 20px;
+
+  padding: 20px;
+
+  @include mq($bp-small) {
+    padding: 20px 30px 30px;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
   &__title {
     @include h2;
     color: $black;
@@ -48,7 +83,36 @@ defineProps({
   &__slide {
     width: auto;
   }
+
+  &__arrows {
+    display: flex;
+    align-items: center;
+    grid-gap: 20px;
+  }
+
+  &__arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 48px;
+    height: 48px;
+
+    background: $white;
+    border-radius: 14px;
+    border: 2px solid $yellow;
+
+    cursor: pointer;
+
+    &--prev {
+      .ui-icon {
+        transform: rotate(180deg);
+      }
+    }
+
+    &.swiper-button-lock {
+      display: none;
+    }
+  }
 }
-
-
 </style>

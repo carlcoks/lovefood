@@ -49,7 +49,7 @@
     </div>
 
     <div
-      v-if="item?.supplements?.length"
+      v-if="item.supplements.length"
       class="modal-cart-item__supplements"
     >
       <div
@@ -68,7 +68,7 @@
             <button
               type="button"
               class="modal-cart-item-supplement__remove"
-              @click.prevent
+              @click.prevent="removeSupplement(supplement.id)"
             >
               <UIIcon name="close" />
             </button>
@@ -86,6 +86,7 @@
 import { useCartStore } from '@/store/cart'
 
 const cart = useCartStore()
+const { productInCart } = storeToRefs(cart)
 
 const props = defineProps({
   item: {
@@ -95,20 +96,20 @@ const props = defineProps({
 })
 
 // Computed
+const currentProductInCart = computed(() => {
+  return productInCart.value(+props.item.id, props.item.supplements)
+})
+
 const productImage = computed(() => {
   return props.item?.images[0] || ''
 })
 
 const supplementsPrice = computed(() => {
-  if (props.item?.supplements?.length) {
-    return props.item.supplements.reduce((acc, item) => {
-      acc += item.count * item.price
+  return props.item.supplements.reduce((acc, item) => {
+    acc += item.count * item.price
 
-      return acc
-    }, 0)
-  }
-
-  return 0
+    return acc
+  }, 0)
 })
 
 const itemRegularPrice = computed(() => {
@@ -121,15 +122,19 @@ const itemPrice = computed(() => {
 
 // Methods
 const removeFromCart = () => {
-  cart.removeFromCart(props.item.id)
+  cart.removeFromCart(+currentProductInCart.value.idx)
 }
 
 const increment = () => {
-  cart.incrementItem(props.item.id)
+  cart.incrementItem(+currentProductInCart.value.idx)
 }
 
 const decrement = () => {
-  cart.decrementItem(props.item.id)
+  cart.decrementItem(+currentProductInCart.value.idx)
+}
+
+const removeSupplement = (supplementId: number) => {
+  cart.removeSupplementFromProduct(+currentProductInCart.value.idx, supplementId)
 }
 </script>
 

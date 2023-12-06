@@ -9,7 +9,7 @@
     <div
       :class="[
         'modal-cart',
-        { 'modal-cart--empty' : !cartItems.length }
+        { 'modal-cart--empty' : !cartItemsLength }
       ]"
     >
       <a
@@ -21,7 +21,7 @@
       </a>
       
       <div
-        v-if="cartItems.length"
+        v-if="cartItemsLength"
         class="modal-cart__main"
       >
         <div class="modal-cart__header">
@@ -133,7 +133,7 @@ import { useCartStore } from '@/store/cart'
 
 const cartStore = useCartStore()
 
-const { cartItems, cartItemsRegularPrice, cartItemsPrice } = storeToRefs(cartStore)
+const { cartItems, cartItemsLength, cartItemsRegularPrice, cartItemsPrice } = storeToRefs(cartStore)
 
 const isShow = ref(true)
 

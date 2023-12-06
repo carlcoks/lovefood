@@ -3,7 +3,7 @@ import { useCommonStore } from '@/store/common'
 export const useCatalogStore = defineStore('catalogStore', {
   state: () => ({
     catalog: [],
-    product: null, // select product for modal
+    selectedProductId: null, // select product for modal
   }),
 
   actions: {
@@ -24,7 +24,7 @@ export const useCatalogStore = defineStore('catalogStore', {
     },
 
     setProduct (data = null) {
-      this.product = data
+      this.selectedProductId = data
     }
   },
 
@@ -81,8 +81,25 @@ export const useCatalogStore = defineStore('catalogStore', {
       }
     },
 
+    selectedProduct: (state) => {
+      let data = null
+      const productId = state.selectedProductId
+
+      state.catalog.find(item => {
+        item.products.find(product => {
+          if (+product.id === +productId) {
+            data = product
+            return true
+          }
+          return false
+        })
+      })
+
+      return data
+    },
+
     isShowProductModal: (state) => {
-      return !!state.product
+      return !!state.selectedProductId
     },
   },
 })
