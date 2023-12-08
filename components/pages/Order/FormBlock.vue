@@ -17,8 +17,14 @@
           type="text"
           v-model="modelValue.name"
           placeholder="Введите имя"
-          class="page-order-form-input__area"
+          :class="['page-order-form-input__area', { 'page-order-form-input__area--error' : !!modelValue.nameError }]"
         >
+        <span
+          v-if="modelValue.nameError"
+          class="page-order-form-input__error"
+        >
+          {{ modelValue.nameError }}
+        </span>
       </div>
 
       <div class="page-order-form-input">
@@ -35,8 +41,14 @@
           data-maska="+7 (###) ###-##-##"
           v-model="modelValue.phone"
           placeholder="Введите номер телефона"
-          class="page-order-form-input__area"
+          :class="['page-order-form-input__area', { 'page-order-form-input__area--error' : !!modelValue.phoneError }]"
         >
+        <span
+          v-if="modelValue.phoneError"
+          class="page-order-form-input__error"
+        >
+          {{ modelValue.phoneError }}
+        </span>
       </div>
     </div>
   </div>
@@ -76,6 +88,8 @@ const phone = ref('')
 }
 
 .page-order-form-input {
+  position: relative;
+
   display: grid;
   grid-gap: 12px;
 
@@ -97,6 +111,19 @@ const phone = ref('')
     background: $grayBg2;
     border: 1px solid $grayText2;
     border-radius: 14px;
+
+    &--error {
+      border-color: $red;
+    }
+  }
+
+  &__error {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+
+    @include text_mini;
+    color: $red;
   }
 }
 </style>

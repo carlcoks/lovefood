@@ -23,7 +23,7 @@
 <script setup>
 defineProps({
   count: {
-    type: Number,
+    type: [String, Number],
     default: 1,
   }
 })

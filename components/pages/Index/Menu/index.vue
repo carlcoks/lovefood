@@ -19,17 +19,19 @@
               {{ block.name }}
             </h2>
 
-            <div
-              v-if="block.id === 140 || block.id === 16"
-              class="index-menu__arrows"
-            >
-              <div :ref="block.id === 140 ? 'prev1' : 'prev2'" class="index-menu__arrow index-menu__arrow--prev">
-                <UIIcon name="arrow" />
+            <client-only>
+              <div
+                v-if="block.id === 140 || block.id === 16"
+                class="index-menu__arrows"
+              >
+                <div :ref="block.id === 140 ? 'prev1' : 'prev2'" class="index-menu__arrow index-menu__arrow--prev">
+                  <UIIcon name="arrow" />
+                </div>
+                <div :ref="block.id === 140 ? 'next1' : 'next2'" class="index-menu__arrow index-menu__arrow--next">
+                  <UIIcon name="arrow" />
+                </div>
               </div>
-              <div :ref="block.id === 140 ? 'next1' : 'next2'" class="index-menu__arrow index-menu__arrow--next">
-                <UIIcon name="arrow" />
-              </div>
-            </div>
+            </client-only>
           </div>
 
           <Swiper

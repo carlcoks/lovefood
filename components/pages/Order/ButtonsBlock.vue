@@ -3,6 +3,7 @@
     <UIButton
       color="gray"
       class="page-order-buttons__button page-order-buttons__button--back"
+      @click="navigateTo('/')"
     >
       <UIIcon
         name="arrow"

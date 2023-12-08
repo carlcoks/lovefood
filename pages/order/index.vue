@@ -60,7 +60,9 @@
             <div class="page-order__row">
               <PagesOrderPromocodeBlock />
 
-              <PagesOrderBonusBlock />
+              <PagesOrderBonusBlock
+                @submit="isShowBonusesModal = true"
+              />
             </div>
 
             <PagesOrderPaymentsBlock
@@ -114,6 +116,11 @@
         />
       </div>
     </div>
+
+    <LazyModalsBonuses
+      v-if="isShowBonusesModal"
+      @close="isShowBonusesModal = false"
+    />
   </main>
 </template>
 
@@ -141,6 +148,7 @@ const deliveryTimes = [
   'Другое время',
 ]
 
+const isShowBonusesModal = ref(false)
 const isLoading = ref(false)
 const deliveryType = ref('delivery')
 const deliveryTime = ref(0)
@@ -154,6 +162,14 @@ const userData = reactive({
 
 const paymentMethods = ref([])
 const paymentMethod = ref(null)
+
+watch(() => userData.name, () => {
+  userData.nameError = ''
+})
+
+watch(() => userData.phone, () => {
+  userData.phoneError = ''
+})
 
 const user = computed(() => userStore.user)
 const selectedLocation = computed(() => commonStore.selectedLocation)
@@ -172,6 +188,10 @@ const order = async () => {
   }
   if (!userData.phone) {
     userData.phoneError = 'Введите телефон'
+    return false
+  }
+  if (userData.phone.length !== 18) {
+    userData.phoneError = 'Невалидный номер телефона'
     return false
   }
 

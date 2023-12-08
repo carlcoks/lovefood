@@ -18,16 +18,17 @@
             Город, улица, дом
           </p>
 
-          <p class="modal-receipt-delivery-form__navigate">
+          <!-- <p class="modal-receipt-delivery-form__navigate">
             <UIIcon
               name="navigate"
             />
             определить
-          </p>
+          </p> -->
         </div>
         <div class="modal-receipt-delivery-form__lines">
           <div class="modal-receipt-delivery-form__line">
             <UIInput
+              v-model="address"
               placeholder="Адрес"
               color="gray"
             />
@@ -98,6 +99,20 @@
 </template>
 
 <script setup>
+const address = ref('')
+
+// watch(() => address.value, (text) => {
+//   if (text) {
+//     startSearch()
+//   }
+// })
+
+// const startSearch = async () => {
+//   const data = await ymaps3.search({
+//     text: [61.295738462230666, 55.165532432072844],
+//     type: ['toponyms']
+//   })
+// }
 </script>
 
 <style lang="scss" scoped>

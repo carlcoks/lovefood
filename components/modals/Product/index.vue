@@ -63,15 +63,18 @@
             />
           </div>
 
-          <div class="modal-product-variants">
-            <div class="modal-product-variants__line">
+          <div class="modal-product-attributes">
+            <div
+              v-for="attribute in productAttributes"
+              :key="attribute.id"
+              class="modal-product-attributes__line"
+            >
               <button
-                v-for="(acfVariant, i) in acfVariations"
-                :key="i"
-                :class="['modal-product-variants__button', { 'active' : size === 0 }]"
-                @click.prevent="size = i"
+                v-for="(option, o) in attribute.options"
+                :key="o"
+                :class="['modal-product-attributes__button']"
               >
-                {{ acfVariant.product_name_short }}
+                {{ option }}
               </button>
             </div>
           </div>
@@ -179,7 +182,7 @@
           <div class="modal-product__footer">
             <div class="modal-product__footer-line">
               <p
-                v-if="isCountable"
+                v-if="isCountable && productWeight"
                 class="modal-product-weight"
               >
                 <span>
@@ -231,8 +234,8 @@
       </div>
 
       <ModalsProductElse
-        v-if="relatedArray.length"
-        :related="relatedArray"
+        v-if="elseArray.length"
+        :related="elseArray"
       />
     </div>
 
@@ -305,8 +308,8 @@ const discount = computed(() => {
   return 0
 })
 
-const relatedArray = computed(() => {
-  return relatedItems.value(product.value.related_ids)
+const elseArray = computed(() => {
+  return relatedItems.value(product.value.cross_sell_ids)
 })
 
 const isCountable = computed(() => {
@@ -346,6 +349,10 @@ const productAcf = computed(() => {
 
 const badges = computed(() => {
   return productAcf.value['product-badge'] || []
+})
+
+const productAttributes = computed(() => {
+  return product.value?.attributes || []
 })
 
 // Добавки к блюду
@@ -636,23 +643,22 @@ const close = () => {
   }
 }
 
-.modal-product-variants {
+.modal-product-attributes {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  grid-gap: 15px;
+  grid-gap: 10px;
 
   &__line {
     display: flex;
     align-items: center;
-    // grid-gap: 3px;
+    grid-gap: 2px;
     flex-wrap: wrap;
-    grid-gap: 3px 15px;
 
     padding: 3px;
 
     border-radius: 117px;
-    // background: $grayBg2;
+    background: $grayBg;
   }
 
   &__button {

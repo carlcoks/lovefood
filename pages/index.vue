@@ -15,6 +15,11 @@
 </template>
 
 <script setup>
+import { useCatalogStore } from '@/store/catalog'
+
+const catalogStore = useCatalogStore()
+
+catalogStore.getCatalog()
 </script>
 
 <style lang="scss" scoped>

@@ -5,13 +5,13 @@
         Состав заказа
       </p>
 
-      <a
-        href="#"
+      <button
+        type="button"
         class="page-order-composition__edit"
-        @click.prevent=""
+        @click.prevent="cartStore.toggleShowCartModal(true)"
       >
         Изменить
-      </a>
+      </button>
     </div>
     <ul class="page-order-composition__list">
       <PagesOrderCompositionProduct

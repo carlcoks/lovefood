@@ -15,7 +15,11 @@
         </p>
       </div>
 
-      <button class="page-order-bonus__button">
+      <button
+        type="submit"
+        class="page-order-bonus__button"
+        @click.prevent="emits('submit')"
+      >
         Списать бонусы
       </button>
     </div>
@@ -23,6 +27,7 @@
 </template>
 
 <script setup>
+const emits = defineEmits(['submit'])
 </script>
 
 <style lang="scss" scoped>

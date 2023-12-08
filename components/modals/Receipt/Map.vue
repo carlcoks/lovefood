@@ -13,7 +13,7 @@
     <yandex-map-default-scheme-layer/>
     <yandex-map-listener
       :settings="{
-        onClick: () => currentMarker = null
+        onClick: onMapClick
       }"
     />
 
@@ -21,63 +21,83 @@
       <yandex-map-zoom-control />
     </yandex-map-controls>
 
-    <yandex-map-marker
-      v-for="item in markers"
+    <yandex-map-feature
+      v-for="item in zones"
       :key="item.id"
-      :settings="{
-        coordinates: item.coordinates,
-        id: item.id,
-        onClick: () => {emits('update', item)},
-      }"
-    >
-      <div
-        class="modal-receipt-map-marker"
-      >
-        <UIIcon
-          name="metka-red"
-          class="modal-receipt-map-marker__icon"
-        />
+      :settings="item"
+    />
 
+    <yandex-map-collection>
+      <yandex-map-marker
+        v-if="deliveryMarker"
+        :settings="{
+          coordinates: deliveryMarker.coordinates,
+          id: deliveryMarker.id,
+        }"
+      >
         <div
-          v-if="currentMarker?.id === item.id"
-          class="modal-receipt-map-popup"
+          class="modal-receipt-map-marker modal-receipt-map-marker--delivery"
         >
-          <p class="modal-receipt-map-popup__title">
-            {{ item.name }}
-          </p>
-          <p class="modal-receipt-map-popup__address">
-            {{ item.address }}
-          </p>
-          <p class="modal-receipt-map-popup__time">
-            <UIIcon
-              name="clock-filled"
-              class="modal-receipt-map-popup__icon"
-            />
-            <span v-html="item.working_time" />
-          </p>
+          <UIIcon
+            name="metka"
+            class="modal-receipt-map-marker__icon"
+          />
         </div>
-      </div>
-    </yandex-map-marker>
+      </yandex-map-marker>
+
+      <yandex-map-marker
+        v-for="item in markers"
+        :key="item.id"
+        :settings="{
+          coordinates: item.coordinates,
+          id: item.id,
+          onClick: () => {emits('update', item)},
+        }"
+      >
+        <div
+          class="modal-receipt-map-marker"
+        >
+          <UIIcon
+            name="metka"
+            class="modal-receipt-map-marker__icon"
+          />
+
+          <div
+            v-if="currentMarker?.id === item.id"
+            class="modal-receipt-map-popup"
+          >
+            <p class="modal-receipt-map-popup__title">
+              {{ item.name }}
+            </p>
+            <p class="modal-receipt-map-popup__address">
+              {{ item.address }}
+            </p>
+            <p class="modal-receipt-map-popup__time">
+              <UIIcon
+                name="clock-filled"
+                class="modal-receipt-map-popup__icon"
+              />
+              <span v-html="item.working_time" />
+            </p>
+          </div>
+        </div>
+      </yandex-map-marker>
+    </yandex-map-collection>
   </yandex-map>
 </template>
 
 <script setup lang="ts">
-type Coordinates = Array<String | Number>
-
-interface Marker {
-  id: string;
-  coordinates: Coordinates
-}
-
-import type { YMap } from '@yandex/ymaps3-types'
+import type { YMap, YMapFeatureProps } from '@yandex/ymaps3-types'
 import {
   YandexMap,
   YandexMapDefaultFeaturesLayer,
   YandexMapDefaultSchemeLayer,
+  YandexMapCollection,
   YandexMapMarker,
   YandexMapControls,
   YandexMapZoomControl,
   YandexMapListener,
+  YandexMapFeature,
   VueYandexMaps,
 } from 'vue-yandex-maps'
 
@@ -98,14 +118,15 @@ const props = defineProps({
   },
 })
 
-const emits = defineEmits(['update'])
+const emits = defineEmits(['update', 'setCoords'])
 
 const map = shallowRef<null | YMap>(null)
-const center = ref<Coordinates>([61.419145, 55.166572])
+const center = ref([61.402554, 55.159902])
 const zoom = shallowRef<number>(12)
+const deliveryMarker = ref(null)
 const currentMarker = ref(null)
 
-const markers = ref<Marker[]>([])
+const markers = ref([])
 
 // Watch
 watch(() => props.deliveryType, () => {
@@ -122,17 +143,30 @@ watch(() => props.currentAddress, (data) => {
 
 // Computed
 const pickupLocations = computed(() => commonStore.pickupLocations)
-
-const currentLocations = computed(() => {
-  switch (props.deliveryType) {
-    case 'pickup':
-      return pickupLocations.value
-    default:
-      return []
+const zones = computed(() => {
+  if (props.deliveryType === 'delivery') {
+    // console.log('zones', commonStore.zones)
+    return commonStore.zones
   }
+  return []
 })
 
 // <!-- Methods -->
+const onMapClick = (obj, e) => {
+  currentMarker.value = null
+
+  if (obj) {
+
+  }
+
+  if (e && props.deliveryType === 'delivery') {
+    const coords = e.coordinates
+    deliveryMarker.value.coordinates = coords
+
+    emits('setCoords', coords)
+  }
+}
+
 const goToMarker = (item) => {
   currentMarker.value = item
 
@@ -144,13 +178,23 @@ const goToMarker = (item) => {
 }
 
 const setMarkers = () => {
-  markers.value = currentLocations.value
+  markers.value = []
+  deliveryMarker.value = null
 
-  setCenter()
+  if (props.deliveryType === 'delivery') {
+    deliveryMarker.value = {
+      id: '999',
+      coordinates: center.value
+    }
+  } else if (props.deliveryType === 'pickup') {
+    markers.value = pickupLocations.value
+
+    setCenter()
+  }
 }
 
 const setCenter = () => {
-  const bounds = map.value?.bounds
+  const bounds = map.value?.bounds || [center.value, center.value]
 
   map.value?.setLocation({
     bounds,
@@ -177,10 +221,26 @@ onMounted(() => {
 
   transform: translate(-50%, calc(-50% - 25px));
 
+  &--delivery {
+    .modal-receipt-map-marker {
+      &__icon {
+        ::v-deep svg {
+          path {
+            fill: $blackText;
+          }
+        }
+      }
+    }
+  }
+
   &__icon {
     ::v-deep svg {
       width: 50px;
       height: 50px;
+
+      path {
+        fill: $orange;
+      }
     }
   }
 }

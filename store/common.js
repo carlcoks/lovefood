@@ -8,7 +8,9 @@ export const useCommonStore = defineStore('commonStore', {
     deliveryType: null, // 'pickup' | 'delivery' | 'lounge' | null
     // deliveryLocations: [],
     // pickupLocations: [],
-    locations: [],
+    conditions: [], // точки доставки
+    zones: [], // зоны доставки
+    pickups: [], // точки самовывоза
     selectedLocation: null, // выбранная локация
 
     isShowReceiptModal: false,
@@ -19,10 +21,55 @@ export const useCommonStore = defineStore('commonStore', {
   }),
 
   actions: {
-    async getLocations () {
+    async getPickups () {
       const { data } = await useMyFetch('/wp-json/systeminfo/v1/shipping_methods')
 
-      this.locations = data?.value || []
+      this.pickups = data?.value || []
+    },
+
+    async getDelivery () {
+      const data = await Promise.allSettled([
+        useMyFetch('/wp-json/systeminfo/v1/delivery'),
+        useMyFetch('/wp-json/system/map')
+      ])
+
+      const delivery = data[0]?.value?.data?.value || null
+      const zones = data[1]?.value?.data?.value || null
+
+      if (delivery) {
+        this.conditions = delivery?.conditions || []
+      }
+
+      if (zones) {
+        const features = zones?.map?.features || []
+
+        this.zones = features.map(item => {
+          if (item.geometry.type === 'Point') {
+            return false
+          }
+
+          const style = {
+            fill: item.properties.fill,
+            fillOpacity: item.properties['fill-opacity'],
+            stroke: [
+              {
+                opacity: item.properties['stroke-opacity'],
+                color: item.properties.stroke,
+                width: item.properties['stroke-width'],
+              },
+            ],
+          }
+
+          const zone = item.properties.description.split('#cid=')
+
+          return {
+            id: item.id.toString(),
+            geometry: item.geometry,
+            style,
+            zone: zone && zone[1] || '',
+          }
+        }).filter(item => item)
+      }
     },
 
     setDeliveryType (value) {
@@ -56,7 +103,7 @@ export const useCommonStore = defineStore('commonStore', {
 
   getters: {
     pickupLocations: (state) => {
-      const array = state.locations.find(item => item.id === 'local_pickup')?.pickup_locations || []
+      const array = state.pickups.find(item => item.id === 'local_pickup')?.pickup_locations || []
 
       return array.map(item => {
         return {
