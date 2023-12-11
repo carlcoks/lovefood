@@ -8,7 +8,9 @@
 
 <script setup>
 import { useCommonStore } from '@/store/common'
+import { useCatalogStore } from '@/store/catalog'
 
+const catalogStore = useCatalogStore()
 const commonStore = useCommonStore()
 
 const setWindowStore = () => {
@@ -21,4 +23,6 @@ onMounted(() => {
   setWindowStore()
   window.addEventListener('resize', setWindowStore)
 })
+
+catalogStore.getCatalog()
 </script>
