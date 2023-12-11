@@ -58,12 +58,15 @@
             </p>
 
             <div
-              v-html="product.description"
+              v-html="productDescription"
               class="modal-product__description"
             />
           </div>
 
-          <div class="modal-product-attributes">
+          <div
+            v-if="productAttributes.length"
+            class="modal-product-attributes"
+          >
             <div
               v-for="attribute in productAttributes"
               :key="attribute.id"
@@ -72,9 +75,26 @@
               <button
                 v-for="(option, o) in attribute.options"
                 :key="o"
-                :class="['modal-product-attributes__button']"
+                :class="['modal-product-attributes__button', { 'active' : product.variations[o] === currentVariableId }]"
+                @click="setCurrentVariableId(product.variations[o])"
               >
                 {{ option }}
+              </button>
+            </div>
+          </div>
+
+          <div
+            v-if="variations.length"
+            class="modal-product-attributes"
+          >
+            <div class="modal-product-attributes__line">
+              <button
+                v-for="variation in variations"
+                :key="variation.product"
+                :class="['modal-product-attributes__button', { 'active' : variation.product === product.id }]"
+                @click.prevent="setVariation(variation.product)"
+              >
+                {{ variation.product_name_short }}
               </button>
             </div>
           </div>
@@ -253,10 +273,10 @@
 import { useCatalogStore } from '@/store/catalog'
 import { useCartStore } from '@/store/cart'
 
-const catalog = useCatalogStore()
+const catalogStore = useCatalogStore()
 const cart = useCartStore()
 
-const { selectedProduct, relatedItems } = storeToRefs(catalog)
+const { selectedProduct, relatedItems } = storeToRefs(catalogStore)
 const { productInCart } = storeToRefs(cart)
 
 const isShow = ref(true)
@@ -265,9 +285,8 @@ const isShowSupplementsModal = ref(false) // Модалка для добаво�
 const currentSupplement = ref(null) // выбранная категории добавок
 const currentSupplementKey = ref(null) // ключ выбранной категории добавок
 const selectedSupplements = ref({}) // Все выбранные добавки
-
-const size = ref(0)
-const type = ref(1)
+const variations = ref([])
+const currentVariableId = ref(null)
 
 // Computed
 const supplementsPrice = computed(() => {
@@ -288,21 +307,55 @@ const product = computed(() => {
   return selectedProduct.value
 })
 
+const currentVariable = computed(() => {
+  if (currentVariableId.value && product.value.product_variations_data.length) {
+    return product.value.product_variations_data.find(item => item.id === currentVariableId.value)
+  }
+
+  return null
+})
+
+const productType = computed(() => {
+  return product.value.type
+})
+
+const productDescription = computed(() => {
+  if (currentVariable.value) {
+    return currentVariable.value.description
+  }
+
+  return product.value.description
+})
+
 const productImage = computed(() => {
+  if (currentVariable.value) {
+    return currentVariable.value.image
+  }
+
   return product.value?.images[0] || ''
 })
 
 const productPrice = computed(() => {
-  return +supplementsPrice.value + +product.value.price
+  let price = +product.value.price
+  if (currentVariable.value) {
+    price = +currentVariable.value.price
+  }
+
+  return +supplementsPrice.value + price
 })
 
 const productRegularPrice = computed(() => {
-  return +supplementsPrice.value + +product.value.regular_price
+  let regular_price = +product.value.regular_price
+  if (currentVariable.value) {
+    regular_price = +currentVariable.value.regular_price
+  }
+
+  return +supplementsPrice.value + regular_price
 })
 
 const discount = computed(() => {
   if (+productPrice.value !== +productRegularPrice.value) {
-    return 100 - (productPrice.value / productRegularPrice.value * 100)
+    return parseInt((100 - (productPrice.value / productRegularPrice.value * 100)) * 100) / 100
   }
 
   return 0
@@ -373,17 +426,19 @@ const supplementsArray = computed(() => {
 })
 
 const currentProductInCart = computed(() => {
-  return productInCart.value(+product.value.id, supplementsArray.value)
+  return productInCart.value(+product.value.id, supplementsArray.value, currentVariableId.value)
 })
 
 const isButtonDisabled = computed(() => {
   if (productSupplements.value.length) {
-    return productSupplements.value.find((item, i) => {
+    const isset = productSupplements.value.find((item, i) => {
       if (item.supplement_required === 'yes' && !selectedSupplements.value[i]?.length) {
         return true
       }
       return false
     })
+
+    return !!isset
   }
 
   return false
@@ -395,10 +450,16 @@ const addToCart = () => {
     return false
   }
 
-  cart.addToCart({
+  const obj = {
     ...product.value,
     supplements: supplementsArray.value
-  })
+  }
+
+  if (currentVariable.value) {
+    obj.variation_id = currentVariableId.value
+  }
+
+  cart.addToCart(obj)
 }
 
 const increment = () => {
@@ -429,13 +490,40 @@ const selectSupplemets = (data) => {
   closeSupplementsModal()
 }
 
+const setVariation = (id) => {
+  catalogStore.setProduct(id)
+}
+
+const setCurrentVariableId = (id) => {
+  currentVariableId.value = id
+}
+
 const closeModal = () => {
   isShow.value = false
 }
 
 const close = () => {
-  catalog.setProduct(null)
+  catalogStore.setProduct(null)
 }
+
+onMounted(() => {
+  if (productType.value === 'variable') {
+    currentVariableId.value = product.value.variations[0]
+  } else if (productType.value === 'group_variable' ) {
+    const variationsArray = product.value.variations
+
+    if (variationsArray.length) {
+      variations.value = variationsArray
+
+      let activeId = variationsArray.find(item => item.default)?.product || null
+      if (!activeId) {
+        activeId = variationsArray[0].product
+      }
+
+      catalogStore.setProduct(activeId)
+    }
+  }
+})
 </script>
 
 <style lang="scss" scoped>

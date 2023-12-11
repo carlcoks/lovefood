@@ -29,6 +29,7 @@ export const useCartStore = defineStore('cartStore', {
         measure_unit: item.measure_unit,
         portion_nat_size: item.portion_nat_size,
         supplements: item?.supplements || [],
+        variation_id: item?.variation_id || null
       })
 
       this.addNotification()
@@ -130,12 +131,13 @@ export const useCartStore = defineStore('cartStore', {
     },
 
     productInCart: (state) => {
-      return (id, supplements = []) => {
+      return (id, supplements = [], variationId = null) => {
         let idx = null
 
         const item = state.cart.find((item, i) => {
           if (
             +item.id === +id &&
+            (+item?.variation_id || null) === +variationId &&
             supplements.length === item.supplements.length &&
             item.supplements.every(itemSupplement => supplements.find(supplement => supplement.id === itemSupplement.id && supplement.count === itemSupplement.count))
           ) {

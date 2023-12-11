@@ -116,7 +116,7 @@ const products = computed(() => {
 
   return products.map(item => {
     return ingredients.value.find(ingredient => +ingredient.id === +item)
-  })
+  }).filter(item => item)
 })
 
 // Кол-во выбранных
