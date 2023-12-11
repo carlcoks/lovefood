@@ -118,7 +118,7 @@ const props = defineProps({
   },
 })
 
-const emits = defineEmits(['update', 'setCoords'])
+const emits = defineEmits(['update', 'setDeliveryCoords', 'setDeliveryZone'])
 
 const map = shallowRef<null | YMap>(null)
 const center = ref([61.402554, 55.159902])
@@ -153,17 +153,23 @@ const zones = computed(() => {
 
 // <!-- Methods -->
 const onMapClick = (obj, e) => {
+  console.log('obj', obj)
+  console.log('e', e)
+
   currentMarker.value = null
-
-  if (obj) {
-
-  }
 
   if (e && props.deliveryType === 'delivery') {
     const coords = e.coordinates
+    let zone = null
+
     deliveryMarker.value.coordinates = coords
 
-    emits('setCoords', coords)
+    if (obj && obj.type && obj.type === 'feature') {
+      zone = obj.entity._props.zone
+    }
+
+    emits('setDeliveryCoords', coords)
+    emits('setDeliveryZone', zone)
   }
 }
 

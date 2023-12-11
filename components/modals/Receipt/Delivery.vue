@@ -27,11 +27,25 @@
         </div>
         <div class="modal-receipt-delivery-form__lines">
           <div class="modal-receipt-delivery-form__line">
-            <UIInput
-              v-model="address"
-              placeholder="Адрес"
-              color="gray"
-            />
+            <div class="modal-receipt-delivery-form-input">
+              <input
+                v-model="address"
+                type="text"
+                placeholder="Адрес"
+                :class="[
+                  'modal-receipt-delivery-form-input__area',
+                  {
+                    'modal-receipt-delivery-form-input__area--error' : addressError
+                  }
+                ]"
+              >
+              <span
+                v-if="addressError"
+                class="modal-receipt-delivery-form-input__error"
+              >
+                Ваш адрес вне зоны доставки
+              </span>
+            </div>
           </div>
           <div class="modal-receipt-delivery-form__line modal-receipt-delivery-form__line--cols">
             <UIInput
@@ -68,29 +82,76 @@
           <UIIcon name="delivery" />
         </div>
         <div class="modal-receipt-delivery-info__content">
-          <div class="modal-receipt-delivery-info__line">
+          <div
+            v-if="!addressError && !condition"
+            class="modal-receipt-delivery-info__line"
+          >
+            <p class="modal-receipt-delivery-info__value">
+              Укажите адрес доставки
+            </p>
+          </div>
+
+          <div
+            v-if="addressError"
+            class="modal-receipt-delivery-info__line"
+          >
+            <p class="modal-receipt-delivery-info__value">
+              Невозможно определить стоимость доставки
+            </p>
+          </div>
+          <div
+            v-if="addressError"
+            class="modal-receipt-delivery-info__line"
+          >
+            <p class="modal-receipt-delivery-info__value modal-receipt-delivery-info__value--red">
+              Выберите корректный адрес
+            </p>
+          </div>
+
+          <div
+            v-if="condition"
+            class="modal-receipt-delivery-info__line"
+          >
             <p class="modal-receipt-delivery-info__value">
               Доставка
             </p>
             <p class="modal-receipt-delivery-info__value">
-              40-50 мин
+              {{ condition.time_deliv }} мин
             </p>
           </div>
-          <div class="modal-receipt-delivery-info__line">
-            <p class="modal-receipt-delivery-info__value">
-              250 ₽
-            </p>
-            <p class="modal-receipt-delivery-info__value modal-receipt-delivery-info__value--green">
-              Бесплатно от 1200 ₽
+
+          <div
+            v-if="condition"
+            class="modal-receipt-delivery-info__line"
+          >
+            <p
+              v-for="(item, i) in condition.sum"
+              :key="i"
+              :class="[
+                'modal-receipt-delivery-info__value',
+                {
+                  'modal-receipt-delivery-info__value--green' : +item.deliv_price === 0
+                }
+              ]"
+            >
+              <template
+                v-if="+item.deliv_price === 0"
+              >
+                Бесплатно от {{ item.min_sum_order }} ₽
+              </template>
+              <template v-else>
+                {{ item.deliv_price }} ₽
+              </template>
             </p>
           </div>
         </div>
       </div>
 
       <UIButton
-        disabled
+        :disabled="isButtonDisabled"
         color="yellow"
         class="modal-receipt-delivery__button"
+        @click="submit()"
       >
         Подтвердить
       </UIButton>
@@ -99,7 +160,56 @@
 </template>
 
 <script setup>
+import { useCommonStore } from '@/store/common'
+
+const commonStore = useCommonStore()
+
+const props = defineProps({
+  deliveryCoords: {
+    type: Array,
+    default: null,
+  },
+
+  deliveryZone: {
+    type: String,
+    default: '',
+  },
+})
+
+const emits = defineEmits(['close'])
+
 const address = ref('')
+
+watch(() => props.deliveryCoords, (data) => {
+  if (data) {
+    searchByCoords(data)
+  }
+})
+
+// <!-- Computed -->
+const addressError = computed(() => {
+  if (props.deliveryCoords && !props.deliveryZone) {
+    return true
+  }
+  
+  return false
+})
+
+const condition = computed(() => {
+  if (!props.deliveryZone) {
+    return null
+  }
+
+  return commonStore.conditions.find(item => item.zone === props.deliveryZone)
+})
+
+const isButtonDisabled = computed(() => {
+  if (!props.deliveryZone) {
+    return true
+  }
+
+  return false
+})
 
 // watch(() => address.value, (text) => {
 //   if (text) {
@@ -113,6 +223,29 @@ const address = ref('')
 //     type: ['toponyms']
 //   })
 // }
+
+// <!-- Methods -->
+const searchByCoords = async (coords) => {
+  const data = await ymaps3.search({
+    text: coords,
+    type: ['toponyms']
+  })
+
+  if (data && data.length > 0) {
+    address.value = `${data[0].properties.description}, ${data[0].properties.name}`
+  }
+}
+
+const submit = () => {
+  commonStore.setDeliveryType('delivery')
+  commonStore.setLocation({
+    address: address.value,
+    name: '',
+    warehouse_id: condition.value.warehouse_id
+  })
+
+  emits('close')
+}
 </script>
 
 <style lang="scss" scoped>
@@ -300,6 +433,63 @@ const address = ref('')
     &--green {
       color: $green;
     }
+
+    &--red {
+      @include text_mini;
+      color: $red;
+    }
+  }
+}
+
+.modal-receipt-delivery-form-input {
+  position: relative;
+  width: 100%;
+
+  &__area {
+    width: 100%;
+    height: 48px;
+
+    padding: 12px 16px;
+
+    @include text_normal;
+    font-weight: 500;
+
+    background: $grayBg;
+    border: 1px solid $grayBg;
+    border-radius: 14px;
+
+    &::-webkit-input-placeholder {
+      color: $grayText;
+    }
+    &:-moz-placeholder {
+      color: $grayText;
+      opacity:  1;
+    }
+    &::-moz-placeholder {
+      color: $grayText;
+      opacity:  1;
+    }
+    &:-ms-input-placeholder {
+      color: $grayText;
+    }
+    &::-ms-input-placeholder {
+      color: $grayText;
+    }
+    &::placeholder {
+      color: $grayText;
+    }
+
+    &--error {
+      border-color: $red;
+    }
+  }
+
+  &__error {
+    padding: 4px 0 0 16px;
+
+    @include text_small;
+    font-weight: 500;
+    color: $red;
   }
 }
 </style>

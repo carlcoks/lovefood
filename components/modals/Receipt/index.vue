@@ -32,6 +32,9 @@ te<template>
           >
             <ModalsReceiptDelivery
               v-if="currentType === 'delivery'"
+              :delivery-coords="deliveryCoords"
+              :delivery-zone="deliveryZone"
+              @close="closeModal()"
             />
             <ModalsReceiptPickup
               v-else-if="currentType === 'pickup'"
@@ -50,6 +53,8 @@ te<template>
         :delivery-type="currentType"
         :current-address="currentAddress"
         @update="currentAddress = $event"
+        @setDeliveryCoords="deliveryCoords = $event"
+        @setDeliveryZone="deliveryZone = $event"
         class="modal-receipt__map"
       />
     </div>
@@ -71,6 +76,9 @@ const isShow = ref(true)
 const currentType = ref('delivery')
 
 const currentAddress = ref(null)
+
+const deliveryCoords = ref(null)
+const deliveryZone = ref(null)
 
 // <!-- Computed -->
 const deliveryType = computed(() => commonStore.deliveryType)
