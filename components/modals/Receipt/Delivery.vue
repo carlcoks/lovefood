@@ -38,6 +38,7 @@
                     'modal-receipt-delivery-form-input__area--error' : addressError
                   }
                 ]"
+                @input="searchAddress"
               >
               <span
                 v-if="addressError"
@@ -45,6 +46,20 @@
               >
                 Ваш адрес вне зоны доставки
               </span>
+
+              <div
+                v-if="isShowResults && results.length"
+                class="modal-receipt-delivery-form-results"
+              >
+                <div
+                  v-for="(item, i) in results"
+                  :key="i"
+                  class="modal-receipt-delivery-form-results__item"
+                  @click="setAddress(item)"
+                >
+                  {{ item.properties.description }}, {{ item.properties.name }}
+                </div>
+              </div>
             </div>
           </div>
           <div class="modal-receipt-delivery-form__line modal-receipt-delivery-form__line--cols">
@@ -176,9 +191,11 @@ const props = defineProps({
   },
 })
 
-const emits = defineEmits(['close'])
+const emits = defineEmits(['close', 'setDeliveryCoords'])
 
 const address = ref('')
+const results = ref([])
+const isShowResults = ref(false)
 
 watch(() => props.deliveryCoords, (data) => {
   if (data) {
@@ -211,20 +228,30 @@ const isButtonDisabled = computed(() => {
   return false
 })
 
-// watch(() => address.value, (text) => {
-//   if (text) {
-//     startSearch()
-//   }
-// })
-
-// const startSearch = async () => {
-//   const data = await ymaps3.search({
-//     text: [61.295738462230666, 55.165532432072844],
-//     type: ['toponyms']
-//   })
-// }
-
 // <!-- Methods -->
+const searchAddress = async () => {
+  isShowResults.value = true
+  results.value = []
+
+  const data = await ymaps3.search({
+    text: address.value,
+    type: ['toponyms']
+  })
+
+  if (data.length) {
+    results.value = data
+  }
+}
+
+const setAddress = (data) => {
+  isShowResults.value = false
+  address.value = `${data.properties.description}, ${data.properties.name}`
+
+  const coords = data.geometry.coordinates
+
+  emits('setDeliveryCoords', coords)
+}
+
 const searchByCoords = async (coords) => {
   const data = await ymaps3.search({
     text: coords,
@@ -490,6 +517,35 @@ const submit = () => {
     @include text_small;
     font-weight: 500;
     color: $red;
+  }
+}
+
+.modal-receipt-delivery-form-results {
+  position: absolute;
+  top: 48px;
+  left: 0;
+  right: 0;
+
+  max-height: 250px;
+
+  display: flex;
+  flex-direction: column;
+
+  background: $grayBg;
+  border-radius: 0 0 14px 14px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  &__item {
+    padding: 5px 10px;
+
+    white-space: nowrap;
+    cursor: pointer;
+
+    &:hover {
+      background: $grayText;
+    }
   }
 }
 </style>

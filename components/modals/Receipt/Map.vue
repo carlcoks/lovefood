@@ -9,11 +9,11 @@
     }"
     class="modal-receipt-map"
   >
-    <yandex-map-default-features-layer/>
-    <yandex-map-default-scheme-layer/>
+    <yandex-map-default-features-layer />
+    <yandex-map-default-scheme-layer />
     <yandex-map-listener
       :settings="{
-        onClick: onMapClick
+        onClick: onMapClick,
       }"
     />
 
@@ -116,6 +116,11 @@ const props = defineProps({
     type: undefined,
     default: null,
   },
+
+  deliveryCoords: {
+    type: Array,
+    default: null,
+  },
 })
 
 const emits = defineEmits(['update', 'setDeliveryCoords', 'setDeliveryZone'])
@@ -141,6 +146,32 @@ watch(() => props.currentAddress, (data) => {
   }
 })
 
+watch(() => props.deliveryCoords, (data) => {
+  if (data) {
+    deliveryMarker.value.coordinates = data
+
+    map.value?.setLocation({
+      center: data,
+      zoom: 17,
+      duration: 400
+    })
+
+    // const zns = zones.value
+
+    // let zone = null
+
+    // for (const key in zns) {
+    //   console.log('k', zns[key].geometry.coordinates)
+
+    //   // if (zns[key].geometry.coordinates.contains(data)) {
+    //   //   zone = zns[key]
+    //   // }
+    // }
+
+    // console.log('z', zone)
+  }
+})
+
 // Computed
 const pickupLocations = computed(() => commonStore.pickupLocations)
 const zones = computed(() => {
@@ -153,9 +184,6 @@ const zones = computed(() => {
 
 // <!-- Methods -->
 const onMapClick = (obj, e) => {
-  console.log('obj', obj)
-  console.log('e', e)
-
   currentMarker.value = null
 
   if (e && props.deliveryType === 'delivery') {

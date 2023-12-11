@@ -34,6 +34,7 @@ te<template>
               v-if="currentType === 'delivery'"
               :delivery-coords="deliveryCoords"
               :delivery-zone="deliveryZone"
+              @setDeliveryCoords="deliveryCoords = $event"
               @close="closeModal()"
             />
             <ModalsReceiptPickup
@@ -52,6 +53,7 @@ te<template>
       <ModalsReceiptMap
         :delivery-type="currentType"
         :current-address="currentAddress"
+        :delivery-coords="deliveryCoords"
         @update="currentAddress = $event"
         @setDeliveryCoords="deliveryCoords = $event"
         @setDeliveryZone="deliveryZone = $event"
