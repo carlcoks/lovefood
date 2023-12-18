@@ -57,7 +57,7 @@
                   class="modal-receipt-delivery-form-results__item"
                   @click="setAddress(item)"
                 >
-                  {{ item.properties.description }}, {{ item.properties.name }}
+                  {{ item.address }}
                 </div>
               </div>
             </div>
@@ -233,45 +233,50 @@ const searchAddress = async () => {
   isShowResults.value = true
   results.value = []
 
-  const data = await ymaps3.search({
-    text: address.value,
-    type: ['toponyms']
-  })
+  if (ymaps) {
+    const search = await ymaps.geocode(address.value)
 
-  if (data.length) {
-    results.value = data
+    const geo = search.geoObjects.toArray();
+
+    if (geo.length) {
+      results.value = geo.map(item => {
+        return {
+          address: item.properties.get('text'),
+          coords: item.geometry.getCoordinates()
+        }
+      })
+    }
   }
 }
 
 const setAddress = (data) => {
   isShowResults.value = false
-  address.value = `${data.properties.description}, ${data.properties.name}`
+  address.value = data.address
 
-  const coords = data.geometry.coordinates
+  const coords = data.coords
 
   emits('setDeliveryCoords', coords)
 }
 
 const searchByCoords = async (coords) => {
-  const data = await ymaps3.search({
-    text: coords,
-    type: ['toponyms']
-  })
+  if (ymaps) {
+    const search = await ymaps.geocode(coords)
+    const obj = search.geoObjects.get(0)
 
-  if (data && data.length > 0) {
-    address.value = `${data[0].properties.description}, ${data[0].properties.name}`
+    address.value = obj.properties.get('text')
   }
 }
 
 const submit = () => {
-  commonStore.setDeliveryType('delivery')
-  commonStore.setLocation({
+  const obj = {
     address: address.value,
     name: '',
     warehouse_id: condition.value.warehouse_id
-  })
+  }
 
-  emits('close')
+  if (useChangeLocation('delivery', obj)) {
+    emits('close')
+  }
 }
 </script>
 

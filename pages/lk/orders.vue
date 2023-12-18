@@ -95,7 +95,7 @@ const user = computed(() => userStore.user)
 const getOrders = async () => {
   isLoading.value = true
 
-  const { data } = await useMyFetch('/wp-json/wc/v2/orders', {
+  const { data } = await useFetch('/api/wp-json/wc/v2/orders', {
     query: {
       customer: user.value.id,
       consumer_key: config.public.CONSUMER_KEY,

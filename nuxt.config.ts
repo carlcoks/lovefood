@@ -48,6 +48,16 @@ export default defineNuxtConfig({
           // href: `/favicon-${domain}.ico`,
         },
       ],
+
+      script: [
+        {
+          key: 'ymap',
+          type: 'text/javascript',
+          async: true,
+          // src: `https://api-maps.yandex.ru/2.1/?apikey=d6cd6610-1c47-469b-a0a8-d3837c41887f&lang=ru_RU&load=Map,Placemark,GeoObject&coordorder=longlat`,
+          src: `https://api-maps.yandex.ru/2.1/?apikey=d6cd6610-1c47-469b-a0a8-d3837c41887f&lang=ru_RU&coordorder=longlat`,
+        },
+      ],
     },
     pageTransition: {
       name: 'fade',
@@ -58,7 +68,7 @@ export default defineNuxtConfig({
   modules: [
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
-    'vue-yandex-maps/nuxt',
+    // 'vue-yandex-maps/nuxt',
     'nuxt-lazy-load',
   ],
 
@@ -66,10 +76,18 @@ export default defineNuxtConfig({
     storesDirs: ['./store/**'],
   },
 
-  yandexMaps: {
-    apikey: process.env.YMAPS_KEY,
-    // initializeOn: 'onPluginInit'
+  routeRules: {
+    '/api/**': {
+      proxy: {
+        to: `${process.env.BASE_URL}/**`,
+      },
+    },
   },
+
+  // yandexMaps: {
+  //   apikey: process.env.YMAPS_KEY,
+  //   // initializeOn: 'onPluginInit'
+  // },
 
   lazyLoad: {
     images: false,

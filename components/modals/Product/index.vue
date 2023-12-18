@@ -67,6 +67,7 @@
             v-if="productAttributes.length"
             class="modal-product-attributes"
           >
+            attributes
             <div
               v-for="attribute in productAttributes"
               :key="attribute.id"
@@ -87,6 +88,7 @@
             v-if="variations.length"
             class="modal-product-attributes"
           >
+            variations
             <div class="modal-product-attributes__line">
               <button
                 v-for="variation in variations"

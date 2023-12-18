@@ -60,6 +60,11 @@ te<template>
         class="modal-receipt__map"
       />
     </div>
+
+    <LazyModalsMissedProducts
+      v-if="isShowMissedProductsModal"
+      @accept="closeModal()"
+    />
   </ModalsOverlay>
 </template>
 
@@ -85,6 +90,7 @@ const deliveryZone = ref(null)
 // <!-- Computed -->
 const deliveryType = computed(() => commonStore.deliveryType)
 const selectedLocation = computed(() => commonStore.selectedLocation)
+const isShowMissedProductsModal = computed(() => !!commonStore.missedProductsModal)
 
 // <!-- Methods -->
 const closeModal = () => {

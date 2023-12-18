@@ -286,7 +286,7 @@ const order = async () => {
 
   isLoading.value = true
 
-  const { data } = await useMyFetch('/wp-json/wc/v3/orders', {
+  const { data } = await useFetch('/api/wp-json/wc/v3/orders', {
     method: 'post',
     query,
     body: obj
@@ -325,7 +325,7 @@ const order = async () => {
 // }
 
 const getPaymentMethods = async () => {
-  const { data } = await useMyFetch('/wp-json/systeminfo/v1/payment_methods')
+  const { data } = await useFetch('/api/wp-json/systeminfo/v1/payment_methods')
 
   const methods = data?.value || []
   paymentMethods.value = methods.filter(item => item.enabled)

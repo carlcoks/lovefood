@@ -86,10 +86,9 @@ const filteredLocations = computed(() => {
 })
 
 const submit = () => {
-  commonStore.setDeliveryType('pickup')
-  commonStore.setLocation(props.currentAddress)
-
-  emits('close')
+  if (useChangeLocation('pickup', props.currentAddress)) {
+    emits('close')
+  }
 }
 </script>
 

@@ -94,7 +94,7 @@ const getOrder = async () => {
     return navigateTo('/')
   }
 
-  const { data } = await useMyFetch(`/wp-json/wc/v3/orders/${id}`)
+  const { data } = await useFetch(`/api/wp-json/wc/v3/orders/${id}`)
 
   const response = data?.value || null
 

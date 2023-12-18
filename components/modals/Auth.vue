@@ -186,7 +186,7 @@ const sendCode = async () => {
     phone: phoneObj.value?.number
   }
 
-  const { data } = await useMyFetch('/wp-json/wc/auth/send_code', {
+  const { data } = await useFetch('/api/wp-json/wc/auth/send_code', {
     query: {
       consumer_key,
       consumer_secret
@@ -210,7 +210,7 @@ const checkCode = async () => {
     'auth-sms-code': code.value
   }
 
-  const { data } = await useMyFetch('/wp-json/wc/auth/check_code', {
+  const { data } = await useFetch('/api/wp-json/wc/auth/check_code', {
     query: {
       consumer_key,
       consumer_secret

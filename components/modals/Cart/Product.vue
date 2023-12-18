@@ -1,16 +1,15 @@
 <template>
   <div class="modal-cart-item">
-    <a
-      href="#"
+    <button
       class="modal-cart-item__remove"
       @click.prevent="removeFromCart()"
     >
-      <UIIcon name="close" />
-    </a>
+      <UIIcon name="trash" />
+    </button>
     <div class="modal-cart-item__main">
       <div class="modal-cart-item__image">
         <img
-          :data-src="productImage"
+          :data-src="item.image"
           :alt="item.name"
           v-lazy-load
         >
@@ -64,14 +63,6 @@
         <div class="modal-cart-item-supplement__info">
           <p class="modal-cart-item-supplement__count">
             {{ supplement.count }} шт
-
-            <button
-              type="button"
-              class="modal-cart-item-supplement__remove"
-              @click.prevent="removeSupplement(supplement.id)"
-            >
-              <UIIcon name="close" />
-            </button>
           </p>
           <p class="modal-cart-item-supplement__price">
             +{{ supplement.price }} ₽
@@ -97,16 +88,12 @@ const props = defineProps({
 
 // Computed
 const counterLabel = computed(() => {
-  const value = parseInt((+props.item.portion_nat_size * +props.item.count) * 100) / 100
+  const value = parseInt(((props.item.portion_nat_size * props.item.count) * 100).toString()) / 100
   return `${value} ${props.item.measure_unit}`
 })
 
 const currentProductInCart = computed(() => {
   return productInCart.value(+props.item.id, props.item.supplements)
-})
-
-const productImage = computed(() => {
-  return props.item?.images[0] || ''
 })
 
 const supplementsPrice = computed(() => {
@@ -137,10 +124,6 @@ const increment = () => {
 const decrement = () => {
   cart.decrementItem(+currentProductInCart.value.idx)
 }
-
-const removeSupplement = (supplementId: number) => {
-  cart.removeSupplementFromProduct(+currentProductInCart.value.idx, supplementId)
-}
 </script>
 
 <style lang="scss" scoped>
@@ -166,7 +149,7 @@ const removeSupplement = (supplementId: number) => {
       height: 18px;
 
       path {
-        fill: #262626;
+        fill: $grayText;
       }
     }
   }
@@ -294,7 +277,6 @@ const removeSupplement = (supplementId: number) => {
   &__info {
     display: flex;
     align-items: center;
-    grid-gap: 20px;
   }
 
   &__count {
@@ -310,21 +292,15 @@ const removeSupplement = (supplementId: number) => {
     border-radius: 23px;
   }
 
-  &__remove {
-    ::v-deep(.ui-icon) svg {
-      width: 14px;
-      height: 14px;
-
-      path {
-        fill: $blackText3;
-      }
-    }
-  }
-
   &__price {
+    width: 60px;
+
+    padding-left: 10px;
+
     @include text_small;
     font-weight: 600;
     color: #B0B0B0;
+    text-align: right;
   }
 }
 </style>

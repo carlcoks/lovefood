@@ -18,19 +18,22 @@ export const useCommonStore = defineStore('commonStore', {
     isShowSettingsModal: false,
     isShowAcceptCityModal: false,
     isShowDeliveryTypeModal: false,
+    isShowAcceptModal: false,
+
+    missedProductsModal: null, // null | { type, location }
   }),
 
   actions: {
     async getPickups () {
-      const { data } = await useMyFetch('/wp-json/systeminfo/v1/shipping_methods')
+      const { data } = await useFetch('/api/wp-json/systeminfo/v1/shipping_methods')
 
       this.pickups = data?.value || []
     },
 
     async getDelivery () {
       const data = await Promise.allSettled([
-        useMyFetch('/wp-json/systeminfo/v1/delivery'),
-        useMyFetch('/wp-json/system/map')
+        useFetch('/api/wp-json/systeminfo/v1/delivery'),
+        useFetch('/api/wp-json/system/map')
       ])
 
       const delivery = data[0]?.value?.data?.value || null
@@ -48,16 +51,12 @@ export const useCommonStore = defineStore('commonStore', {
             return false
           }
 
-          const style = {
-            fill: item.properties.fill,
+          const options = {
+            fillColor: item.properties.fill,
             fillOpacity: item.properties['fill-opacity'],
-            stroke: [
-              {
-                opacity: item.properties['stroke-opacity'],
-                color: item.properties.stroke,
-                width: item.properties['stroke-width'],
-              },
-            ],
+            strokeColor: item.properties.stroke,
+            strokeOpacity: item.properties['stroke-opacity'],
+            strokeWidth: item.properties['stroke-width'],
           }
 
           const zone = item.properties.description.split('#cid=')
@@ -65,7 +64,7 @@ export const useCommonStore = defineStore('commonStore', {
           return {
             id: item.id.toString(),
             geometry: item.geometry,
-            style,
+            options,
             zone: zone && zone[1] || '',
           }
         }).filter(item => item)
@@ -99,6 +98,14 @@ export const useCommonStore = defineStore('commonStore', {
     toggleShowDeliveryTypeModal (value) {
       this.isShowDeliveryTypeModal = value
     },
+
+    toggleShowAcceptModal (value) {
+      this.isShowAcceptModal = value
+    },
+
+    setMissedProductsModal (value) {
+      this.missedProductsModal = value
+    }
   },
 
   getters: {

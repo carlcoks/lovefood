@@ -1,5 +1,8 @@
 <template>
-  <yandex-map
+  <div
+    id="yandex-map"
+  />
+  <!-- <yandex-map
     v-model="map"
     :settings="{
       location: {
@@ -27,80 +30,65 @@
       :settings="item"
     />
 
-    <yandex-map-collection>
-      <yandex-map-marker
-        v-if="deliveryMarker"
-        :settings="{
-          coordinates: deliveryMarker.coordinates,
-          id: deliveryMarker.id,
-        }"
+    <yandex-map-marker
+      v-if="deliveryMarker"
+      v-model="mapMarker"
+      :settings="{
+        coordinates: deliveryMarker.coordinates,
+        id: deliveryMarker.id,
+      }"
+    >
+      <div
+        class="modal-receipt-map-marker modal-receipt-map-marker--delivery"
       >
-        <div
-          class="modal-receipt-map-marker modal-receipt-map-marker--delivery"
-        >
-          <UIIcon
-            name="metka"
-            class="modal-receipt-map-marker__icon"
-          />
-        </div>
-      </yandex-map-marker>
+        <UIIcon
+          name="metka"
+          class="modal-receipt-map-marker__icon"
+        />
+      </div>
+    </yandex-map-marker>
 
-      <yandex-map-marker
-        v-for="item in markers"
-        :key="item.id"
-        :settings="{
-          coordinates: item.coordinates,
-          id: item.id,
-          onClick: () => {emits('update', item)},
-        }"
+    <yandex-map-marker
+      v-for="item in markers"
+      :key="item.id"
+      :settings="{
+        coordinates: item.coordinates,
+        id: item.id,
+        onClick: () => {emits('update', item)},
+      }"
+    >
+      <div
+        class="modal-receipt-map-marker"
       >
-        <div
-          class="modal-receipt-map-marker"
-        >
-          <UIIcon
-            name="metka"
-            class="modal-receipt-map-marker__icon"
-          />
+        <UIIcon
+          name="metka"
+          class="modal-receipt-map-marker__icon"
+        />
 
-          <div
-            v-if="currentMarker?.id === item.id"
-            class="modal-receipt-map-popup"
-          >
-            <p class="modal-receipt-map-popup__title">
-              {{ item.name }}
-            </p>
-            <p class="modal-receipt-map-popup__address">
-              {{ item.address }}
-            </p>
-            <p class="modal-receipt-map-popup__time">
-              <UIIcon
-                name="clock-filled"
-                class="modal-receipt-map-popup__icon"
-              />
-              <span v-html="item.working_time" />
-            </p>
-          </div>
+        <div
+          v-if="currentMarker?.id === item.id"
+          class="modal-receipt-map-popup"
+        >
+          <p class="modal-receipt-map-popup__title">
+            {{ item.name }}
+          </p>
+          <p class="modal-receipt-map-popup__address">
+            {{ item.address }}
+          </p>
+          <p class="modal-receipt-map-popup__time">
+            <UIIcon
+              name="clock-filled"
+              class="modal-receipt-map-popup__icon"
+            />
+            <span v-html="item.working_time" />
+          </p>
         </div>
-      </yandex-map-marker>
-    </yandex-map-collection>
-  </yandex-map>
+      </div>
+    </yandex-map-marker>
+  </yandex-map> -->
 </template>
 
 <script setup lang="ts">
-import type { YMap, YMapFeatureProps } from '@yandex/ymaps3-types'
-import {
-  YandexMap,
-  YandexMapDefaultFeaturesLayer,
-  YandexMapDefaultSchemeLayer,
-  YandexMapCollection,
-  YandexMapMarker,
-  YandexMapControls,
-  YandexMapZoomControl,
-  YandexMapListener,
-  YandexMapFeature,
-  VueYandexMaps,
-} from 'vue-yandex-maps'
-
 import { useCommonStore } from '@/store/common'
 import trimStr from '@/utils/trimStr'
 
@@ -125,13 +113,13 @@ const props = defineProps({
 
 const emits = defineEmits(['update', 'setDeliveryCoords', 'setDeliveryZone'])
 
-const map = shallowRef<null | YMap>(null)
-const center = ref([61.402554, 55.159902])
-const zoom = shallowRef<number>(12)
-const deliveryMarker = ref(null)
-const currentMarker = ref(null)
+const map = shallowRef(null)
+const collection = shallowRef(null)
+const mapCenter = [61.402554, 55.159902]
+const mapZoom = 12
 
-const markers = ref([])
+const deliveryMarker = shallowRef(null)
+const currentMarker = ref(null)
 
 // Watch
 watch(() => props.deliveryType, () => {
@@ -148,53 +136,36 @@ watch(() => props.currentAddress, (data) => {
 
 watch(() => props.deliveryCoords, (data) => {
   if (data) {
-    deliveryMarker.value.coordinates = data
+    deliveryMarker.value.geometry.setCoordinates(data)
 
-    map.value?.setLocation({
-      center: data,
-      zoom: 17,
-      duration: 400
+    map.value.setCenter(
+      data,
+      17,
+      {
+        duration: 1000
+      }
+    )
+
+    
+    collection.value.each(item => {
+      if (item.geometry.contains(data)) {
+        const zone = item.options.get('iconImageHref')
+        emits('setDeliveryZone', zone)
+      }
     })
-
-    // const zns = zones.value
-
-    // let zone = null
-
-    // for (const key in zns) {
-    //   console.log('k', zns[key].geometry.coordinates)
-
-    //   // if (zns[key].geometry.coordinates.contains(data)) {
-    //   //   zone = zns[key]
-    //   // }
-    // }
-
-    // console.log('z', zone)
   }
 })
 
 // Computed
 const pickupLocations = computed(() => commonStore.pickupLocations)
-const zones = computed(() => {
-  if (props.deliveryType === 'delivery') {
-    // console.log('zones', commonStore.zones)
-    return commonStore.zones
-  }
-  return []
-})
+const zones = computed(() => commonStore.zones)
 
 // <!-- Methods -->
-const onMapClick = (obj, e) => {
-  currentMarker.value = null
+const onMapClick = (e, zone) => {
+  if (props.deliveryType === 'delivery') {
+    const coords = e.get('coords')
 
-  if (e && props.deliveryType === 'delivery') {
-    const coords = e.coordinates
-    let zone = null
-
-    deliveryMarker.value.coordinates = coords
-
-    if (obj && obj.type && obj.type === 'feature') {
-      zone = obj.entity._props.zone
-    }
+    deliveryMarker.value.geometry.setCoordinates(coords)
 
     emits('setDeliveryCoords', coords)
     emits('setDeliveryZone', zone)
@@ -202,43 +173,104 @@ const onMapClick = (obj, e) => {
 }
 
 const goToMarker = (item) => {
-  currentMarker.value = item
-
-  map.value?.setLocation({
-    center: item.coordinates,
-    zoom: 17,
-    duration: 400
-  })
+  map.value.setCenter(
+    item.coordinates,
+    17,
+    {
+      duration: 400
+    }
+  )
 }
 
 const setMarkers = () => {
-  markers.value = []
-  deliveryMarker.value = null
+  map.value.geoObjects.removeAll()
 
   if (props.deliveryType === 'delivery') {
-    deliveryMarker.value = {
-      id: '999',
-      coordinates: center.value
-    }
-  } else if (props.deliveryType === 'pickup') {
-    markers.value = pickupLocations.value
+    collection.value = new ymaps.GeoObjectCollection({})
 
-    setCenter()
+    zones.value.forEach(item => {
+      const polygon = new ymaps.GeoObject({
+        geometry: item.geometry,
+      }, {
+        ...item.options,
+        iconImageHref: item.zone
+      })
+
+      polygon.events.add(['click'], (e) => {
+        const zone = item.zone
+
+        onMapClick(e, zone)
+      })
+
+      collection.value.add(polygon)
+    })
+    map.value.geoObjects.add(collection.value)
+
+
+    deliveryMarker.value = new ymaps.Placemark(
+      mapCenter, {}, {
+        iconLayout: 'default#image',
+        iconImageHref: '/images/marker-delivery.svg',
+        iconImageSize: [50, 50],
+        iconImageOffset: [-25, -45]
+      }
+    )
+    map.value.geoObjects.add(deliveryMarker.value)
+
+    setCenter('delivery')
+  } else if (props.deliveryType === 'pickup') {
+    pickupLocations.value.forEach(item => {
+      const placemark = new ymaps.Placemark(
+        item.coordinates, {}, {
+          iconLayout: 'default#image',
+          iconImageHref: '/images/marker-pickup.svg',
+          iconImageSize: [50, 50],
+          iconImageOffset: [-25, -45]
+        }
+      )
+      placemark.events.add(['click'], () => {
+        emits('update', item)
+      })
+      map.value.geoObjects.add(placemark)
+    })
+
+    setCenter('pickup')
   }
 }
 
-const setCenter = () => {
-  const bounds = map.value?.bounds || [center.value, center.value]
+const setCenter = (type) => {
+  if (type === 'pickup') {
+    map.value.setBounds(map.value.geoObjects.getBounds(), {
+      checkZoomRange: true,
+      // duration: 1000,
+    })
+  } else if (type === 'delivery') {
+    map.value.setCenter(
+      mapCenter,
+      mapZoom,
+    )
+  }
+}
 
-  map.value?.setLocation({
-    bounds,
-    duration: 400
+const ymapsInit = () => {
+  ymaps.ready(() => {
+    map.value = new ymaps.Map('yandex-map', {
+      center: mapCenter, 
+      zoom: mapZoom,
+      controls: ['zoomControl'],
+    })
+
+    map.value.events.add(['click'], (e) => {
+      const zone = null
+
+      onMapClick(e, zone)
+    })
+
+    setMarkers()
   })
 }
 
-onMounted(() => {
-  setMarkers()
-})
+ymapsInit()
 </script>
 
 <style lang="scss" scoped>
@@ -250,34 +282,34 @@ onMounted(() => {
   overflow: hidden;
 }
 
-.modal-receipt-map-marker {
-  position: relative;
+// .modal-receipt-map-marker {
+//   position: relative;
 
-  transform: translate(-50%, calc(-50% - 25px));
+//   transform: translate(-50%, calc(-50% - 25px));
 
-  &--delivery {
-    .modal-receipt-map-marker {
-      &__icon {
-        ::v-deep svg {
-          path {
-            fill: $blackText;
-          }
-        }
-      }
-    }
-  }
+//   &--delivery {
+//     .modal-receipt-map-marker {
+//       &__icon {
+//         ::v-deep svg {
+//           path {
+//             fill: $blackText;
+//           }
+//         }
+//       }
+//     }
+//   }
 
-  &__icon {
-    ::v-deep svg {
-      width: 50px;
-      height: 50px;
+//   &__icon {
+//     ::v-deep svg {
+//       width: 50px;
+//       height: 50px;
 
-      path {
-        fill: $orange;
-      }
-    }
-  }
-}
+//       path {
+//         fill: $orange;
+//       }
+//     }
+//   }
+// }
 
 .modal-receipt-map-popup {
   position: absolute;

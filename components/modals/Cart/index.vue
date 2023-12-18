@@ -38,9 +38,9 @@
 
             <button
               class="modal-cart__clear"
-              @click.prevent="clearCart()"
+              @click.prevent="beforeClearCart()"
             >
-              <UIIcon name="close" />
+              <UIIcon name="trash" />
               Очистить
             </button>
           </div>
@@ -58,27 +58,9 @@
         </div>
 
         <div class="modal-cart__footer">
-          <form
-            class="modal-cart-promocode"
-            @submit.prevent
-          >
-            <UIIcon
-              name="promocode"
-              class="modal-cart-promocode__icon"
-            />
-            <input
-              type="text"
-              placeholder="Промокод"
-              class="modal-cart-promocode__input"
-            >
-            <span class="modal-cart-promocode__divider" />
-            <button
-              type="submit"
-              class="modal-cart-promocode__button"
-            >
-              Применить
-            </button>
-          </form>
+          <CommonPromocodeBlock
+            in-cart
+          />
 
           <!-- <div class="modal-cart-delivery">
             <div class="modal-cart-delivery__icon">
@@ -125,13 +107,22 @@
         @close="closeModal()"
       />
     </div>
+
+    <LazyModalsAccept
+      v-if="commonStore.isShowAcceptModal"
+      title="Подтвердите удаление"
+      text="Все добавленные товары будут удалены"
+      @accept="clearCart()"
+    />
   </ModalsOverlay>
 </template>
 
 <script setup>
 import { useCartStore } from '@/store/cart'
+import { useCommonStore } from '@/store/common'
 
 const cartStore = useCartStore()
+const commonStore = useCommonStore()
 
 const { cartItems, cartItemsLength, cartItemsRegularPrice, cartItemsPrice } = storeToRefs(cartStore)
 
@@ -139,6 +130,10 @@ const isShow = ref(true)
 
 const closeModal = () => {
   isShow.value = false
+}
+
+const beforeClearCart = () => {
+  commonStore.toggleShowAcceptModal(true)
 }
 
 const clearCart = () => {
@@ -308,75 +303,6 @@ const submit = () => {
       
       border-radius: 0 0 40px 0;
     }
-  }
-}
-
-.modal-cart-promocode {
-  position: relative;
-
-  display: flex;
-  align-items: center;
-
-  @include text_normal;
-  font-weight: 500;
-
-  background: $grayBg;
-  border-radius: 14px;
-
-  &__icon {
-    position: absolute;
-    left: 16px;
-    top: 12px;
-  }
-
-  &__input {
-    flex: 1 1 auto;
-
-    height: 48px;
-
-    padding-left: 52px;
-
-    background: none;
-    border: 0;
-
-    &::-webkit-input-placeholder {
-      color: $grayText;
-    }
-    &:-moz-placeholder {
-      color: $grayText;
-      opacity:  1;
-    }
-    &::-moz-placeholder {
-      color: $grayText;
-      opacity:  1;
-    }
-    &:-ms-input-placeholder {
-      color: $grayText;
-    }
-    &::-ms-input-placeholder {
-      color: $grayText;
-    }
-    &::placeholder {
-      color: $grayText;
-    }
-  }
-
-  &__divider {
-    flex: 0 0 auto;
-
-    width: 2px;
-    height: 20px;
-    background: rgba(0, 0, 0, 0.3);
-  }
-
-  &__button {
-    flex: 0 0 auto;
-
-    height: 48px;
-
-    padding: 15px 20px 15px 16px;
-    
-    color: $grayText;
   }
 }
 

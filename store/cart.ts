@@ -1,7 +1,34 @@
 import { useCommonStore } from '@/store/common'
 
+interface State {
+  cart: cartItem[]
+  notifications: String[]
+  isShowCartModal: boolean
+}
+
+interface cartItem {
+  id: number
+  name: string
+  price: number
+  regular_price: number
+  image: string
+  count: number
+  measure_unit: string
+  portion_nat_size: number
+  supplements: Supplement[]
+  variation_id: number | null
+  locations: number[]
+}
+
+interface Supplement {
+  id: number
+  name: string
+  price: number
+  count: number
+}
+
 export const useCartStore = defineStore('cartStore', {
-  state: () => ({
+  state: (): State => ({
     cart: [],
     notifications: [],
     isShowCartModal: false,
@@ -24,23 +51,24 @@ export const useCartStore = defineStore('cartStore', {
         name: item.name,
         price: item.price,
         regular_price: item.regular_price,
-        images: item.images,
+        image: item.images[0],
         count: 1,
         measure_unit: item.measure_unit,
         portion_nat_size: item.portion_nat_size,
         supplements: item?.supplements || [],
-        variation_id: item?.variation_id || null
+        variation_id: +item?.variation_id || null,
+        locations: item.locations.map(item => item.id),
       })
 
       this.addNotification()
     },
 
-    incrementItem (idx) {
+    incrementItem (idx: number) {
       this.cart[idx].count++
       this.addNotification()
     },
 
-    decrementItem (idx) {
+    decrementItem (idx: number) {
       this.cart[idx].count--
 
       if (this.cart[idx].count === 0) {
@@ -48,26 +76,19 @@ export const useCartStore = defineStore('cartStore', {
       }
     },
 
-    removeFromCart (idx) {
+    removeFromCart (idx: number) {
       this.cart.splice(idx, 1)
     },
 
-    removeSupplementFromProduct (idx, supplementId) {
-      this.cart[idx].supplements.find((item, i) => {
-        if (+item.id === +supplementId) {
-          this.cart[idx].supplements.splice(i, 1)
-          return true
-        }
-
-        return false
-      })
+    removeMissedProductsFromCart (locationId: number) {
+      this.cart = this.cart.filter(item => item.locations.includes(locationId))
     },
 
     clearCart () {
       this.cart = []
     },
 
-    toggleShowCartModal (value) {
+    toggleShowCartModal (value: boolean) {
       this.isShowCartModal = value
     },
 
@@ -126,18 +147,14 @@ export const useCartStore = defineStore('cartStore', {
       }, 0)
     },
 
-    getUserById: (state) => {
-      return (userId) => state.users.find((user) => user.id === userId)
-    },
-
     productInCart: (state) => {
-      return (id, supplements = [], variationId = null) => {
+      return (id: number, supplements: Supplement[] = [], variationId: number | null = null) => {
         let idx = null
 
         const item = state.cart.find((item, i) => {
           if (
-            +item.id === +id &&
-            (+item?.variation_id || null) === +variationId &&
+            item.id === id &&
+            item?.variation_id === variationId &&
             supplements.length === item.supplements.length &&
             item.supplements.every(itemSupplement => supplements.find(supplement => supplement.id === itemSupplement.id && supplement.count === itemSupplement.count))
           ) {
@@ -149,9 +166,15 @@ export const useCartStore = defineStore('cartStore', {
         })
 
         return {
-          item,
+          item: item || null,
           idx
         }
+      }
+    },
+
+    missedProductsList: (state) => {
+      return (locationId: number) => {
+        return state.cart.filter(item => !item.locations.includes(locationId))
       }
     }
   },
