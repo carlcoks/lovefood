@@ -58,10 +58,14 @@ const next = ref(null)
   display: grid;
   grid-gap: 20px;
 
-  padding: 20px;
+  padding: 0 20px;
+
+  background: $white;
 
   @include mq($bp-small) {
     padding: 20px 30px 30px;
+
+    background: none;
   }
 
   &__header {
@@ -71,15 +75,26 @@ const next = ref(null)
   }
 
   &__title {
-    @include h2;
-    color: $black;
+    @include text_large;
+    font-weight: 700;
+    color: $blackText;
+
+    @include mq($bp-small) {
+      @include h2;
+      color: $black;
+    }
   }
 
   &__slider {
-    margin: 0 -30px;
-    padding: 0 30px;
+    margin: 0 -20px;
+    padding: 0 20px;
 
     overflow: hidden;
+
+    @include mq($bp-small) {
+      margin: 0 -30px;
+      padding: 0 30px;
+    }
   }
 
   &__slide {
@@ -97,14 +112,19 @@ const next = ref(null)
     align-items: center;
     justify-content: center;
 
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
 
     background: $white;
     border-radius: 14px;
     border: 2px solid $yellow;
 
     cursor: pointer;
+
+    @include mq($bp-small) {
+      width: 48px;
+      height: 48px;
+    }
 
     &--prev {
       .ui-icon {

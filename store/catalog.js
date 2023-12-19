@@ -11,7 +11,15 @@ export const useCatalogStore = defineStore('catalogStore', {
       const { data } = await useFetch('/api/wp-content/uploads/app_sync/prodcat.json')
 
       const catalog = (data?.value || []).map(item => {
-        const products = item.products.filter(product => product)
+        const products = item.products.map(product => {
+          if (product) {
+            return {
+              ...product,
+              catalog_name: item.name
+            }
+          }
+          return null
+        }).filter(item => item)
 
         return {
           id: item.id,

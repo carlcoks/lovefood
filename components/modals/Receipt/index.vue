@@ -116,6 +116,7 @@ onMounted(() => {
   display: grid;
 
   background: $white;
+  overflow: hidden;
 
   @include mq($bp-small) {
     max-width: 1150px;

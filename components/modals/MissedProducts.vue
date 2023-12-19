@@ -89,6 +89,7 @@ const { missedProductsList } = storeToRefs(cartStore)
 const emits = defineEmits(['accept'])
 
 const isShow = ref(true)
+const isAccept = ref(false)
 
 // <!-- Computed -->
 const missedProductsModal = computed(() => commonStore.missedProductsModal)
@@ -105,7 +106,9 @@ const missedProducts = computed(() => {
 const close = () => {
   commonStore.setMissedProductsModal(null)
 
-  emits('accept')
+  if (isAccept.value) {
+    emits('accept')
+  }
 }
 
 const closeModal = () => {
@@ -121,6 +124,8 @@ const accept = () => {
 
   commonStore.setDeliveryType(missedProductsModal.value.type)
   commonStore.setLocation(missedProductsModal.value.location)
+
+  isAccept.value = true
 
   closeModal()
 }

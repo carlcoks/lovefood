@@ -151,7 +151,7 @@ watch(() => code.value, () => {
 
 const isDisableButton = computed(() => {
   if (step.value === 'phone') {
-    return !(phoneObj.value?.valid)
+    // return !(phoneObj.value?.valid)
   } else if (step.value === 'code') {
     return !code.value || (code.value && code.value.length !== 4)
   }

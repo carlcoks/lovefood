@@ -145,7 +145,6 @@ watch(() => props.deliveryCoords, (data) => {
         duration: 1000
       }
     )
-
     
     collection.value.each(item => {
       if (item.geometry.contains(data)) {

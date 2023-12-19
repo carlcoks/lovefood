@@ -4,13 +4,27 @@
     @close="close()"
   >
     <div class="modal-product">
-      <a
-        href="#"
+      <div class="modal-product-header">
+        <button
+          type="button"
+          class="modal-product-header__close"
+          @click.prevent="closeModal()"
+        >
+          <UIIcon name="arrow" />
+        </button>
+
+        <p class="modal-product-header__title">
+          {{ product.catalog_name || 'Категория' }}
+        </p>
+      </div>
+
+      <button
+        type="button"
         class="modal-product__close"
         @click.prevent="closeModal()"
       >
         <UIIcon name="close" />
-      </a>
+      </button>
 
       <div class="modal-product__main">
         <div class="modal-product__image">
@@ -67,7 +81,6 @@
             v-if="productAttributes.length"
             class="modal-product-attributes"
           >
-            attributes
             <div
               v-for="attribute in productAttributes"
               :key="attribute.id"
@@ -88,7 +101,6 @@
             v-if="variations.length"
             class="modal-product-attributes"
           >
-            variations
             <div class="modal-product-attributes__line">
               <button
                 v-for="variation in variations"
@@ -259,6 +271,8 @@
         v-if="elseArray.length"
         :related="elseArray"
       />
+
+      <div class="modal-product__overlay" />
     </div>
 
     <ModalsSupplements
@@ -539,15 +553,22 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
 
-  background: $grayBg2;
+  padding: 0 10px;
 
+  background: $grayBg;
+  
   @include mq($bp-small) {
     min-height: auto;
 
+    padding: 0;
+    
+    background: $grayBg2;
     border-radius: 40px;
   }
 
   &__close {
+    display: none;
+
     position: absolute;
     top: 30px;
     right: 40px;
@@ -555,6 +576,10 @@ onMounted(() => {
     padding: 10px;
 
     z-index: 10;
+
+    @include mq($bp-small) {
+      display: block;
+    }
 
     ::v-deep(.ui-icon) svg {
       width: 24px;
@@ -570,9 +595,10 @@ onMounted(() => {
     display: grid;
     grid-gap: 30px;
 
-    padding: 20px;
+    // padding: 20px;
 
     background: $white;
+    border-radius: 40px 40px 0 0;
 
     @include mq($bp-small) {
       grid-template-columns: 440px 1fr;
@@ -588,15 +614,19 @@ onMounted(() => {
     position: relative;
 
     width: 100%;
-    height: 440px;
+    height: 460px;
 
     border-radius: 40px;
     overflow: hidden;
 
+    @include mq($bp-small) {
+      height: 440px;
+    }
+
     img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
     }
   }
 
@@ -685,6 +715,12 @@ onMounted(() => {
     flex-direction: column;
     
     grid-gap: 20px;
+
+    padding: 0 20px 40px;
+
+    @include mq($bp-small) {
+      padding: 0;
+    }
   }
 
   &__header {
@@ -710,16 +746,39 @@ onMounted(() => {
     flex-direction: column;
     grid-gap: 10px;
 
-    margin: auto 0 0;
-    padding-top: 20px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
 
+    padding: 20px;
+
+    background: $white;
+    border-radius: 40px 40px 0 0;
     border-top: 1px solid $grayBg;
+    box-shadow: 0px -2px 80px 0px rgba(0, 0, 0, 0.20);
+
+    z-index: 100;
+
+    @include mq($bp-small) {
+      position: relative;
+
+      margin: auto 0 0;
+      padding: 20px 0 0 0;
+
+      background: none;
+      box-shadow: none;
+    }
   }
 
   &__footer-line {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: none;
+    
+    @include mq($bp-small) {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
   }
 
   &__buttons {
@@ -730,6 +789,61 @@ onMounted(() => {
 
   &__button {
     max-width: 240px;
+  }
+
+  &__overlay {
+    padding-top: 130px;
+
+    background: $white;
+
+    @include mq($bp-small) {
+      display: none;
+    }
+  }
+}
+
+.modal-product-header {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 16px 10px 20px;
+
+  @include mq($bp-small) {
+    display: none;
+  }
+
+  &__close {
+    position: absolute;
+    top: 11px;
+    left: 10px;
+
+    width: 50px;
+    height: 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: $white;
+    border-radius: 50%;
+    box-shadow: 0px -2px 80px 0px rgba(0, 0, 0, 0.20);
+
+    ::v-deep(.ui-icon) svg {
+      width: 30px;
+      height: 30px;
+      transform: rotate(180deg);
+
+      path {
+        fill: $blackText3;
+      }
+    }
+  }
+
+  &__title {
+    @include h2;
   }
 }
 
@@ -812,8 +926,12 @@ onMounted(() => {
 
   &__content {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     grid-gap: 20px 10px;
+
+    @include mq($bp-small) {
+      grid-template-columns: repeat(4, 1fr);
+    }
   }
 }
 

@@ -95,8 +95,10 @@ const onSubmit = async () => {
     body: obj
   })
 
-  if (error.value) {
-    promocodeError.value = 'Не удалось применить промокод'
+  if (error?.value) {
+    const message = error?.value?.data?.message || 'Не удалось применить промокод'
+
+    promocodeError.value = message
   }
 
   isLoading.value = false
