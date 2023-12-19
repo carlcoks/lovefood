@@ -84,16 +84,24 @@ const submit = () => {
 <style lang="scss" scoped>
 .modal-accept {
   width: 100vw;
-  max-width: 450px;
+  min-height: 100vh;
 
   display: flex;
   flex-direction: column;
   grid-gap: 50px;
 
-  padding: 50px 60px;
+  padding: 20px;
 
   background: $white;
-  border-radius: 40px;
+
+  @include mq($bp-small) {
+    min-height: auto;
+    max-width: 450px;
+
+    padding: 50px 60px;
+
+    border-radius: 40px;
+  }
 
   &__close {
     ::v-deep(.ui-icon) svg {

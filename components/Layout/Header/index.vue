@@ -165,13 +165,17 @@ commonStore.getPickups()
     position: relative;
 
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
+    
     grid-gap: 40px;
 
     padding: 15px 0;
 
     @include mq($bp-medium) {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+
       padding: 14px 0;
     }
   }

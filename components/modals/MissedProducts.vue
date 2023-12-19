@@ -136,16 +136,24 @@ const accept = () => {
 
 .modal-missed-products {
   width: 100vw;
-  max-width: 796px;
+  min-height: 100vh;
 
   display: flex;
   flex-direction: column;
   grid-gap: 50px;
 
-  padding: 50px 60px;
+  padding: 20px;
 
   background: $white;
-  border-radius: 40px;
+
+  @include mq($bp-small) {
+    min-height: auto;
+    max-width: 796px;
+
+    padding: 50px 60px;
+
+    border-radius: 40px;
+  }
 
   &__close {
     ::v-deep(.ui-icon) svg {

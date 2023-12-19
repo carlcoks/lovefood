@@ -1,10 +1,14 @@
 <template>
   <div class="index-menu-categories">
     <div class="index-menu-categories__tabs-wrap">
-      <div class="index-menu-categories__tabs">
+      <div
+        ref="tabsRef"
+        class="index-menu-categories__tabs"
+      >
         <button
           v-for="item in categories"
           :key="item.id"
+          :id="`category-tab-${item.id}`"
           type="button"
           :class="['index-menu-categories-tab', { 'active' : activeTab === item.id }]"
           @click.prevent="scrollTo(item.id)"
@@ -38,6 +42,7 @@ const catalogStore = useCatalogStore()
 
 const emits = defineEmits(['showFilters'])
 
+const tabsRef = ref(null)
 const activeTab = ref(null)
 const showMore = ref(false)
 const positions = []
@@ -70,6 +75,19 @@ const onScroll = (e) => {
     if (scrollPosition >= item.top && scrollPosition <= item.bottom) {
       activeTab.value = item.id
 
+      tabsRef.value.scroll({
+        left: 0,
+        behavior: 'smooth'
+      })
+
+      const el = document.getElementById(`category-tab-${item.id}`)
+      if (el) {
+        tabsRef.value.scroll({
+          left: el.offsetLeft,
+          behavior: 'smooth'
+        })
+      }
+
       return true
     }
 
@@ -85,11 +103,13 @@ const getBlocksPositions = () => {
   categories.value.forEach(item => {
     const el = document.getElementById(`block_${item.id}`)
 
-    positions.push({
-      id: item.id,
-      top: el.offsetTop,
-      bottom: el.offsetTop + el.scrollHeight,
-    })
+    if (el) {
+      positions.push({
+        id: item.id,
+        top: el.offsetTop,
+        bottom: el.offsetTop + el.scrollHeight,
+      })
+    }
   })
 }
 
@@ -107,7 +127,8 @@ onMounted(() => {
 .index-menu-categories {
   // position: sticky;
   // top: 0;
-  
+
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -138,6 +159,8 @@ onMounted(() => {
   }
 
   &__tabs {
+    position: relative;
+
     display: flex;
     align-items: center;
     grid-gap: 7px;
