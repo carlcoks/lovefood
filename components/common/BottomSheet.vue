@@ -1,7 +1,12 @@
 <template>
   <div
-    class="bottom-sheet"
-    :style="`height: ${sheetHeight}vh`"
+    :class="[
+      'bottom-sheet',
+      {
+        'bottom-sheet--fullscreen' : sheetHeight === 100,
+      }
+    ]"
+    :style="sheetHeight === 100 ? '' : `height: ${sheetHeight}vh`"
   >
     <button
       ref="draggableButton"
@@ -95,6 +100,11 @@ onMounted(() => {
   box-shadow: 0px -2px 80px 0px rgba(0, 0, 0, 0.20);
   overflow: hidden;
   transition: height 0.3s;
+
+  &--fullscreen {
+    height: 100vh;
+    height: var(--app-height);
+  }
 
   &__button {
     flex: 0 0 auto;
