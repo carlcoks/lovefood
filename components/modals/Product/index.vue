@@ -846,6 +846,7 @@ onMounted(() => {
 
   &__title {
     @include h2;
+    text-align: center;
   }
 }
 

@@ -69,6 +69,7 @@ watch(() => promocode.value, () => {
 })
 
 const onReset = () => {
+  promocode.value = ''
   promocodeError.value = ''
 }
 

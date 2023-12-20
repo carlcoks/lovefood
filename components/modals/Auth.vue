@@ -26,7 +26,7 @@
           v-if="step === 'code'"
           class="modal-auth__number"
         >
-          {{ phoneObj.formatted }}
+          {{ phoneObj?.formatted }}
           <a
             href="#"
             rel="nofollow"
@@ -233,7 +233,8 @@ const checkCode = async () => {
 }
 
 const onSubmit = () => {
-  if (step.value === 'phone' && phoneObj.value?.valid) {
+  // if (step.value === 'phone' && phoneObj.value?.valid) {
+  if (step.value === 'phone') {
     sendCode()
   } else if (step.value === 'code') {
     checkCode()
