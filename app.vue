@@ -17,6 +17,9 @@ const setWindowStore = () => {
   // commonStore.isMobile = window.innerWidth < 700;
   commonStore.isMobileOrTablet = window.innerWidth < 992
   commonStore.isTablet = window.innerWidth < 992 && window.innerWidth >= 768
+
+  const doc = document.documentElement
+  doc.style.setProperty('--app-height', `${window.innerHeight}px`)
 }
 
 onMounted(() => {

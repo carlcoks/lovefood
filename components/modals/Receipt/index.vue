@@ -146,6 +146,7 @@ onMounted(() => {
 .modal-receipt {
   width: 100vw;
   height: 100vh;
+  height: var(--app-height);
 
   display: flex;
   flex-direction: column;
