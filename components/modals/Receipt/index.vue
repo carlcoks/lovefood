@@ -74,19 +74,21 @@ te<template>
         class="modal-receipt__map"
       />
 
-      <ModalsReceiptDeliveryMobile
-        v-if="currentType === 'delivery'"
-        :delivery-coords="deliveryCoords"
-        :delivery-zone="deliveryZone"
-        @setDeliveryCoords="deliveryCoords = $event"
-        @close="closeModal()"
-      />
-      <ModalsReceiptPickupMobile
-        v-else-if="currentType === 'pickup'"
-        :current-address="currentAddress"
-        @update="currentAddress = $event"
-        @close="closeModal()"
-      />
+      <template v-if="commonStore.isMobileOrTablet">
+        <ModalsReceiptDeliveryMobile
+          v-if="currentType === 'delivery'"
+          :delivery-coords="deliveryCoords"
+          :delivery-zone="deliveryZone"
+          @setDeliveryCoords="deliveryCoords = $event"
+          @close="closeModal()"
+        />
+        <ModalsReceiptPickupMobile
+          v-else-if="currentType === 'pickup'"
+          :current-address="currentAddress"
+          @update="currentAddress = $event"
+          @close="closeModal()"
+        />
+      </template>
     </div>
 
     <LazyModalsMissedProducts

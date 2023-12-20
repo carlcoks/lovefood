@@ -1,111 +1,94 @@
 <template>
-  <div
-    :class="[
-      'modal-receipt-delivery-mobile',
-      {
-        'modal-receipt-delivery-mobile--fullscreen' : isFullScreen
-      }
-    ]"
-  >
-    <button
-      type="button"
-      class="modal-receipt-delivery-mobile__top-btn"
-      @click.prevent="isFullScreen = !isFullScreen"
+  <CommonBottomSheet>
+    <form
+      class="modal-receipt-delivery-mobile-form"
+      @submit.prevent="onSubmit()"
     >
-      <UIIcon name="bottom-sheet" />
-    </button>
-
-    <div class="modal-receipt-delivery-mobile__content">
-      <form
-        class="modal-receipt-delivery-mobile-form"
-        @submit.prevent="onSubmit()"
+      <label
+        for="address"
+        class="modal-receipt-delivery-mobile-form__label"
       >
-        <label
-          for="address"
-          class="modal-receipt-delivery-mobile-form__label"
-        >
-          Город, улица, дом
-        </label>
-        <div class="modal-receipt-delivery-mobile-form__line">
-          <div class="modal-receipt-delivery-mobile-form-input">
-            <input
-              id="address"
-              v-model="form.address"
-              type="text"
-              placeholder="Адрес"
-              :class="[
-                'modal-receipt-delivery-mobile-form-input__area',
-                {
-                  'modal-receipt-delivery-mobile-form-input__area--error' : addressError,
-                  'modal-receipt-delivery-mobile-form-input__area--opened' : isShowResults && results.length
-                }
-              ]"
-              @input="searchAddress"
-            >
-            <span
-              v-if="addressError"
-              class="modal-receipt-delivery-mobile-form-input__error"
-            >
-              Ваш адрес вне зоны доставки
-            </span>
+        Город, улица, дом
+      </label>
+      <div class="modal-receipt-delivery-mobile-form__line">
+        <div class="modal-receipt-delivery-mobile-form-input">
+          <input
+            id="address"
+            v-model="form.address"
+            type="text"
+            placeholder="Адрес"
+            :class="[
+              'modal-receipt-delivery-mobile-form-input__area',
+              {
+                'modal-receipt-delivery-mobile-form-input__area--error' : addressError,
+                'modal-receipt-delivery-mobile-form-input__area--opened' : isShowResults && results.length
+              }
+            ]"
+            @input="searchAddress"
+          >
+          <span
+            v-if="addressError"
+            class="modal-receipt-delivery-mobile-form-input__error"
+          >
+            Ваш адрес вне зоны доставки
+          </span>
 
+          <div
+            v-if="isShowResults && results.length"
+            class="modal-receipt-delivery-mobile-form-results"
+          >
             <div
-              v-if="isShowResults && results.length"
-              class="modal-receipt-delivery-mobile-form-results"
+              v-for="(item, i) in results"
+              :key="i"
+              class="modal-receipt-delivery-mobile-form-results__item"
+              @click="setAddress(item)"
             >
-              <div
-                v-for="(item, i) in results"
-                :key="i"
-                class="modal-receipt-delivery-mobile-form-results__item"
-                @click="setAddress(item)"
-              >
-                {{ item.address }}
-              </div>
+              {{ item.address }}
             </div>
           </div>
         </div>
-        <div class="modal-receipt-delivery-mobile-form__line modal-receipt-delivery-mobile-form__line--cols">
-          <UIInput
-            v-model="form.flat"
-            placeholder="Кв/офис"
-            color="gray"
-          />
-          <UIInput
-            v-model="form.entrance"
-            placeholder="Подъезд"
-            color="gray"
-          />
-          <UIInput
-            v-model="form.floor"
-            placeholder="Этаж"
-            color="gray"
-          />
-          <UIInput
-            v-model="form.number"
-            placeholder="Домофон"
-            color="gray"
-          />
-        </div>
-        <div class="modal-receipt-delivery-mobile-form__line">
-          <UITextarea
-            v-model="form.comment"
-            placeholder="Комментарий курьеру"
-            color="gray"
-            class="modal-receipt-delivery-mobile-form__textarea"
-          />
-        </div>
-        <hr>
-        <UIButton
-          type="submit"
-          :disabled="isButtonDisabled"
-          color="yellow"
-          class="modal-receipt-delivery-mobile-form__button"
-        >
-          Подтвердить
-        </UIButton>
-      </form>
-    </div>
-  </div>
+      </div>
+      <div class="modal-receipt-delivery-mobile-form__line modal-receipt-delivery-mobile-form__line--cols">
+        <UIInput
+          v-model="form.flat"
+          placeholder="Кв/офис"
+          color="gray"
+        />
+        <UIInput
+          v-model="form.entrance"
+          placeholder="Подъезд"
+          color="gray"
+        />
+        <UIInput
+          v-model="form.floor"
+          placeholder="Этаж"
+          color="gray"
+        />
+        <UIInput
+          v-model="form.number"
+          placeholder="Домофон"
+          color="gray"
+        />
+      </div>
+      <div class="modal-receipt-delivery-mobile-form__line">
+        <UITextarea
+          v-model="form.comment"
+          placeholder="Комментарий курьеру"
+          color="gray"
+          class="modal-receipt-delivery-mobile-form__textarea"
+        />
+      </div>
+      <hr>
+      <UIButton
+        type="submit"
+        :disabled="isButtonDisabled"
+        color="yellow"
+        class="modal-receipt-delivery-mobile-form__button"
+      >
+        Подтвердить
+      </UIButton>
+    </form>
+  </CommonBottomSheet>
 </template>
 
 <script setup>
@@ -129,7 +112,6 @@ const props = defineProps({
 
 const emits = defineEmits(['close', 'setDeliveryCoords'])
 
-const isFullScreen = ref(false)
 const form = reactive({
   address: '',
   flat: '',
@@ -261,48 +243,6 @@ setDefault()
 </script>
 
 <style lang="scss" scoped>
-.modal-receipt-delivery-mobile {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-
-  display: flex;
-  flex-direction: column;
-
-  height: 230px;
-
-  background: $white;
-  border-radius: 40px 40px 0 0;
-  box-shadow: 0px -2px 80px 0px rgba(0, 0, 0, 0.20);
-  overflow: hidden;
-  transition: height 0.3s;
-
-  @include mq($bp-small) {
-    display: none;
-  }
-
-  &--fullscreen {
-    height: calc(100% - 20px);
-  }
-
-  &__top-btn {
-    flex: 0 0 auto;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    height: 30px;
-
-    padding-top: 20px;
-  }
-
-  &__content {
-    padding: 20px;
-  }
-}
-
 .modal-receipt-delivery-mobile-form {
   display: flex;
   flex-direction: column;

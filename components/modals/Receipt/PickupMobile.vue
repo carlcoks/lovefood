@@ -1,20 +1,12 @@
 <template>
-  <div
-    :class="[
-      'modal-receipt-pickup-mobile',
-      {
-        'modal-receipt-pickup-mobile--fullscreen' : isFullScreen,
-        'modal-receipt-pickup-mobile--selected' : !!selectedItem
-      }
-    ]"
-  >
-    <template
-      v-if="!!selectedItem"
-    >
-      <div class="modal-receipt-pickup-mobile__content">
+  <CommonBottomSheet>
+    <div class="modal-receipt-pickup-mobile">
+      <template
+        v-if="!!selectedItem"
+      >
         <div
           class="modal-receipt-pickup-mobile-item modal-receipt-pickup-mobile-item--selected active"
-          @click="selectedItem = null"
+          @click="selectItem(null)"
         >
           <div class="modal-receipt-pickup-mobile-item__left">
             <UIIcon
@@ -46,18 +38,8 @@
         >
           Заберу отсюда
         </UIButton>
-      </div>
-    </template>
-    <template v-else>
-      <button
-        type="button"
-        class="modal-receipt-pickup-mobile__top-btn"
-        @click.prevent="isFullScreen = !isFullScreen"
-      >
-        <UIIcon name="bottom-sheet" />
-      </button>
-
-      <div class="modal-receipt-pickup-mobile__content">
+      </template>
+      <template v-else>
         <div class="modal-receipt-pickup-mobile__search modal-receipt-pickup-mobile-search">
           <UIIcon
             name="loop"
@@ -97,9 +79,9 @@
             </div>
           </div>
         </div>
-      </div>
-    </template>
-  </div>
+      </template>
+    </div>
+  </CommonBottomSheet>
 </template>
 
 <script setup>
@@ -118,9 +100,12 @@ const props = defineProps({
 
 const emits = defineEmits(['close', 'update'])
 
-const isFullScreen = ref(false)
 const search = ref('')
 const selectedItem = ref(null)
+
+watch(() => props.currentAddress, (data) => {
+  selectedItem.value = data
+})
 
 // <!-- Computed -->
 const pickupLocations = computed(() => commonStore.pickupLocations)
@@ -133,13 +118,12 @@ const filteredLocations = computed(() => {
 
 // <!-- Methods -->
 const selectItem = (item) => {
-  if (selectedItem.value?.id === item.id) {
+  if (!item || selectedItem.value?.id === item.id) {
     selectedItem.value = null
   } else {
     selectedItem.value = item
   }
 
-  isFullScreen.value = false
   emits('update', selectedItem.value)
 }
 
@@ -160,57 +144,11 @@ setDefault()
 
 <style lang="scss" scoped>
 .modal-receipt-pickup-mobile {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-
   display: flex;
   flex-direction: column;
+  grid-gap: 20px;
 
-  height: 230px;
-
-  background: $white;
-  border-radius: 40px 40px 0 0;
-  box-shadow: 0px -2px 80px 0px rgba(0, 0, 0, 0.20);
-  overflow: hidden;
-  transition: height 0.3s;
-
-  @include mq($bp-small) {
-    display: none;
-  }
-
-  &--fullscreen {
-    height: calc(100% - 20px);
-  }
-
-  &--selected {
-    height: auto;
-  }
-
-  &__top-btn {
-    flex: 0 0 auto;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    height: 30px;
-
-    padding-top: 20px;
-  }
-
-  &__content {
-    flex: 1 1 auto;
-
-    display: flex;
-    flex-direction: column;
-    grid-gap: 20px;
-
-    padding: 20px;
-
-    overflow-y: auto;
-  }
+  overflow-y: auto;
 
   &__items {
     display: flex;
