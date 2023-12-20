@@ -4,6 +4,7 @@
       'bottom-sheet',
       {
         'bottom-sheet--fullscreen' : sheetHeight === 100,
+        'bottom-sheet--draggable': isDraggable
       }
     ]"
     :style="sheetHeight === 100 ? '' : `height: ${sheetHeight}vh`"
@@ -29,6 +30,7 @@ const draggableButton = ref(null)
 const dragPosition = ref(null)
 const sheetHeight = ref(START_HEIGHT)
 const isFullscreen = ref(false)
+const isDraggable = ref(false)
 
 // <!-- Methods -->
 const setSheetHeight = (value) => {
@@ -41,6 +43,7 @@ const touchPosition = (event) => {
 
 const onDragStart = (e) => {
   dragPosition.value = touchPosition(e).pageY
+  isDraggable.value = true
 }
 
 const onDragMove = (e) => {
@@ -56,6 +59,7 @@ const onDragMove = (e) => {
 
 const onDragEnd = () => {
   dragPosition.value = null
+  isDraggable.value = false
 
   if (isFullscreen.value && sheetHeight.value < 90) {
     isFullscreen.value = false
@@ -101,9 +105,13 @@ onMounted(() => {
   overflow: hidden;
   transition: height 0.3s;
 
+  &--draggable {
+    transition: height 0s;
+  }
+
   &--fullscreen {
     height: 100vh;
-    height: var(--app-height);
+    height: calc(var(--app-height) - 20px);
   }
 
   &__button {
