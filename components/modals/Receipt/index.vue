@@ -145,7 +145,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .modal-receipt {
   width: 100vw;
-  min-height: 100vh;
+  height: 100vh;
 
   display: flex;
   flex-direction: column;
@@ -155,8 +155,7 @@ onMounted(() => {
 
   @include mq($bp-small) {
     max-width: 1150px;
-    min-height: auto;
-    min-height: 678px;
+    height: 678px;
 
     display: grid;
     grid-template-columns: repeat(2, 1fr);
