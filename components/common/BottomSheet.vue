@@ -4,10 +4,11 @@
       'bottom-sheet',
       {
         'bottom-sheet--fullscreen' : sheetHeight === 100,
-        'bottom-sheet--draggable': isDraggable
+        'bottom-sheet--draggable': isDraggable,
+        'bottom-sheet--autoheight' : autoHeight,
       }
     ]"
-    :style="sheetHeight === 100 ? '' : `height: ${sheetHeight}vh`"
+    :style="autoHeight ? '' : sheetHeight === 100 ? '' : `height: ${sheetHeight}vh`"
   >
     <button
       ref="draggableButton"
@@ -25,6 +26,13 @@
 
 <script setup>
 const START_HEIGHT = 15
+
+defineProps({
+  autoHeight: {
+    type: Boolean,
+    default: false,
+  },
+})
 
 const draggableButton = ref(null)
 const dragPosition = ref(null)
@@ -112,6 +120,14 @@ onMounted(() => {
   &--fullscreen {
     height: 100vh;
     height: calc(var(--app-height) - 20px);
+  }
+
+  &--autoheight {
+    height: auto;
+
+    .bottom-sheet__button {
+      display: none;
+    }
   }
 
   &__button {

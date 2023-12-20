@@ -1,13 +1,12 @@
 <template>
-  <CommonBottomSheet>
+  <CommonBottomSheet
+    :auto-height="!!selectedItem"
+  >
     <div class="modal-receipt-pickup-mobile">
       <template
         v-if="!!selectedItem"
       >
-        <div
-          class="modal-receipt-pickup-mobile-item modal-receipt-pickup-mobile-item--selected active"
-          @click="selectItem(null)"
-        >
+        <div class="modal-receipt-pickup-mobile-item modal-receipt-pickup-mobile-item--selected active">
           <div class="modal-receipt-pickup-mobile-item__left">
             <UIIcon
               name="pickup"
@@ -26,9 +25,13 @@
               {{ selectedItem.working_time}}
             </p>
           </div>
-          <div class="modal-receipt-pickup-mobile-item__close">
+          <button
+            type="button"
+            class="modal-receipt-pickup-mobile-item__close"
+            @click.prevent="selectItem(null)"
+          >
             <UIIcon name="close" />
-          </div>
+          </button>
         </div>
 
         <UIButton
