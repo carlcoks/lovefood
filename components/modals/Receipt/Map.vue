@@ -2,53 +2,7 @@
   <div
     id="yandex-map"
   />
-  <!-- <yandex-map
-    v-model="map"
-    :settings="{
-      location: {
-        center,
-        zoom
-      }
-    }"
-    class="modal-receipt-map"
-  >
-    <yandex-map-default-features-layer />
-    <yandex-map-default-scheme-layer />
-    <yandex-map-listener
-      :settings="{
-        onClick: onMapClick,
-      }"
-    />
-
-    <yandex-map-controls :settings="{ position: 'right' }">
-      <yandex-map-zoom-control />
-    </yandex-map-controls>
-
-    <yandex-map-feature
-      v-for="item in zones"
-      :key="item.id"
-      :settings="item"
-    />
-
-    <yandex-map-marker
-      v-if="deliveryMarker"
-      v-model="mapMarker"
-      :settings="{
-        coordinates: deliveryMarker.coordinates,
-        id: deliveryMarker.id,
-      }"
-    >
-      <div
-        class="modal-receipt-map-marker modal-receipt-map-marker--delivery"
-      >
-        <UIIcon
-          name="metka"
-          class="modal-receipt-map-marker__icon"
-        />
-      </div>
-    </yandex-map-marker>
-
-    <yandex-map-marker
+    <!-- <yandex-map-marker
       v-for="item in markers"
       :key="item.id"
       :settings="{
@@ -84,8 +38,7 @@
           </p>
         </div>
       </div>
-    </yandex-map-marker>
-  </yandex-map> -->
+    </yandex-map-marker> -->
 </template>
 
 <script setup lang="ts">

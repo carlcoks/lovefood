@@ -14,9 +14,12 @@
 
       <div class="modal-receipt-delivery-form">
         <div class="modal-receipt-delivery-form__header">
-          <p class="modal-receipt-delivery-form__label">
+          <label
+            for="address"
+            class="modal-receipt-delivery-form__label"
+          >
             Город, улица, дом
-          </p>
+          </label>
 
           <!-- <p class="modal-receipt-delivery-form__navigate">
             <UIIcon
@@ -29,6 +32,7 @@
           <div class="modal-receipt-delivery-form__line">
             <div class="modal-receipt-delivery-form-input">
               <input
+                id="address"
                 v-model="form.address"
                 type="text"
                 placeholder="Адрес"

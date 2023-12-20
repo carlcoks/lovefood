@@ -74,8 +74,15 @@ te<template>
         class="modal-receipt__map"
       />
 
+      <ModalsReceiptDeliveryMobile
+        v-if="currentType === 'delivery'"
+        :delivery-coords="deliveryCoords"
+        :delivery-zone="deliveryZone"
+        @setDeliveryCoords="deliveryCoords = $event"
+        @close="closeModal()"
+      />
       <ModalsReceiptPickupMobile
-        v-if="currentType === 'pickup'"
+        v-else-if="currentType === 'pickup'"
         :current-address="currentAddress"
         @update="currentAddress = $event"
         @close="closeModal()"
@@ -127,7 +134,7 @@ onMounted(() => {
     currentType.value = deliveryType.value
   }
 
-  if (selectedLocation.value) {
+  if (selectedLocation.value && deliveryType.value === 'pickup') {
     currentAddress.value = selectedLocation.value
   }
 })
