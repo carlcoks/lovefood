@@ -130,7 +130,7 @@ watch(() => props.currentAddress, (data) => {
   if (data) {
     goToMarker(data)
   } else {
-    setCenter()
+    setCenter('pickup')
   }
 })
 

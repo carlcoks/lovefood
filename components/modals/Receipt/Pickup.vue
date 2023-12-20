@@ -62,8 +62,10 @@
 
 <script setup>
 import { useCommonStore } from '@/store/common'
+import { useUserStore } from '@/store/user'
 
 const commonStore = useCommonStore()
+const userStore = useUserStore()
 
 const props = defineProps({
   currentAddress: {
@@ -86,6 +88,8 @@ const filteredLocations = computed(() => {
 })
 
 const submit = () => {
+  userStore.setDeliveryForm(null)
+
   if (useChangeLocation('pickup', props.currentAddress)) {
     emits('close')
   }

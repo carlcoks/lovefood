@@ -90,7 +90,7 @@
     <transition name="mobile-menu" mode="out-in">
       <LayoutHeaderMobileMenu
         v-if="isShowMobileMenu"
-        @auth="isShowAuth = true"
+        @auth="commonStore.toggleShowAuthModal(true)"
         @close="isShowMobileMenu = false"
       />
     </transition>

@@ -111,7 +111,7 @@ const decrement = () => {
   width: 100%;
   height: 48px;
 
-  padding: 0 20px;
+  padding: 0;
 
   @include text_normal;
   font-weight: 500;
@@ -120,7 +120,13 @@ const decrement = () => {
   border: 2px solid transparent;
   border-radius: 14px;
 
+  white-space: nowrap;
+
   transition: border-color 0.3s, background-color 0.3s;
+
+  @include mq($bp-small) {
+    padding: 0 20px;
+  }
 
   &--reverse {
     flex-direction: row-reverse;

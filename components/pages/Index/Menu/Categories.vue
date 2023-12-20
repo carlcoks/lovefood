@@ -2,7 +2,7 @@
   <div class="index-menu-categories">
     <div class="index-menu-categories__tabs-wrap">
       <div
-        ref="tabsRef"
+        id="category-tabs"
         class="index-menu-categories__tabs"
       >
         <button
@@ -42,7 +42,6 @@ const catalogStore = useCatalogStore()
 
 const emits = defineEmits(['showFilters'])
 
-const tabsRef = ref(null)
 const activeTab = ref(null)
 const showMore = ref(false)
 const positions = []
@@ -75,14 +74,11 @@ const onScroll = (e) => {
     if (scrollPosition >= item.top && scrollPosition <= item.bottom) {
       activeTab.value = item.id
 
-      tabsRef.value.scroll({
-        left: 0,
-        behavior: 'smooth'
-      })
+      const tabs = document.getElementById('category-tabs')
 
       const el = document.getElementById(`category-tab-${item.id}`)
       if (el) {
-        tabsRef.value.scroll({
+        tabs.scroll({
           left: el.offsetLeft,
           behavior: 'smooth'
         })

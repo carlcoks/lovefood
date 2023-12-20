@@ -1,11 +1,16 @@
 export const useUserStore = defineStore("userStore", {
   state: () => ({
     user: null,
+    deliveryForm: null,
   }),
 
   actions: {
     setUser(value) {
       this.user = value;
+    },
+
+    setDeliveryForm (value) {
+      this.deliveryForm = value
     },
   },
 

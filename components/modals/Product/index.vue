@@ -816,10 +816,10 @@ onMounted(() => {
   }
 
   &__close {
-    position: absolute;
-    top: 11px;
-    left: 10px;
-
+    position: fixed;
+    left: 20px;
+    top: 16px;
+    
     width: 50px;
     height: 50px;
 
@@ -831,10 +831,12 @@ onMounted(() => {
     border-radius: 50%;
     box-shadow: 0px -2px 80px 0px rgba(0, 0, 0, 0.20);
 
+    z-index: 100;
+
     ::v-deep(.ui-icon) svg {
       width: 30px;
       height: 30px;
-      transform: rotate(180deg);
+      transform: rotate(90deg);
 
       path {
         fill: $blackText3;
@@ -854,6 +856,8 @@ onMounted(() => {
   grid-gap: 10px;
 
   &__line {
+    width: 100%;
+
     display: flex;
     align-items: center;
     grid-gap: 2px;
@@ -863,9 +867,15 @@ onMounted(() => {
 
     border-radius: 117px;
     background: $grayBg;
+
+    @include mq($bp-small) {
+      width: auto;
+    }
   }
 
   &__button {
+    flex: 0 0 33%;
+
     padding: 8px 25px;
 
     @include text_normal;
@@ -876,6 +886,10 @@ onMounted(() => {
     border: 0;
 
     transition: background-color 0.3s;
+
+    @include mq($bp-small) {
+      flex: 0 0 auto;
+    }
 
     &.active {
       background: $white;
@@ -1064,6 +1078,8 @@ onMounted(() => {
   }
 
   &__col {
+    flex: 0 0 25%;
+
     position: relative;
 
     display: flex;
@@ -1071,7 +1087,11 @@ onMounted(() => {
     align-items: center;
     grid-gap: 5px;
 
-    padding: 0 26px;
+    padding: 0;
+
+    @include mq($bp-small) {
+      padding: 0 26px;
+    }
 
     &:first-child {
       padding-left: 0;
@@ -1104,6 +1124,7 @@ onMounted(() => {
   &__value {
     @include text_large;
     font-weight: 700;
+    white-space: nowrap;
   }
 
   &__label {

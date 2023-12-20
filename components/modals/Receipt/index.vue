@@ -6,13 +6,27 @@ te<template>
     <div class="modal-receipt">
       <a
         href="#"
-        class="modal-receipt__close"
+        class="modal-receipt__close modal-receipt__close--pc"
         @click.prevent="closeModal()"
       >
         <UIIcon name="close" />
       </a>
 
       <div class="modal-receipt__main">
+        <div class="modal-receipt-header">
+          <p class="modal-receipt-header__title">
+            Укажите адрес
+          </p>
+
+          <a
+            href="#"
+            class="modal-receipt__close modal-receipt__close--mobile"
+            @click.prevent="closeModal()"
+          >
+            <UIIcon name="close" />
+          </a>
+        </div>
+
         <div class="modal-receipt__tabs">
           <button
             v-for="(item, i) in types"
@@ -59,6 +73,13 @@ te<template>
         @setDeliveryZone="deliveryZone = $event"
         class="modal-receipt__map"
       />
+
+      <ModalsReceiptPickupMobile
+        v-if="currentType === 'pickup'"
+        :current-address="currentAddress"
+        @update="currentAddress = $event"
+        @close="closeModal()"
+      />
     </div>
 
     <LazyModalsMissedProducts
@@ -87,6 +108,10 @@ const currentAddress = ref(null)
 const deliveryCoords = ref(null)
 const deliveryZone = ref(null)
 
+watch(() => currentType.value, () => {
+  deliveryCoords.value = null
+})
+
 // <!-- Computed -->
 const deliveryType = computed(() => commonStore.deliveryType)
 const selectedLocation = computed(() => commonStore.selectedLocation)
@@ -113,7 +138,8 @@ onMounted(() => {
   width: 100vw;
   min-height: 100vh;
 
-  display: grid;
+  display: flex;
+  flex-direction: column;
 
   background: $white;
   overflow: hidden;
@@ -123,27 +149,38 @@ onMounted(() => {
     min-height: auto;
     min-height: 678px;
 
+    display: grid;
     grid-template-columns: repeat(2, 1fr);
   
     border-radius: 40px;
   }
 
   &__close {
-    position: absolute;
-    top: 50px;
-    right: 60px;
+    &--pc {
+      display: none;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+      @include mq($bp-small) {
+        position: absolute;
+        top: 50px;
+        right: 60px;
 
-    width: 44px;
-    height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-    background: $white;
-    border-radius: 50%;
+        width: 44px;
+        height: 44px;
 
-    z-index: 10;
+        background: $white;
+        border-radius: 50%;
+
+        z-index: 10;
+      }
+    }
+
+    &--mobile {
+
+    }
 
     ::v-deep(.ui-icon) svg {
       width: 24px;
@@ -158,20 +195,19 @@ onMounted(() => {
   &__main {
     display: flex;
     flex-direction: column;
+    grid-gap: 20px;
 
-    padding: 0;
+    padding: 20px;
 
     @include mq($bp-small) {
+      grid-gap: 0;
+
       padding: 50px 60px;
     }
   }
 
   &__map {
-    display: none;
-
-    @include mq($bp-small) {
-      display: block;
-    }
+    flex: 1 1 auto;
   }
 
   &__tabs {
@@ -181,15 +217,24 @@ onMounted(() => {
     align-items: center;
     grid-template-columns: repeat(3, 1fr);
 
-    margin-bottom: 30px;
     padding: 5px;
     
     background: $grayBg2;
     border-radius: 20px;
+
+    @include mq($bp-small) {
+      margin-bottom: 30px;
+    }
   }
 
   &__content {
-    flex: 1 1 auto;
+    display: none;
+
+    @include mq($bp-small) {
+      display: block;
+
+      flex: 1 1 auto;
+    }
   }
 }
 
@@ -197,11 +242,11 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  grid-gap: 10px;
+  grid-gap: 5px;
 
-  padding: 12px 15px;
+  padding: 12px 5px;
 
-  @include text_normal;
+  @include text_mini;
   font-weight: 600;
   color: $grayText;
 
@@ -211,9 +256,45 @@ onMounted(() => {
 
   transition: background-color 0.3s, color 0.3s;
 
+  ::v-deep(.ui-icon) svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  @include mq($bp-super-small) {
+    grid-gap: 10px;
+
+    @include text_normal;
+    font-weight: 600;
+
+    ::v-deep(.ui-icon) svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  @include mq($bp-small) {
+    padding: 12px 15px;
+  }
+
   &.active {
     color: $blackText;
     background-color: $yellow;
+  }
+}
+
+.modal-receipt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  @include mq($bp-small) {
+    display: none;
+  }
+
+  &__title {
+    @include text_large;
+    font-weight: 700;
   }
 }
 </style>

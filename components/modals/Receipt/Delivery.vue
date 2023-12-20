@@ -29,7 +29,7 @@
           <div class="modal-receipt-delivery-form__line">
             <div class="modal-receipt-delivery-form-input">
               <input
-                v-model="address"
+                v-model="form.address"
                 type="text"
                 placeholder="Адрес"
                 :class="[
@@ -64,24 +64,29 @@
           </div>
           <div class="modal-receipt-delivery-form__line modal-receipt-delivery-form__line--cols">
             <UIInput
+              v-model="form.flat"
               placeholder="Кв/офис"
               color="gray"
             />
             <UIInput
+              v-model="form.entrance"
               placeholder="Подъезд"
               color="gray"
             />
             <UIInput
+              v-model="form.floor"
               placeholder="Этаж"
               color="gray"
             />
             <UIInput
+              v-model="form.number"
               placeholder="Домофон"
               color="gray"
             />
           </div>
           <div class="modal-receipt-delivery-form__line">
             <UITextarea
+              v-model="form.comment"
               placeholder="Комментарий курьеру"
               color="gray"
               class="modal-receipt-delivery-form__textarea"
@@ -176,8 +181,10 @@
 
 <script setup>
 import { useCommonStore } from '@/store/common'
+import { useUserStore } from '@/store/user'
 
 const commonStore = useCommonStore()
+const userStore = useUserStore()
 
 const props = defineProps({
   deliveryCoords: {
@@ -193,7 +200,15 @@ const props = defineProps({
 
 const emits = defineEmits(['close', 'setDeliveryCoords'])
 
-const address = ref('')
+const form = reactive({
+  address: '',
+  flat: '',
+  entrance: '',
+  floor: '',
+  number: '',
+  comment: '',
+  coords: null,
+})
 const results = ref([])
 const isShowResults = ref(false)
 
@@ -234,7 +249,7 @@ const searchAddress = async () => {
   results.value = []
 
   if (ymaps) {
-    const search = await ymaps.geocode(address.value)
+    const search = await ymaps.geocode(form.address)
 
     const geo = search.geoObjects.toArray();
 
@@ -251,9 +266,11 @@ const searchAddress = async () => {
 
 const setAddress = (data) => {
   isShowResults.value = false
-  address.value = data.address
-
+  
   const coords = data.coords
+  
+  form.address = data.address
+  form.coords = coords
 
   emits('setDeliveryCoords', coords)
 }
@@ -263,13 +280,16 @@ const searchByCoords = async (coords) => {
     const search = await ymaps.geocode(coords)
     const obj = search.geoObjects.get(0)
 
-    address.value = obj.properties.get('text')
+    form.address = obj.properties.get('text')
+    form.coords = coords
   }
 }
 
 const submit = () => {
+  userStore.setDeliveryForm(form)
+
   const obj = {
-    address: address.value,
+    address: form.address,
     name: '',
     warehouse_id: condition.value.warehouse_id
   }
@@ -278,6 +298,22 @@ const submit = () => {
     emits('close')
   }
 }
+
+const setDefault = () => {
+  if (userStore.deliveryForm) {
+    for (const key in userStore.deliveryForm) {
+      form[key] = userStore.deliveryForm[key]
+    }
+
+    ymaps.ready(() => {
+      setTimeout(() => {
+        emits('setDeliveryCoords', form.coords)
+      }, 1000)
+    })
+  }
+}
+
+setDefault()
 </script>
 
 <style lang="scss" scoped>

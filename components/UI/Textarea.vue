@@ -1,26 +1,26 @@
 <template>
   <div class="textarea">
     <textarea
-      :type="type"
-      :value="value"
+      :value="modelValue"
       :placeholder="placeholder"
       :disabled="disabled"
       :class="[
         'textarea__area',
         color ? `textarea__area--${color}` : ''
       ]"
+      @input="emits('update:modelValue', $event.target.value)"
     />
   </div>
 </template>
 
 <script setup>
 defineProps({
-  type: {
-    type: String,
-    default: 'text',
-  },
   placeholder: {
     type: String,
+    default: '',
+  },
+  modelValue: {
+    type: undefined,
     default: '',
   },
   value: {
@@ -36,6 +36,8 @@ defineProps({
     default: '',
   },
 })
+
+const emits = defineEmits(['update:modelValue'])
 </script>
 
 <style lang="scss" scoped>
