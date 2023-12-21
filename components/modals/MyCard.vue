@@ -3,29 +3,29 @@
     :is-show="isShow"
     @close="emits('close')"
   >
-    <div class="modal-qr-code">
-      <div class="modal-qr-code__header">
-        <p class="modal-qr-code__title">
-          Предъявите QR код кассиру
+    <div class="modal-my-card">
+      <div class="modal-my-card__header">
+        <p class="modal-my-card__title">
+          Ваша карта
         </p>
 
         <a
           href="#"
           rel="nofollow"
-          class="modal-qr-code__close"
+          class="modal-my-card__close"
           @click.prevent="closeModal()"
         >
           <UIIcon name="close" />
         </a>
       </div>
 
-      <div class="modal-qr-code__main">
-        <img src="@/assets/images/qr-code.png" alt="">
+      <div class="modal-my-card__main">
+        <img src="@/assets/images/barcode.png" alt="">
       </div>
 
       <UIButton
         color="yellow"
-        class="modal-qr-code__button"
+        class="modal-my-card__button"
         @click="closeModal()"
       >
         Готово
@@ -45,7 +45,7 @@ const closeModal = () => {
 </script>
 
 <style lang="scss" scoped>
-.modal-qr-code {
+.modal-my-card {
   width: 100vw;
   min-height: 100vh;
 

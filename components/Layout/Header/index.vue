@@ -124,6 +124,8 @@ const pageTitle = computed(() => {
       return 'Мои промокоды'
     case '/lk/referals':
       return 'Реферальная система'
+    case '/lk/bonuses':
+      return 'Бонусная система'
     default:
       return ''
   }

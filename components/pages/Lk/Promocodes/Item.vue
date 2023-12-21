@@ -75,7 +75,7 @@ const copyCode = async (code: string) => {
   } catch (e) {
     commonStore.addNotification({
       type: 'copy',
-      text: 'Промокод скопирован',
+      text: 'Промокод не скопирован',
       status: 'fail',
     })
   }
