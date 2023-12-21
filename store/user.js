@@ -1,12 +1,24 @@
 export const useUserStore = defineStore("userStore", {
   state: () => ({
+    token: null,
     user: null,
     deliveryForm: null,
   }),
 
   actions: {
-    setUser(value) {
-      this.user = value;
+    setToken (value) {
+      this.token = value
+    },
+
+    setUser (value) {
+      this.user = value
+    },
+
+    updateUser (value) {
+      this.user = {
+        ...this.user,
+        ...value
+      }
     },
 
     setDeliveryForm (value) {
@@ -18,10 +30,6 @@ export const useUserStore = defineStore("userStore", {
     isAuth: (state) => {
       return !!state.user;
     },
-
-    fullName: (state) => {
-      return (state.user?.firstname || state.user?.lastname) ? `${state.user.firstname} ${state.user.lastname}` : state.user?.displayname
-    }
   },
 
   persist: true

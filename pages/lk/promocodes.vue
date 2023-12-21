@@ -11,7 +11,10 @@
       <PagesLkPromocodesItem
         v-for="(item, i) in promocodes"
         :key="i"
+        :number="i + 1"
         :item="item"
+        class="page-lk-promocodes-list__item"
+        @show-qr-code="isShowQrCodeModal = true"
       />
     </div>
     <div
@@ -20,6 +23,11 @@
     >
       <UILoader is-big />
     </div>
+
+    <LazyModalsQrCode
+      v-if="isShowQrCodeModal"
+      @close="isShowQrCodeModal = false"
+    />
   </div>
 </template>
 
@@ -30,6 +38,7 @@ const userStore = useUserStore()
 
 const isLoading = ref(false)
 const promocodes = ref([])
+const isShowQrCodeModal = ref(false)
 
 // <!-- Computed -->
 const user = computed(() => userStore.user)
@@ -54,13 +63,21 @@ getPromocodes()
 
 <style lang="scss" scoped>
 .page-lk-promocodes {
+  max-width: 775px;
+
   display: grid;
   grid-gap: 20px;
 
   &__title {
-    @include text_large;
-    font-weight: 700;
-    color: $black;
+    display: none;
+
+    @include mq($bp-medium) {
+      display: block;
+
+      @include text_large;
+      font-weight: 700;
+      color: $black;
+    }
   }
 
   &__loader {
@@ -77,7 +94,7 @@ getPromocodes()
   flex-direction: column;
 
   &__item {
-    border-bottom: 1px solid $grayText2;
+    border-bottom: 1px solid $grayBg;
   }
 }
 </style>

@@ -2,23 +2,41 @@
   <div class="cart-notifications">
     <transition-group name="slide-right">
       <div
-        v-for="(item, i) in cartNotifications"
+        v-for="(item, i) in notifications"
         :key="i"
-        class="cart-notification"
+        :class="[
+          'cart-notification',
+          `cart-notification--${item.status}`,
+        ]"
       >
-        <UIIcon name="cart-filled" class="cart-notification__icon" />
-        {{ item }}
+        <UIIcon
+          v-if="item.type"
+          :name="getIcon(item.type)"
+          class="cart-notification__icon"
+        />
+        {{ item.text }}
       </div>
     </transition-group>
   </div>
 </template>
 
 <script setup>
-import { useCartStore } from '@/store/cart'
+import { useCommonStore } from '@/store/common'
 
-const cartStore = useCartStore()
+const commonStore = useCommonStore()
 
-const cartNotifications = computed(() => cartStore.notifications)
+const notifications = computed(() => commonStore.notifications)
+
+const getIcon = (type) => {
+  switch (type) {
+    case 'copy':
+      return 'copy'
+    case 'cart':
+      return 'cart-filled'
+    default:
+      return null
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -48,16 +66,29 @@ const cartNotifications = computed(() => cartStore.notifications)
 
   @include text_normal;
   font-weight: 500;
-  color: $green;
 
-  background: $greenLight;
   border-radius: 20px;
-  border: 1px solid $greenDark;
+  border: 1px solid transparent;
 
   box-shadow: 0px 0px 50px 0px rgba(0, 0, 0, 0.08);
 
   @include mq($bp-small) {
     padding: 25px 40px;
+  }
+
+  &--success {
+    color: $green;
+
+    background: $greenLight;
+    border-color: $greenDark;
+
+    .cart-notification {
+      &__icon {
+        ::v-deep svg path {
+          fill: $green;
+        }
+      }
+    }
   }
 
   &__icon {

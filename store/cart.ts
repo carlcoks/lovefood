@@ -2,7 +2,6 @@ import { useCommonStore } from '@/store/common'
 
 interface State {
   cart: cartItem[]
-  notifications: String[]
   isShowCartModal: boolean
 }
 
@@ -30,7 +29,6 @@ interface Supplement {
 export const useCartStore = defineStore('cartStore', {
   state: (): State => ({
     cart: [],
-    notifications: [],
     isShowCartModal: false,
   }),
 
@@ -60,12 +58,23 @@ export const useCartStore = defineStore('cartStore', {
         locations: item.locations.map(item => item.id),
       })
 
-      this.addNotification()
+      commonStore.addNotification({
+        type: 'cart',
+        text: 'Товар добавлен в корзину',
+        status: 'success'
+      })
     },
 
     incrementItem (idx: number) {
+      const commonStore = useCommonStore()
+
       this.cart[idx].count++
-      this.addNotification()
+
+      commonStore.addNotification({
+        type: 'cart',
+        text: 'Товар добавлен в корзину',
+        status: 'success'
+      })
     },
 
     decrementItem (idx: number) {
@@ -91,14 +100,6 @@ export const useCartStore = defineStore('cartStore', {
     toggleShowCartModal (value: boolean) {
       this.isShowCartModal = value
     },
-
-    addNotification () {
-      this.notifications.push('Товар добавлен в корзину')
-
-      setTimeout(() => {
-        this.notifications.splice(0, 1)
-      }, 2000)
-    }
   },
 
   getters: {

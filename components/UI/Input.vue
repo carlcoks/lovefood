@@ -11,7 +11,7 @@
     <input
       :id="id"
       :type="type"
-      :value="modelValue"
+      :value="modelValue || value"
       :placeholder="placeholder"
       :disabled="disabled"
       :autocomplete="autocomplete"
@@ -37,6 +37,10 @@ defineProps({
     default: '',
   },
   modelValue: {
+    type: undefined,
+    default: '',
+  },
+  value: {
     type: undefined,
     default: '',
   },

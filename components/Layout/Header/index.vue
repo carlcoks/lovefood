@@ -113,13 +113,20 @@ const isShowCategories = ref(false)
 const isMobileOrTablet = computed(() => commonStore.isMobileOrTablet)
 
 const pageTitle = computed(() => {
-  if (route.fullPath === '/order') {
-    return 'Оформление заказа'
-  } else if (route.fullPath === '/lk') {
-    return 'Личная информация'
+  const fullPath = route.fullPath
+
+  switch (fullPath) {
+    case '/order':
+      return 'Оформление заказа'
+    case '/lk':
+      return 'Личная информация'
+    case '/lk/promocodes':
+      return 'Мои промокоды'
+    case '/lk/referals':
+      return 'Реферальная система'
+    default:
+      return ''
   }
-  return ''
-  // return 'Рестораны'
 })
 
 // Methods

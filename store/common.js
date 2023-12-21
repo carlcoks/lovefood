@@ -21,6 +21,8 @@ export const useCommonStore = defineStore('commonStore', {
     isShowAcceptModal: false,
 
     missedProductsModal: null, // null | { type, location }
+
+    notifications: [],
   }),
 
   actions: {
@@ -69,6 +71,14 @@ export const useCommonStore = defineStore('commonStore', {
           }
         }).filter(item => item)
       }
+    },
+
+    addNotification (value) {
+      this.notifications.push(value)
+
+      setTimeout(() => {
+        this.notifications.splice(0, 1)
+      }, 2000)
     },
 
     setDeliveryType (value) {

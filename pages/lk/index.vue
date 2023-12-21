@@ -6,14 +6,20 @@
 
     <PagesLkUserBlock />
 
-    <form class="page-lk-personal__form">
+    <form
+      class="page-lk-personal__form"
+      @submit.prevent="onSubmit()"
+    >
+      <!-- <pre>
+        user: {{ user }}
+      </pre> -->
       <div class="page-lk-personal__line">
         <p class="page-lk-personal__label">
           Имя
         </p>
         <div class="page-lk-personal__value">
           <UIInput
-            value=""
+            v-model="form.name"
             color="white"
           />
           <UIIcon
@@ -28,7 +34,7 @@
         </p>
         <div class="page-lk-personal__value">
           <UIInput
-            :value="user?.displayname"
+            :value="form.phone"
             color="white"
             disabled
           />
@@ -41,7 +47,7 @@
         </p>
         <div class="page-lk-personal__value">
           <UIInput
-            value=""
+            v-model="form.email"
             color="white"
           />
           <UIIcon
@@ -57,9 +63,13 @@
         </p>
         <div class="page-lk-personal__value">
           <UIInput
-            value=""
+            v-model="form.birth"
             color="white"
             disabled
+          />
+          <UIIcon
+            name="pencil"
+            class="page-lk-personal__icon"
           />
         </div>
       </div>
@@ -69,11 +79,25 @@
         </p>
         <div class="page-lk-personal__value">
           <UIInput
-            value=""
+            v-model="form.sex"
             color="white"
             disabled
           />
+          <UIIcon
+            name="pencil"
+            class="page-lk-personal__icon"
+          />
         </div>
+      </div>
+      <div class="page-lk-personal__buttons">
+        <UIButton
+          type="submit"
+          color="yellow"
+          :is-loading="isLoading"
+          class="page-lk-personal__button"
+        >
+          Сохранить
+        </UIButton>
       </div>
     </form>
 
@@ -166,10 +190,68 @@
 
 <script setup>
 import { useUserStore } from '@/store/user'
+import { useCommonStore } from '@/store/common'
 
 const userStore = useUserStore()
+const commonStore = useCommonStore()
 
+const form = reactive({
+  name: '',
+  phone: '',
+  email: '',
+  birth: '',
+  sex: null,
+})
+const isLoading = ref(false)
+
+// <!-- Computed -->
+const token = computed(() => userStore.token)
 const user = computed(() => userStore.user)
+
+// <!-- Methods -->
+const onSubmit = async () => {
+  isLoading.value = true
+
+  const obj = {
+    name: form.name,
+    email: form.email,
+    birth: form.birth,
+    token: token.value,
+  }
+
+  const { data } = await useFetch('/api/wp-json/system/users/update', {
+    method: 'POST',
+    body: obj
+  })
+
+  isLoading.value = false
+
+  if (data?.value?.success) {
+    userStore.updateUser({
+      display_name: form.name,
+      user_email: form.email,
+      birth: form.birth,
+    })
+
+    commonStore.addNotification({
+      type: null,
+      text: 'Информация успешно обновлена',
+      status: 'success',
+    })
+  }
+}
+
+const setDefault = () => {
+  if (user.value) {
+    form.name = user.value.display_name
+    form.phone = user.value.phone
+    form.email = user.value.user_email
+    form.birth = user.value.birth
+    form.sex = null
+  }
+}
+
+setDefault()
 </script>
 
 <style lang="scss" scoped>
@@ -254,6 +336,16 @@ const user = computed(() => userStore.user)
     ::v-deep svg path {
       fill: #262626;
     }
+  }
+
+  &__buttons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  &__button {
+    font-weight: 500;
   }
 }
 

@@ -5,7 +5,7 @@
         C
       </div>
       <p class="lk-user-block__name">
-        {{ userStore.fullName }}
+        {{ user?.display_name }}
       </p>
     </div>
 
@@ -31,8 +31,12 @@ defineProps({
   },
 })
 
+const user = computed(() => userStore.user)
+
 const logout = () => {
   navigateTo('/')
+
+  userStore.setToken(null)
   userStore.setUser(null)
 }
 </script>

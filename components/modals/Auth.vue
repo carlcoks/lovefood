@@ -222,13 +222,39 @@ const checkCode = async () => {
   isLoading.value = false
 
   if (data?.value?.success) {
-    userStore.setUser(data.value.user)
+    const obj = data.value.user
 
-    navigateTo('/lk')
-    closeModal()
+    getUser(obj.token)
   } else {
     isCodeError.value = true
     return false
+  }
+}
+
+const getUser = async (token: string) => {
+  isLoading.value = true
+
+  const { data } = await useFetch('/api/wp-json/system/users', {
+    params: {
+      token
+    }
+  })
+
+  isLoading.value = false
+
+  if (data?.value?.status === 'success') {
+    const user = data?.value?.data?.data || null
+
+    if (user) {
+      userStore.setToken(token)
+      userStore.setUser({
+        ...user,
+        id: +user.ID,
+      })
+
+      navigateTo('/lk')
+      closeModal()
+    }
   }
 }
 
