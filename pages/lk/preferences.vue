@@ -2,7 +2,7 @@
   <div class="page-lk-preferences">
     <div class="page-lk-preferences__header">
       <h2 class="page-lk-preferences__title">
-        История заказов
+        Предпочтения
       </h2>
       <p class="page-lk-preferences__text">
         Пожалуйста, укажите ваши предпочтения в продуктах, чтобы мы могли подготовить для вас наиболее подходящие предложения.
@@ -80,9 +80,14 @@ const onSubmit = () => {}
   }
 
   &__title {
-    @include text_large;
-    font-weight: 700;
-    color: $black;
+    display: none;
+
+    @include mq($bp-medium) {
+      display: block;
+      @include text_large;
+      font-weight: 700;
+      color: $black;
+    }
   }
 
   &__text {
@@ -95,17 +100,23 @@ const onSubmit = () => {}
 
   &__content {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 20px;
+    grid-gap: 40px;
+
+    @include mq($bp-medium) {
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 20px;
+    }
   }
 }
 
 .page-lk-preferences-list {
-  padding: 30px 40px;
+  @include mq($bp-medium) {
+    padding: 30px 40px;
 
-  background: $white;
-  border-radius: 20px;
-  box-shadow: 0px 0px 50px 0px rgba(0, 0, 0, 0.08);
+    background: $white;
+    border-radius: 20px;
+    box-shadow: 0px 0px 50px 0px rgba(0, 0, 0, 0.08);
+  }
 
   &__item {
     display: flex;

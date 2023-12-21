@@ -55,14 +55,23 @@
   grid-gap: 40px;
 
   &__title {
-    @include text_large;
-    font-weight: 700;
-    color: $black;
+    display: none;
+
+    @include mq($bp-medium) {
+      display: block;
+      @include text_large;
+      font-weight: 700;
+      color: $black;
+    }
   }
 
   &__box {
     display: grid;
-    grid-gap: 16px;
+    grid-gap: 12px;
+
+    @include mq($bp-medium) {
+      grid-gap: 16px;
+    }
   }
 
   &__block {
@@ -73,10 +82,15 @@
   &__header {
     padding: 10px 0;
 
-    @include text_big;
+    @include text_normal;
     font-weight: 600;
     color: $grayText;
     text-align: center;
+
+    @include mq($bp-medium) {
+      @include text_big;
+      font-weight: 600;
+    }
   }
 
   &__list {

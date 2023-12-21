@@ -48,11 +48,11 @@
           Подробнее
         </UIButton>
 
-        <button
+        <!-- <button
           class="pages-lk-orders-item__button pages-lk-orders-item__button--cancel"
         >
           <UIIcon name="close" />
-        </button>
+        </button> -->
       </div>
     </div>
   </div>
@@ -69,11 +69,17 @@ defineProps({
 
 <style lang="scss" scoped>
 .pages-lk-orders-item {
-  display: flex;
+  display: grid;
+  grid-template-columns: 118px 1fr 1fr;
   align-items: center;
-  justify-content: space-between;
+  grid-gap: 20px;
 
   padding: 20px 0;
+
+  @include mq($bp-medium) {
+    display: flex;
+    justify-content: space-between;
+  }
 
   &__col {
     flex: 0 0 auto;
@@ -88,7 +94,9 @@ defineProps({
     &--status {
       flex: 0 0 120px;
 
-      justify-content: center;
+      @include mq($bp-medium) {
+        justify-content: center;
+      }
     }
 
     &--date {
@@ -101,6 +109,12 @@ defineProps({
 
     &--price {
       flex: 0 0 100px;
+
+      padding-left: 10px;
+
+      @include mq($bp-medium) {
+        padding-left: 0;
+      }
     }
 
     &--actions {
@@ -109,9 +123,25 @@ defineProps({
   }
 
   &__number {
+    width: 94px;
+
+    padding: 8px 0;
+
     @include text_mini;
     font-weight: 600;
     color: $black;
+    text-align: center;
+
+    background: $grayBg2;
+    border-radius: 12px;
+
+    @include mq($bp-medium) {
+      width: auto;
+
+      padding: 0;
+
+      background: none;
+    }
   }
 
   &__date {
@@ -158,7 +188,17 @@ defineProps({
 
   &__more {
     height: 34px;
+    padding: 12px 10px;
+
+    @include text_mini;
     font-weight: 500;
+
+    @include mq($bp-medium) {
+      padding: 12px 15px;
+
+      @include text_normal;
+      font-weight: 500;
+    }
   }
 
   &__button {

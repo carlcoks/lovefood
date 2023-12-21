@@ -22,9 +22,14 @@
   grid-gap: 32px;
 
   &__title {
-    @include text_large;
-    font-weight: 700;
-    color: $black;
+    display: none;
+
+    @include mq($bp-medium) {
+      display: block;
+      @include text_large;
+      font-weight: 700;
+      color: $black;
+    }
   }
 
   &__list {

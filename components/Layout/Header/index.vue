@@ -120,12 +120,22 @@ const pageTitle = computed(() => {
       return 'Оформление заказа'
     case '/lk':
       return 'Личная информация'
+    case '/lk/favorite':
+      return 'Избранное'
     case '/lk/promocodes':
       return 'Мои промокоды'
-    case '/lk/referals':
-      return 'Реферальная система'
     case '/lk/bonuses':
       return 'Бонусная система'
+    case '/lk/referals':
+      return 'Реферальная система'
+    case '/lk/preferences':
+      return 'Предпочтения'
+    case '/lk/orders':
+      return 'История заказов'
+    case '/lk/game':
+      return 'Колесо фортуны'
+    case '/lk/notifications':
+      return 'История уведомлений'
     default:
       return ''
   }
