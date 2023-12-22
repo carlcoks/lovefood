@@ -12,6 +12,7 @@ interface cartItem {
   regular_price: number
   image: string
   count: number
+  countable: boolean
   measure_unit: string
   portion_nat_size: number
   supplements: Supplement[]
@@ -51,6 +52,7 @@ export const useCartStore = defineStore('cartStore', {
         regular_price: item.regular_price,
         image: item.images[0],
         count: 1,
+        countable: item.countable,
         measure_unit: item.measure_unit,
         portion_nat_size: item.portion_nat_size,
         supplements: item?.supplements || [],
@@ -109,7 +111,9 @@ export const useCartStore = defineStore('cartStore', {
 
     cartItemsLength: (state) => {
       return state.cart.reduce((acc, item) => {
-        acc = acc + item.count
+        const count = !item.countable ? 1 : item.count
+
+        acc = acc + count
         return acc
       }, 0)
     },

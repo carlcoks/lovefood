@@ -149,7 +149,11 @@ const submit = () => {
     flex-direction: column;
     grid-gap: 4px;
 
+    padding-right: 20px;
+
     overflow-y: auto;
+
+    @include custom-scrollbar;
   }
 
   &__footer {

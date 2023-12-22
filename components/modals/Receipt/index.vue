@@ -187,10 +187,6 @@ onMounted(() => {
       }
     }
 
-    &--mobile {
-
-    }
-
     ::v-deep(.ui-icon) svg {
       width: 24px;
       height: 24px;
@@ -207,6 +203,8 @@ onMounted(() => {
     grid-gap: 20px;
 
     padding: 20px;
+
+    overflow: hidden;
 
     @include mq($bp-small) {
       grid-gap: 0;
@@ -243,6 +241,8 @@ onMounted(() => {
       display: block;
 
       flex: 1 1 auto;
+
+      overflow: hidden;
     }
   }
 }
