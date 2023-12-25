@@ -6,6 +6,8 @@
 
     <LayoutFooter />
 
+    <LayoutBottomBar />
+
     <LazyModalsProduct
       v-if="catalogStore.isShowProductModal"
     />

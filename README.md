@@ -1,75 +1,37 @@
-# Nuxt 3 Minimal Starter
+# Настройка
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Сделать копию файла .env.example -> .env
 
-## Setup
-
-Make sure to install the dependencies:
-
+Поменять в новосозданном фале .env значения:
 ```bash
-# npm
-npm install
+BASE_URL=***  //(адрес апи, например: https://public.foodloveapp.ru)
+YMAPS_KEY=*** //(апи ключ яндекс карт)
 
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
+CONSUMER_KEY=***
+CONSUMER_SECRET=***
 ```
 
-## Development Server
+## Выделенный Сервер
 
-Start the development server on `http://localhost:3000`:
-
+- Залить файлы на сервер
+- Собрать проект
 ```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
 npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
 ```
 
-Locally preview production build:
-
+- Отслеживать собранные файлы процесс менеджером (например pm2)
 ```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
+node .output/server/index.mjs
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## Статический Хостинг
+
+- Собрать проект
+```bash
+npm run generate
+```
+
+- Использовать собранные файлы из директории
+```bash
+.output/public
+```
