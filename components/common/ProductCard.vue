@@ -100,6 +100,7 @@
 <script setup>
 import { useCatalogStore } from '@/store/catalog'
 import { useCartStore } from '@/store/cart'
+import imageSize from '@/utils/imageSize'
 
 const catalog = useCatalogStore()
 const cart = useCartStore()
@@ -121,12 +122,13 @@ const isFavorite = ref(false)
 
 // <!-- Computed -->
 const productImage = computed(() => {
-  return props.item?.images[0] || ''
+  const image = props.item?.images[0] || ''
+  return imageSize(image, 'medium')
 })
 
 const discount = computed(() => {
   if (props.item?.regular_price && props.item?.price && +props.item.regular_price !== +props.item.price) {
-    return 100 - (props.item.price / props.item.regular_price * 100)
+    return parseInt((100 - (props.item.price / props.item.regular_price * 100)) * 100) / 100
   }
 
   return 0

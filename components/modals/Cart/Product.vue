@@ -9,7 +9,7 @@
     <div class="modal-cart-item__main">
       <div class="modal-cart-item__image">
         <img
-          :data-src="item.image"
+          :data-src="productImage"
           :alt="item.name"
           v-lazy-load
         >
@@ -75,6 +75,7 @@
 
 <script setup lang="ts">
 import { useCartStore } from '@/store/cart'
+import imageSize from '@/utils/imageSize'
 
 const cart = useCartStore()
 const { productInCart } = storeToRefs(cart)
@@ -87,6 +88,11 @@ const props = defineProps({
 })
 
 // Computed
+const productImage = computed(() => {
+  const image = props.item.image
+  return imageSize(image, 'small')
+})
+
 const counterLabel = computed(() => {
   const value = parseInt(((props.item.portion_nat_size * props.item.count) * 100).toString()) / 100
   return `${value} ${props.item.measure_unit}`
@@ -186,13 +192,13 @@ const decrement = () => {
   }
 
   &__top {
-    display: flex;
-    flex-direction: column;
+    display: grid;
     grid-gap: 4px;
+
+    padding-right: 30px;
   }
 
   &__title {
-    @include overflow-text;
     @include text_small;
     font-weight: 600;
   }
@@ -234,6 +240,8 @@ const decrement = () => {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    margin-top: 20px;
   }
 
   &__price {

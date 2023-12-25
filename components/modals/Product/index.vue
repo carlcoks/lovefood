@@ -78,7 +78,7 @@
           </div>
 
           <div
-            v-if="productAttributes.length"
+            v-if="productType.value !== 'group_variable' && productAttributes.length"
             class="modal-product-attributes"
           >
             <div
@@ -344,11 +344,12 @@ const productDescription = computed(() => {
 })
 
 const productImage = computed(() => {
+  let image = product.value?.images[0] || ''
   if (currentVariable.value) {
-    return currentVariable.value.image
+    image = currentVariable.value.image
   }
 
-  return product.value?.images[0] || ''
+  return imageSize(image, 'large')
 })
 
 const productPrice = computed(() => {

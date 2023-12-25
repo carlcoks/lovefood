@@ -32,7 +32,7 @@
         <UIButton
           color="yellow"
           class="mobile-menu-auth__button"
-          @click="auth()"
+          @click.prevent="auth()"
         >
           <UIIcon name="person" />
           Войти

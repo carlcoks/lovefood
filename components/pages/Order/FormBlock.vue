@@ -4,51 +4,70 @@
       Кто получит заказ?
     </p>
 
-    <div class="page-order-form__row">
-      <div class="page-order-form-input">
-        <label
-          for="name"
-          class="page-order-form-input__label"
-        >
-          Имя
-        </label>
-        <input
-          id="name"
-          type="text"
-          v-model="modelValue.name"
-          placeholder="Введите имя"
-          :class="['page-order-form-input__area', { 'page-order-form-input__area--error' : !!modelValue.nameError }]"
-        >
-        <span
-          v-if="modelValue.nameError"
-          class="page-order-form-input__error"
-        >
-          {{ modelValue.nameError }}
-        </span>
+    <div class="page-order-form__rows">
+      <div class="page-order-form__row page-order-form__row--double">
+        <div class="page-order-form-input">
+          <label
+            for="name"
+            class="page-order-form-input__label"
+          >
+            Имя
+          </label>
+          <input
+            id="name"
+            type="text"
+            v-model="modelValue.name"
+            placeholder="Введите имя"
+            :class="['page-order-form-input__area', { 'page-order-form-input__area--error' : !!modelValue.nameError }]"
+          >
+          <span
+            v-if="modelValue.nameError"
+            class="page-order-form-input__error"
+          >
+            {{ modelValue.nameError }}
+          </span>
+        </div>
+
+        <div class="page-order-form-input">
+          <label
+            for="phone"
+            class="page-order-form-input__label"
+          >
+            Номер телефона
+          </label>
+          <input
+            id="phone"
+            type="tel"
+            v-maska
+            data-maska="+7 (###) ###-##-##"
+            v-model="modelValue.phone"
+            placeholder="Введите номер телефона"
+            :class="['page-order-form-input__area', { 'page-order-form-input__area--error' : !!modelValue.phoneError }]"
+          >
+          <span
+            v-if="modelValue.phoneError"
+            class="page-order-form-input__error"
+          >
+            {{ modelValue.phoneError }}
+          </span>
+        </div>
       </div>
 
-      <div class="page-order-form-input">
-        <label
-          for="phone"
-          class="page-order-form-input__label"
-        >
-          Номер телефона
-        </label>
-        <input
-          id="phone"
-          type="tel"
-          v-maska
-          data-maska="+7 (###) ###-##-##"
-          v-model="modelValue.phone"
-          placeholder="Введите номер телефона"
-          :class="['page-order-form-input__area', { 'page-order-form-input__area--error' : !!modelValue.phoneError }]"
-        >
-        <span
-          v-if="modelValue.phoneError"
-          class="page-order-form-input__error"
-        >
-          {{ modelValue.phoneError }}
-        </span>
+      <div class="page-order-form__row">
+        <div class="page-order-form-input">
+          <label
+            for="comment"
+            class="page-order-form-input__label"
+          >
+            Комментарий
+          </label>
+          <textarea
+            id="comment"
+            v-model="modelValue.comment"
+            placeholder="Введите комментарий"
+            class="page-order-form-input__area page-order-form-input__area--textarea"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -80,10 +99,18 @@ const phone = ref('')
     font-weight: 700;
   }
 
+  &__rows {
+    display: grid;
+    grid-gap: 20px;
+  }
+
   &__row {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
     grid-gap: 20px;
+
+    &--double {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 }
 
@@ -114,6 +141,11 @@ const phone = ref('')
 
     &--error {
       border-color: $red;
+    }
+
+    &--textarea {
+      height: 80px;
+      resize: none;
     }
   }
 

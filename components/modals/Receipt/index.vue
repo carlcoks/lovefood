@@ -106,7 +106,7 @@ const commonStore = useCommonStore()
 const types = [
   { label: 'Доставка', type: 'delivery' },
   { label: 'Самовывоз', type: 'pickup' },
-  { label: 'В зале', type: 'lounge' },
+  // { label: 'В зале', type: 'lounge' },
 ]
 
 const isShow = ref(true)
@@ -222,7 +222,8 @@ onMounted(() => {
 
     display: grid;
     align-items: center;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    // grid-template-columns: repeat(3, 1fr);
 
     padding: 5px;
     

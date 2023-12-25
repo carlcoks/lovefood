@@ -66,6 +66,8 @@
                 showSearchBox: true
               }"
               :input-options="{
+                type: 'tel',
+                pattern: '[0-9]',
                 placeholder: 'Телефон',
                 required: true
               }"

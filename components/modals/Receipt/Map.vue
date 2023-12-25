@@ -68,7 +68,7 @@ const emits = defineEmits(['update', 'setDeliveryCoords', 'setDeliveryZone'])
 
 const map = shallowRef(null)
 const collection = shallowRef(null)
-const mapCenter = [61.402554, 55.159902]
+// const mapCenter = [61.402554, 55.159902]
 const mapZoom = 12
 
 const deliveryMarker = shallowRef(null)
@@ -109,6 +109,7 @@ watch(() => props.deliveryCoords, (data) => {
 })
 
 // Computed
+const mapCenter = computed(() => commonStore.mapCenter)
 const pickupLocations = computed(() => commonStore.pickupLocations)
 const zones = computed(() => commonStore.zones)
 
@@ -160,7 +161,7 @@ const setMarkers = () => {
 
 
     deliveryMarker.value = new ymaps.Placemark(
-      mapCenter, {}, {
+      mapCenter.value, {}, {
         iconLayout: 'default#image',
         iconImageHref: '/images/marker-delivery.svg',
         iconImageSize: [50, 50],
@@ -198,7 +199,7 @@ const setCenter = (type) => {
     })
   } else if (type === 'delivery') {
     map.value.setCenter(
-      mapCenter,
+      mapCenter.value,
       mapZoom,
     )
   }
@@ -207,7 +208,7 @@ const setCenter = (type) => {
 const ymapsInit = () => {
   ymaps.ready(() => {
     map.value = new ymaps.Map('yandex-map', {
-      center: mapCenter, 
+      center: mapCenter.value,
       zoom: mapZoom,
       controls: ['zoomControl'],
     })

@@ -120,6 +120,12 @@ onMounted(() => {
   &--fullscreen {
     height: 100vh;
     height: calc(var(--app-height) - 20px);
+
+    .bottom-sheet {
+      &__content {
+        overflow-y: auto;
+      }
+    }
   }
 
   &--autoheight {
@@ -137,15 +143,14 @@ onMounted(() => {
     align-items: center;
     justify-content: center;
 
-    height: 30px;
+    height: 50px;
 
     padding-top: 20px;
+    padding-bottom: 20px;    
   }
 
   &__content {
-    padding: 20px;
-
-    overflow-y: auto;
+    padding: 0 20px 20px 20px;
   }
 }
 </style>

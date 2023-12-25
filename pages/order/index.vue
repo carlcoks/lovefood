@@ -158,6 +158,7 @@ const userData = reactive({
   nameError: '',
   phone: '',
   phoneError: '',
+  comment: '',
 })
 
 const paymentMethods = ref([])
@@ -268,10 +269,6 @@ const order = async () => {
   // }
   obj.bonuses = bonuses
 
-  if (user.value) {
-    obj.customer_id = user.value.id
-  }
-
   const consumer_key = config.public.CONSUMER_KEY
   const consumer_secret = config.public.CONSUMER_SECRET
 
@@ -279,9 +276,12 @@ const order = async () => {
     consumer_key,
     consumer_secret
   }
-  // if (this.$root.user.auth) {
-  //   query.customer = this.$root.userData.id
-  // }
+
+  if (user.value) {
+    obj.customer_id = user.value.id
+    query.customer = user.value.id
+  }
+
   query = new URLSearchParams(query).toString()
 
   isLoading.value = true

@@ -8,6 +8,7 @@ export const useCommonStore = defineStore('commonStore', {
     deliveryType: null, // 'pickup' | 'delivery' | 'lounge' | null
     // deliveryLocations: [],
     // pickupLocations: [],
+    mapCenter: null, // null | [] - точка центра карты
     conditions: [], // точки доставки
     zones: [], // зоны доставки
     pickups: [], // точки самовывоза
@@ -50,6 +51,7 @@ export const useCommonStore = defineStore('commonStore', {
 
         this.zones = features.map(item => {
           if (item.geometry.type === 'Point') {
+            this.mapCenter = item.geometry.coordinates
             return false
           }
 

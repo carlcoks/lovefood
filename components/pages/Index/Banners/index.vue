@@ -3,6 +3,7 @@
     <div class="container">
       <div class="index-banners__box">
         <Swiper
+          v-if="slides.length"
           :modules="[Pagination]"
           pagination
           loop
@@ -10,12 +11,19 @@
           :space-between="20"
           class="index-banners__slider"
         >
-          <SwiperSlide class="index-banners-banner">
-            <img src="@/assets/images/banners/1.jpg" alt="">
+          <SwiperSlide
+            v-for="(item, i) in slides"
+            :key="i"
+            class="index-banners-banner"
+          >
+            <img
+              :src="item.image"
+              alt=""
+            >
           </SwiperSlide>
-          <SwiperSlide class="index-banners-banner">
+          <!-- <SwiperSlide class="index-banners-banner">
             <img src="@/assets/images/banners/2.jpg" alt="">
-          </SwiperSlide>
+          </SwiperSlide> -->
         </Swiper>
 
         <div class="index-banners__banners">
@@ -30,6 +38,20 @@
 <script setup>
 import { Pagination } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/vue'
+
+const slides = ref([])
+
+const getSlides = async () => {
+  const { data } = await useFetch('/api/banners-json')
+
+  const obj = data?.value || []
+
+  if (obj.length) {
+    slides.value = obj.filter(item => item.gallery === 'desctop_slider')
+  }
+}
+
+getSlides()
 </script>
 
 <style lang="scss" scoped>
@@ -54,6 +76,8 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
     overflow: hidden;
 
     @include mq($bp-small) {
+      height: 418px;
+
       padding-bottom: 23px;
     }
   }
@@ -114,6 +138,12 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
 
   @include mq($bp-small) {
     border-radius: 40px;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 }
 </style>

@@ -7,7 +7,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "prod": "npm run build && pm2 restart lovefood"
+    "prod": "npm run build"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",

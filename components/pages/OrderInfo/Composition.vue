@@ -175,7 +175,7 @@ const itemsList = computed(() => {
   &__line {
     width: 100%;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     grid-gap: 20px;
   }
@@ -199,6 +199,8 @@ const itemsList = computed(() => {
     grid-gap: 12px;
 
     font-weight: 600;
+
+    white-space: nowrap;
 
     &--bonuses {
       grid-gap: 6px;

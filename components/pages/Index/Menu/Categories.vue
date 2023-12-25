@@ -27,9 +27,9 @@
       </div>
     </div>
 
-    <CommonFilterButton
+    <!-- <CommonFilterButton
       @click="emits('showFilters')"
-    />
+    /> -->
   </div>
 </template>
 

@@ -60,6 +60,7 @@ const toTop = () => {
   grid-gap: 12px;
 
   z-index: 100;
+  pointer-events: none;
 
   @include mq($bp-small) {
     display: none;
@@ -78,6 +79,7 @@ const toTop = () => {
     background: $white;
     border-radius: 50%;
     box-shadow: 0px -2px 80px 0px rgba(0, 0, 0, 0.20);
+    pointer-events: auto;
 
     .ui-icon {
       transform: rotate(-90deg);
@@ -96,6 +98,7 @@ const toTop = () => {
   background: $blackText3;
   border-radius: 14px;
   box-shadow: 0px -2px 80px 0px rgba(0, 0, 0, 0.20);
+  pointer-events: auto;
 
   &__side {
     display: flex;
