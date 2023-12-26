@@ -11,7 +11,7 @@
             <div class="page-order__block">
               <div class="page-order-delivery-types">
                 <div class="page-order-delivery-types__wrap">
-                  <div class="page-order-delivery-types__list">
+                  <div :class="`page-order-delivery-types__list page-order-delivery-types__list--${deliveryTypes.length}`">
                     <button
                       v-for="(item, i) in deliveryTypes"
                       :key="i"
@@ -137,7 +137,7 @@ const config = useRuntimeConfig()
 const deliveryTypes = [
   { label: 'Доставка', type: 'delivery' },
   { label: 'Самовывоз', type: 'pickup' },
-  { label: 'В зале', type: 'lounge' },
+  // { label: 'В зале', type: 'lounge' },
 ]
 
 const deliveryTimes = [
@@ -225,6 +225,8 @@ const order = async () => {
       address_1: selectedLocation.value.address,
       warehouse_id: selectedLocation.value.warehouse_id
     },
+
+    customer_note: userData.comment,
   }
 
   obj.line_items = []
@@ -337,7 +339,8 @@ const getPaymentMethods = async () => {
 
 const setUserData = () => {
   if (user.value) {
-    userData.phone = user.value.username
+    userData.name = user.value.display_name
+    userData.phone = user.value.phone
   }
 }
 
@@ -480,12 +483,19 @@ getPaymentMethods()
 
   &__list {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
 
     padding: 5px;
 
     background: $grayBg2;
     border-radius: 20px;
+
+    &--2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    &--3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 }
 

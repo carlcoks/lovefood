@@ -1,6 +1,9 @@
 <template>
   <div class="index-menu-categories">
-    <div class="index-menu-categories__tabs-wrap">
+    <div
+      class="index-menu-categories__tabs-wrap"
+      @focusout="isShowMore = false"
+    >
       <div
         id="category-tabs"
         class="index-menu-categories__tabs"
@@ -17,15 +20,32 @@
         </button>
 
         <button
-          v-if="!showMore"
+          ref="elseBtn"
           type="button"
           class="index-menu-categories-tab"
-          @click.prevent="showMore = true"
+          @click.prevent="toggleShowMore"
         >
           Ещё+
         </button>
       </div>
     </div>
+
+    <transition name="fade" mode="out-in">
+      <div
+        v-if="isShowMore"
+        :style="`left: ${dropdownLeftPosition}px`"
+        class="index-menu-categories-dropdown"
+      >
+        <div
+          v-for="(item, i) in categoriesElse"
+          :key="i"
+          class="index-menu-categories-dropdown__item"
+          @click.prevent="scrollTo(item.id), isShowMore = false"
+        >
+          {{ item.name }}
+        </div>
+      </div>
+    </transition>
 
     <!-- <CommonFilterButton
       @click="emits('showFilters')"
@@ -43,19 +63,21 @@ const catalogStore = useCatalogStore()
 const emits = defineEmits(['showFilters'])
 
 const activeTab = ref(null)
-const showMore = ref(false)
+const categories = ref([])
+const categoriesElse = ref([])
+
+const elseBtn = ref(null)
+const dropdownLeftPosition = ref(0)
+
+const isShowMore = ref(false)
 const positions = []
 const HEIGHT = 80
 
-const categories = computed(() => {
-  const arr = catalogStore.categories
-
-  if (!showMore.value) {
-    return arr.slice(0, 9)
-  }
-
-  return arr
-})
+// <!-- Methods -->
+const toggleShowMore = () => {
+  dropdownLeftPosition.value = elseBtn.value.offsetLeft
+  isShowMore.value = !isShowMore.value
+}
 
 const scrollTo = (id) => {
   activeTab.value = id
@@ -109,10 +131,18 @@ const getBlocksPositions = () => {
   })
 }
 
+const getCategories = () => {
+  const arr = catalogStore.categories
+
+  categories.value = arr.slice(0, 9)
+  categoriesElse.value = arr.slice(9, arr.length)
+}
+
 onMounted(() => {
-  activeTab.value = categories.value[0]?.id || null
+  getCategories()
 
   nextTick(() => {
+    activeTab.value = categories.value[0]?.id || null
     getBlocksPositions()
     document.addEventListener('scroll', onScroll)
   })
@@ -124,6 +154,7 @@ onMounted(() => {
   // position: sticky;
   // top: 0;
 
+  position: relative;
   width: 100%;
   display: flex;
   align-items: center;
@@ -205,6 +236,34 @@ onMounted(() => {
   &.active {
     background-color: $white;
     border-color: $yellow;
+  }
+}
+
+.index-menu-categories-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+
+  width: 260px;
+
+  display: grid;
+
+  padding: 12px 20px;
+
+  background: $white;
+  border-radius: 20px;
+  box-shadow: 0px 0px 50px 0px rgba(0, 0, 0, 0.08);
+  z-index: 100;
+
+  &__item {
+    padding: 8px 0;
+
+    @include overflow-text;
+    @include text_small;
+    font-weight: 600;
+    color: $black;
+
+    cursor: pointer;
   }
 }
 </style>

@@ -18,8 +18,8 @@
       </span>
       
       <button
-        :class="['index-menu-card__favorite', { 'active' : isFavorite }]"
-        @click.stop.prevent="isFavorite = !isFavorite"
+        :class="['index-menu-card__favorite', { 'active' : isProductFavorite(+item.id) }]"
+        @click.stop.prevent="toggleFavorite()"
       >
         <UIIcon name="heart" />
       </button>
@@ -100,12 +100,15 @@
 <script setup>
 import { useCatalogStore } from '@/store/catalog'
 import { useCartStore } from '@/store/cart'
+import { useUserStore } from '@/store/user'
 import imageSize from '@/utils/imageSize'
 
 const catalog = useCatalogStore()
 const cart = useCartStore()
+const userStore = useUserStore()
 
 const { productInCart } = storeToRefs(cart)
+const { isProductFavorite } = storeToRefs(userStore)
 
 const props = defineProps({
   item: {
@@ -117,8 +120,6 @@ const props = defineProps({
     default: false,
   },
 })
-
-const isFavorite = ref(false)
 
 // <!-- Computed -->
 const productImage = computed(() => {
@@ -181,6 +182,16 @@ const badges = computed(() => {
 })
 
 // <!-- Methods -->
+const toggleFavorite = () => {
+  const productId = +props.item.id
+
+  if (isProductFavorite.value(productId)) {
+    userStore.removeFromFavorite(productId)
+  } else {
+    userStore.addToFavorite(productId)
+  }
+}
+
 const openProduct = () => {
   catalog.setProduct(+props.item.id)
 }

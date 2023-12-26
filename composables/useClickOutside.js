@@ -2,7 +2,6 @@ export function useClickOutside (el, cb) {
   if (!el) return
 
   let listener = (e) => {
-    console.log('e', e)
     if (e.target == el.value || e.composedPath().includes(el.value)) {
       return
     }

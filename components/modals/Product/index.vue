@@ -43,8 +43,8 @@
 
           <button
             type="button"
-            :class="['modal-product__favorite', { 'modal-product__favorite--active' : isFavorite }]"
-            @click="isFavorite = !isFavorite"
+            :class="['modal-product__favorite', { 'modal-product__favorite--active' : isProductFavorite(+product.id) }]"
+            @click.prevent="toggleFavorite()"
           >
             <UIIcon name="heart" />
           </button>
@@ -288,15 +288,17 @@
 <script setup>
 import { useCatalogStore } from '@/store/catalog'
 import { useCartStore } from '@/store/cart'
+import { useUserStore } from '@/store/user'
 
 const catalogStore = useCatalogStore()
 const cart = useCartStore()
+const userStore = useUserStore()
 
 const { selectedProduct, relatedItems } = storeToRefs(catalogStore)
 const { productInCart } = storeToRefs(cart)
+const { isProductFavorite } = storeToRefs(userStore)
 
 const isShow = ref(true)
-const isFavorite = ref(false)
 const isShowSupplementsModal = ref(false) // Модалка для добавок
 const currentSupplement = ref(null) // выбранная категории добавок
 const currentSupplementKey = ref(null) // ключ выбранной категории добавок
@@ -462,6 +464,16 @@ const isButtonDisabled = computed(() => {
 })
 
 // <!-- Methods -->
+const toggleFavorite = () => {
+  const productId = +product.value.id
+
+  if (isProductFavorite.value(productId)) {
+    userStore.removeFromFavorite(productId)
+  } else {
+    userStore.addToFavorite(productId)
+  }
+}
+
 const addToCart = () => {
   if (isButtonDisabled.value) {
     return false
