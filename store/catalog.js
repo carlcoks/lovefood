@@ -4,6 +4,8 @@ export const useCatalogStore = defineStore('catalogStore', {
   state: () => ({
     catalog: [],
     selectedProductId: null, // select product for modal
+
+    favorites: [],
   }),
 
   actions: {
@@ -33,7 +35,37 @@ export const useCatalogStore = defineStore('catalogStore', {
 
     setProduct (data = null) {
       this.selectedProductId = data
-    }
+    },
+
+    addToFavorite (value) {
+      const commonStore = useCommonStore()
+
+      this.favorites.push(value)
+
+      commonStore.addNotification({
+        type: null,
+        text: 'Товар добавлен в избранное',
+        status: 'success'
+      })
+    },
+
+    removeFromFavorite (value) {
+      const commonStore = useCommonStore()
+
+      this.favorites.find((item, i) => {
+        if (item === value) {
+          this.favorites.splice(i, 1)
+
+          commonStore.addNotification({
+            type: null,
+            text: 'Товар удален из избранного',
+            status: 'success'
+          })
+          return true
+        }
+        return false
+      })
+    },
   },
 
   getters: {
@@ -41,8 +73,19 @@ export const useCatalogStore = defineStore('catalogStore', {
       const commonStore = useCommonStore()
       const warehouseId = commonStore.selectedLocation?.warehouse_id || null
 
+      const blockedArray = ['uncategorized']
+      const catalog = state.catalog.filter(item => {
+        let status = true
+        blockedArray.forEach(blocked => {
+          if (item.name.toLowerCase().includes(blocked)) {
+            status = false
+          }
+        })
+        return status
+      })
+
       if (warehouseId) {
-        return state.catalog.map(item => {
+        return catalog.map(item => {
           const products = item.products.filter(product => {
             return product.locations.find(location => location.id === warehouseId)
           })
@@ -54,7 +97,7 @@ export const useCatalogStore = defineStore('catalogStore', {
         }).filter(item => item.products.length)
       }
 
-      return state.catalog
+      return catalog
     },
 
     categories () {
@@ -109,5 +152,40 @@ export const useCatalogStore = defineStore('catalogStore', {
     isShowProductModal: (state) => {
       return !!state.selectedProductId
     },
+
+    isProductFavorite: (state) => {
+      return (productId) => {
+        return state.favorites.includes(productId)
+      }
+    },
+
+    favoriteProducts: (state) => {
+      const arr = []
+      const blockedArray = ['новинки', 'акции']
+
+      state.catalog.forEach(item => {
+        let isFind = true
+        blockedArray.forEach(blocked => {
+          if (item.name.toLowerCase().includes(blocked)) {
+            isFind = false
+          }
+        })
+        
+        if (isFind) {
+          item.products.forEach(product => {
+            if (state.favorites.includes(product.id)) {
+              arr.push(product)
+            }
+          })
+        }
+      })
+
+      return arr
+    },
+  },
+
+  persist: {
+    storage: persistedState.localStorage,
+    paths: ['favorites']
   },
 })

@@ -164,8 +164,6 @@ getBalance()
 
 <style lang="scss" scoped>
 .page-lk-bonuses {
-  max-width: 775px;
-
   display: grid;
   grid-gap: 100px;
 
@@ -201,15 +199,11 @@ getBalance()
   }
 
   &__line {
-    display: flex;
-    flex-direction: column;
+    display: grid;
     grid-gap: 40px;
 
     @include mq($bp-medium) {
-      flex-direction: row;
-      align-items: flex-start;
-      justify-content: space-between;
-      grid-gap: 0;
+      grid-template-columns: repeat(2, 1fr);
     }
   }
 
@@ -326,10 +320,6 @@ getBalance()
   flex-direction: column;
 
   width: 100%;
-  
-  @include mq($bp-medium) {
-    max-width: 380px;
-  }
 
   &__label {
     margin-bottom: 6px;

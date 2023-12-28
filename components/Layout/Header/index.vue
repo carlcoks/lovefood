@@ -156,8 +156,8 @@ onMounted(() => {
   document.addEventListener('scroll', onScroll)
 })
 
-commonStore.getDelivery()
 commonStore.getPickups()
+commonStore.getDelivery()
 </script>
 
 <style lang="scss" scoped>

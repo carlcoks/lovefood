@@ -66,11 +66,16 @@ import { useUserStore } from '@/store/user'
 
 const commonStore = useCommonStore()
 const userStore = useUserStore()
+const { pickupLocations } = storeToRefs(commonStore)
 
 const props = defineProps({
   currentAddress: {
     type: undefined,
     default: null,
+  },
+  currentType: {
+    type: String,
+    default: '',
   },
 })
 
@@ -79,10 +84,12 @@ const emits = defineEmits(['close', 'update'])
 const search = ref('')
 
 // <!-- Computed -->
-const pickupLocations = computed(() => commonStore.pickupLocations)
+// const pickupLocations = computed(() => {
+//   return commonStore.pickupLocations(props.currentType)
+// })
 
 const filteredLocations = computed(() => {
-  return pickupLocations.value.filter(item => {
+  return pickupLocations.value(props.currentType).filter(item => {
     return item.address.toLowerCase().includes(search.value.toLowerCase())
   })
 })

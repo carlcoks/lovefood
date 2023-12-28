@@ -176,9 +176,9 @@ setDefault()
   display: grid;
   grid-gap: 40px;
 
-  @include mq($bp-medium) {
-    max-width: 770px;
-  }
+  // @include mq($bp-medium) {
+  //   max-width: 770px;
+  // }
 
   &__title {
     display: none;
@@ -236,7 +236,7 @@ setDefault()
     position: relative;
 
     width: 100%;
-    max-width: 560px;
+    max-width: 960px;
 
     font-weight: 500;
   }

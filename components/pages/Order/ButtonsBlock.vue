@@ -21,7 +21,7 @@
       <span>
       Оформить заказ
       </span>
-      {{ cartStore.cartItemsPrice.toLocaleString() }} ₽
+      {{ endPrice.toLocaleString() }} ₽
     </UIButton>
   </div>
 </template>
@@ -30,6 +30,7 @@
 import { useCartStore } from '@/store/cart'
 
 const cartStore = useCartStore()
+const { cartItemsPrice } = storeToRefs(cartStore)
 
 defineProps({
   isLoading: {
@@ -39,6 +40,25 @@ defineProps({
 })
 
 const emits = defineEmits(['submit'])
+
+// <!-- Computed -->
+const promocode = computed(() => cartStore.promocode)
+
+const endPrice = computed(() => {
+  const promocodeObj = promocode.value
+  let sum = cartItemsPrice.value
+
+  if (promocodeObj) {
+    const promocodeAmount = promocodeObj.amount
+    if (promocodeObj.type === 'percent') {
+      sum = parseInt((sum - (sum / 100 * promocodeAmount)) * 100) / 100
+    } else {
+      sum = parseInt(sum - promocodeAmount * 100) / 100
+    }
+  }
+
+  return sum
+})
 </script>
 
 <style lang="scss" scoped>

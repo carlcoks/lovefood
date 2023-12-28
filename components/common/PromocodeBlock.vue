@@ -4,7 +4,8 @@
       'promocode-block',
       {
         'promocode-block--cart' : inCart,
-        'promocode-block--error' : !!promocodeError
+        'promocode-block--error' : promocodeResult.status === 'error',
+        'promocode-block--success' : promocodeResult.status === 'success'
       }
     ]"
     @submit.prevent="onSubmit()"
@@ -16,13 +17,13 @@
       v-model.trim="promocode"
       type="text"
       placeholder="Промокод"
-      :disabled="isLoading"
+      :disabled="isLoading || !!promocodeResult.status"
       class="promocode-block__input"
     >
 
     <div class="promocode-block__actions">
       <button
-        v-if="!!promocodeError"
+        v-if="promocodeResult.status"
         class="promocode-block__action"
         @click.prevent.stop="onReset()"
       >
@@ -39,10 +40,9 @@
     </div>
 
     <span
-      v-if="!!promocodeError"
-      class="promocode-block__error"
-    >
-      {{ promocodeError }}
+      v-if="promocodeResult.status"
+      class="promocode-block__status">
+      {{ promocodeResult.message }}
     </span>
   </form>
 </template>
@@ -61,16 +61,21 @@ defineProps({
 })
 
 const promocode = ref('')
-const promocodeError = ref('')
+const promocodeResult = reactive({
+  status: null, // null | error | success
+  message: '',
+})
 const isLoading = ref(false)
 
-watch(() => promocode.value, () => {
-  promocodeError.value = ''
-})
+// <!-- Computed -->
+const promocodeObj = computed(() => cartStore.promocode)
 
+// <!-- Methods -->
 const onReset = () => {
   promocode.value = ''
-  promocodeError.value = ''
+  promocodeResult.status = null
+  promocodeResult.message = ''
+  cartStore.setPromocode(null)
 }
 
 const onSubmit = async () => {
@@ -96,14 +101,40 @@ const onSubmit = async () => {
     body: obj
   })
 
+  let status = null;
+  let message = '';
   if (error?.value) {
-    const message = error?.value?.data?.message || 'Не удалось применить промокод'
+    message = error?.value?.data?.message || 'Не удалось применить промокод'
 
-    promocodeError.value = message
+    status = 'error'
+  } else {
+    message = 'Промокод успешно применён'
+    status = 'success'
+
+    const coupon = data?.value?.coupon || {}
+
+    cartStore.setPromocode({
+      value: promocode.value,
+      type: coupon.discount_type,
+      amount: parseFloat(coupon.amount)
+    })
   }
+
+  promocodeResult.status = status
+  promocodeResult.message = message
 
   isLoading.value = false
 }
+
+const setDefault = () => {
+  if (promocodeObj.value) {
+    promocode.value = promocodeObj.value.value
+
+    onSubmit()
+  }
+}
+
+setDefault()
 </script>
 
 <style lang="scss" scoped>
@@ -124,15 +155,33 @@ const onSubmit = async () => {
         }
       }
 
-      &__action {
+      &__action, &__status {
         color: $red;
+      }
+    }
+  }
+
+  &--success {
+    .promocode-block {
+      &__input {
+        border-color: $green;
+      }
+
+      &__actions {
+        &:before {
+          background: $greenLight;
+        }
+      }
+
+      &__action, &__status {
+        color: $green;
       }
     }
   }
 
   &--cart {
     .promocode-block {
-      &__error {
+      &__status {
         top: 100%;
 
         @include text_mini;
@@ -222,14 +271,13 @@ const onSubmit = async () => {
     border: none;
   }
 
-  &__error {
+  &__status {
     position: absolute;
     top: calc(100% + 4px);
     left: 16px;
 
     @include text_small;
     font-weight: 500;
-    color: $red;
   }
 }
 </style>

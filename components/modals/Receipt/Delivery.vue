@@ -295,7 +295,8 @@ const submit = () => {
   const obj = {
     address: form.address,
     name: '',
-    warehouse_id: condition.value.warehouse_id
+    warehouse_id: condition.value.warehouse_id,
+    zone: condition.value
   }
 
   if (useChangeLocation('delivery', obj)) {

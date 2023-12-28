@@ -82,15 +82,15 @@
             class="modal-product-attributes"
           >
             <div
-              v-for="attribute in productAttributes"
+              v-for="(attribute, a) in productAttributes"
               :key="attribute.id"
               class="modal-product-attributes__line"
             >
               <button
                 v-for="(option, o) in attribute.options"
                 :key="o"
-                :class="['modal-product-attributes__button', { 'active' : product.variations[o] === currentVariableId }]"
-                @click="setCurrentVariableId(product.variations[o])"
+                :class="['modal-product-attributes__button', { 'active' : +currentVariableIdx[a] === o }]"
+                @click.prevent="setCurrentVariableIdx(o, a)"
               >
                 {{ option }}
               </button>
@@ -294,9 +294,8 @@ const catalogStore = useCatalogStore()
 const cart = useCartStore()
 const userStore = useUserStore()
 
-const { selectedProduct, relatedItems } = storeToRefs(catalogStore)
+const { selectedProduct, relatedItems, isProductFavorite } = storeToRefs(catalogStore)
 const { productInCart } = storeToRefs(cart)
-const { isProductFavorite } = storeToRefs(userStore)
 
 const isShow = ref(true)
 const isShowSupplementsModal = ref(false) // Модалка для добавок
@@ -304,6 +303,8 @@ const currentSupplement = ref(null) // выбранная категории д�
 const currentSupplementKey = ref(null) // ключ выбранной категории добавок
 const selectedSupplements = ref({}) // Все выбранные добавки
 const variations = ref([])
+const variationIds = ref({})
+const currentVariableIdx = ref([0, 0])
 const currentVariableId = ref(null)
 
 // Computed
@@ -468,9 +469,9 @@ const toggleFavorite = () => {
   const productId = +product.value.id
 
   if (isProductFavorite.value(productId)) {
-    userStore.removeFromFavorite(productId)
+    catalog.removeFromFavorite(productId)
   } else {
-    userStore.addToFavorite(productId)
+    catalog.addToFavorite(productId)
   }
 }
 
@@ -523,8 +524,11 @@ const setVariation = (id) => {
   catalogStore.setProduct(id)
 }
 
-const setCurrentVariableId = (id) => {
-  currentVariableId.value = id
+const setCurrentVariableIdx = (value, position) => {
+  currentVariableIdx.value[position] = value
+
+  const id = currentVariableIdx.value.join('')
+  currentVariableId.value = variationIds.value[id]
 }
 
 const closeModal = () => {
@@ -535,9 +539,37 @@ const close = () => {
   catalogStore.setProduct(null)
 }
 
+const setVariationIds = () => {
+  const attributes = productAttributes.value
+  const attributesLength = attributes.length
+
+  if (attributesLength) {
+    const obj = {}
+    const variations = product.value.variations || []
+
+    const firstArray = attributes[0].options
+
+    if (attributesLength === 1) {
+      firstArray.forEach((_, i) => {
+        obj[i] = variations[i]
+      })
+    } else if (attributesLength === 2) {
+      const secondArray = attributes[1].options
+
+      const newArray = firstArray.flatMap((_, i) => secondArray.map((_, i2) => i + '' + i2))
+
+      newArray.forEach((item, i) => {
+        obj[item] = variations[i]
+      })
+    }
+
+    variationIds.value = obj
+  }
+}
+
 onMounted(() => {
   if (productType.value === 'variable') {
-    currentVariableId.value = product.value.variations[0]
+    currentVariableIdx.value = new Array(product.value.attributes.length).fill(0)
   } else if (productType.value === 'group_variable' ) {
     const variationsArray = product.value.variations
 
@@ -553,6 +585,8 @@ onMounted(() => {
     }
   }
 })
+
+setVariationIds()
 </script>
 
 <style lang="scss" scoped>

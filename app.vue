@@ -28,4 +28,5 @@ onMounted(() => {
 })
 
 catalogStore.getCatalog()
+commonStore.getBanners()
 </script>

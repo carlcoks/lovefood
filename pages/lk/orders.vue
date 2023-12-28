@@ -58,8 +58,6 @@ getOrders()
 
 <style lang="scss" scoped>
 .page-lk-orders {
-  max-width: 766px;
-
   display: grid;
   grid-gap: 20px;
 

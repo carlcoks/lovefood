@@ -122,8 +122,6 @@ getReferals()
 
 <style lang="scss" scoped>
 .page-lk-referals {
-  max-width: 775px;
-
   display: grid;
   grid-gap: 40px;
 

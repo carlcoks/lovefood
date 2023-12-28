@@ -39,19 +39,12 @@
 import { Pagination } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 
-const slides = ref([])
+import { useCommonStore } from '@/store/common'
 
-const getSlides = async () => {
-  const { data } = await useFetch('/api/banners-json')
+const commonStore = useCommonStore()
 
-  const obj = data?.value || []
-
-  if (obj.length) {
-    slides.value = obj.filter(item => item.gallery === 'desctop_slider')
-  }
-}
-
-getSlides()
+// <!-- Computed -->
+const slides = computed(() => commonStore.slides)
 </script>
 
 <style lang="scss" scoped>
@@ -76,7 +69,7 @@ getSlides()
     overflow: hidden;
 
     @include mq($bp-small) {
-      height: 418px;
+      height: calc(100% + 23px);
 
       padding-bottom: 23px;
     }

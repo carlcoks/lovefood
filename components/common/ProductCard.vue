@@ -108,7 +108,7 @@ const cart = useCartStore()
 const userStore = useUserStore()
 
 const { productInCart } = storeToRefs(cart)
-const { isProductFavorite } = storeToRefs(userStore)
+const { isProductFavorite } = storeToRefs(catalog)
 
 const props = defineProps({
   item: {
@@ -186,9 +186,9 @@ const toggleFavorite = () => {
   const productId = +props.item.id
 
   if (isProductFavorite.value(productId)) {
-    userStore.removeFromFavorite(productId)
+    catalog.removeFromFavorite(productId)
   } else {
-    userStore.addToFavorite(productId)
+    catalog.addToFavorite(productId)
   }
 }
 

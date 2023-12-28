@@ -46,6 +46,7 @@ import { useCommonStore } from '@/store/common'
 import trimStr from '@/utils/trimStr'
 
 const commonStore = useCommonStore()
+const { pickupLocations } = storeToRefs(commonStore)
 
 const props = defineProps({
   deliveryType: {
@@ -110,7 +111,6 @@ watch(() => props.deliveryCoords, (data) => {
 
 // Computed
 const mapCenter = computed(() => commonStore.mapCenter)
-const pickupLocations = computed(() => commonStore.pickupLocations)
 const zones = computed(() => commonStore.zones)
 
 // <!-- Methods -->
@@ -171,8 +171,8 @@ const setMarkers = () => {
     map.value.geoObjects.add(deliveryMarker.value)
 
     setCenter('delivery')
-  } else if (props.deliveryType === 'pickup') {
-    pickupLocations.value.forEach(item => {
+  } else if (props.deliveryType === 'pickup' || props.deliveryType === 'lounge') {
+    pickupLocations.value(props.deliveryType).forEach(item => {
       const placemark = new ymaps.Placemark(
         item.coordinates, {}, {
           iconLayout: 'default#image',

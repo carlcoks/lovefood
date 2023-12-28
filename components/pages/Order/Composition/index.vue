@@ -29,7 +29,18 @@
           {{ cartStore.cartItemsLength }} {{ declOfNum(cartStore.cartItemsLength, ['товар', 'товара', 'товаров']) }}
         </p>
         <p class="page-order-composition__value">
-          {{ cartStore.cartItemsPrice.toLocaleString() }} ₽
+          {{ cartItemsPrice.toLocaleString() }} ₽
+        </p>
+      </li>
+      <li
+        v-if="!!promocode"
+        class="page-order-composition__item"
+      >
+        <p class="page-order-composition__value">
+          Промокод
+        </p>
+        <p class="page-order-composition__value page-order-composition__value--bonuses">
+          {{ promocode.amount.toLocaleString() }} {{ promocode.type === 'percent' ? '%' : '₽' }}
         </p>
       </li>
       <!-- <li class="page-order-composition__item">
@@ -41,15 +52,18 @@
           <UIIcon name="bonuses" />
         </p>
       </li> -->
-      <!-- <li class="page-order-composition__item">
+      <li
+        v-if="commonStore.deliveryType === 'delivery'"
+        class="page-order-composition__item"
+      >
         <p class="page-order-composition__value">
           Доставка
           <UIIcon name="info" />
         </p>
         <p class="page-order-composition__value">
-          Бесплатно
+          {{ deliveryPrice }}
         </p>
-      </li> -->
+      </li>
     </ul>
 
     <div class="page-order-composition__divider" />
@@ -60,7 +74,7 @@
           Сумма заказа
         </p>
         <p class="page-order-composition__value">
-          {{ cartStore.cartItemsPrice.toLocaleString() }} ₽
+          {{ endPrice.toLocaleString() }} ₽
         </p>
       </li>
       <!-- <li class="page-order-composition__item">
@@ -79,10 +93,48 @@
 
 <script setup>
 import { useCartStore } from '@/store/cart'
+import { useCommonStore } from '@/store/common'
 
 import declOfNum from '@/utils/declOfNum'
 
 const cartStore = useCartStore()
+const commonStore = useCommonStore()
+const { cartItemsPrice } = storeToRefs(cartStore)
+
+// <!-- Computed -->
+const promocode = computed(() => cartStore.promocode)
+
+const endPrice = computed(() => {
+  const promocodeObj = promocode.value
+  let sum = cartItemsPrice.value
+
+  if (promocodeObj) {
+    const promocodeAmount = promocodeObj.amount
+    if (promocodeObj.type === 'percent') {
+      sum = parseInt((sum - (sum / 100 * promocodeAmount)) * 100) / 100
+    } else {
+      sum = parseInt(sum - promocodeAmount * 100) / 100
+    }
+  }
+
+  return sum
+})
+
+const selectedLocation = computed(() => commonStore.selectedLocation)
+
+const deliveryPrice = computed(() => {
+  let price = 0
+
+  if (selectedLocation?.value?.zone) {
+    selectedLocation.value.zone.sum.forEach(item => {
+      if (parseFloat(item.min_sum_order) <= parseFloat(cartItemsPrice.value)) {
+        price = parseFloat(item.deliv_price)
+      }
+    })
+  }
+
+  return price > 0 ? price.toLocaleString() + ' ₽' : 'Бесплатно'
+})
 </script>
 
 <style lang="scss" scoped>

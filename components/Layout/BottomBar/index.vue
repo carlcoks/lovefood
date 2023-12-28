@@ -62,7 +62,7 @@ const toTop = () => {
   z-index: 100;
   pointer-events: none;
 
-  @include mq($bp-small) {
+  @include mq($bp-medium) {
     display: none;
   }
 

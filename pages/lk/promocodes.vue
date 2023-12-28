@@ -63,8 +63,6 @@ getPromocodes()
 
 <style lang="scss" scoped>
 .page-lk-promocodes {
-  max-width: 775px;
-
   display: grid;
   grid-gap: 20px;
 

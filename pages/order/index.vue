@@ -24,12 +24,6 @@
                 </div>
               </div>
 
-              <transition name="fade" mode="out-in">
-                <PagesOrderDeliveryBlock
-                  v-if="deliveryType === 'delivery'"
-                />
-              </transition>
-
               <PagesOrderAddressBlock
                 :delivery-type="deliveryType"
               />
@@ -134,12 +128,6 @@ const commonStore = useCommonStore()
 const userStore = useUserStore()
 const config = useRuntimeConfig()
 
-const deliveryTypes = [
-  { label: 'Доставка', type: 'delivery' },
-  { label: 'Самовывоз', type: 'pickup' },
-  // { label: 'В зале', type: 'lounge' },
-]
-
 const deliveryTimes = [
   'Ближайшее время: 38 минут',
   '15:00-15:30',
@@ -150,7 +138,7 @@ const deliveryTimes = [
 
 const isShowBonusesModal = ref(false)
 const isLoading = ref(false)
-const deliveryType = ref('delivery')
+const deliveryType = ref(null)
 const deliveryTime = ref(0)
 
 const userData = reactive({
@@ -164,6 +152,15 @@ const userData = reactive({
 const paymentMethods = ref([])
 const paymentMethod = ref(null)
 
+// <!-- Computed -->
+const deliveryTypes = computed(() => commonStore.deliveryTypes)
+const user = computed(() => userStore.user)
+const selectedLocation = computed(() => commonStore.selectedLocation)
+const currentDeliveryType = computed(() => commonStore.deliveryType)
+const selectedPaymentMethod = computed(() => paymentMethods.value.find(item => item.id === paymentMethod.value))
+const promocode = computed(() => cartStore.promocode)
+
+// <!-- Watch -->
 watch(() => userData.name, () => {
   userData.nameError = ''
 })
@@ -172,10 +169,9 @@ watch(() => userData.phone, () => {
   userData.phoneError = ''
 })
 
-const user = computed(() => userStore.user)
-const selectedLocation = computed(() => commonStore.selectedLocation)
-const currentDeliveryType = computed(() => commonStore.deliveryType)
-const selectedPaymentMethod = computed(() => paymentMethods.value.find(item => item.id === paymentMethod.value))
+watch(() => currentDeliveryType.value, () => {
+  deliveryType.value = currentDeliveryType.value
+})
 
 // Methods
 const order = async () => {
@@ -197,7 +193,7 @@ const order = async () => {
   }
 
   let obj = {
-    promo: null,
+    promo: promocode.value ? promocode.value.value : null,
 
     set_paid: false,
 
@@ -294,30 +290,15 @@ const order = async () => {
     body: obj
   })
 
-  const response = data?.value || null
-
   isLoading.value = false
-
-  cartStore.clearCart()
-
+  
+  const response = data?.value || null
+  
   if (response) {
+    cartStore.clearCart()
+    cartStore.setPromocode(null)
     navigateTo(`/order/${response.id}`)
   }
-
-  // axios.post(config.api.newOrder + '?' + query, data).then(res => {
-  //   this.loading = false
-
-  //   try {
-  //     this.$cart.clear()
-  //     this.$router.push({ name: 'orderInfo', params: { hash: res.data.order_key } })
-  //   } catch(e) {
-  //     // err
-  //   }
-  // }).catch(() => {
-  //   this.loading = false
-  //   this.$cart.clearCoupons()
-  //   alert('Произошла ошибка сервера, попробуйте еще раз.')
-  // })
 }
 
 // const checkAvailable = () => {
@@ -344,15 +325,17 @@ const setUserData = () => {
   }
 }
 
-onMounted(() => {
-  setUserData()
-
+const setDeliveryType = () => {
   if (currentDeliveryType.value) {
     deliveryType.value = currentDeliveryType.value
+  } else {
+    deliveryType.value = deliveryTypes.value[0].type
   }
-})
+}
 
 // checkAvailable()
+setDeliveryType()
+setUserData()
 getPaymentMethods()
 </script>
 

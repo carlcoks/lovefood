@@ -6,12 +6,15 @@ export const useCommonStore = defineStore('commonStore', {
     isTablet: false,
     city: null,
     deliveryType: null, // 'pickup' | 'delivery' | 'lounge' | null
+    deliveryTypes: [], // [{ label: '', type: '' }, ...,]
+
     // deliveryLocations: [],
     // pickupLocations: [],
     mapCenter: null, // null | [] - точка центра карты
     conditions: [], // точки доставки
     zones: [], // зоны доставки
     pickups: [], // точки самовывоза
+    lounges: [],
     selectedLocation: null, // выбранная локация
 
     isShowReceiptModal: false,
@@ -24,13 +27,46 @@ export const useCommonStore = defineStore('commonStore', {
     missedProductsModal: null, // null | { type, location }
 
     notifications: [],
+    slides: [],
   }),
 
   actions: {
     async getPickups () {
       const { data } = await useFetch('/api/wp-json/systeminfo/v1/shipping_methods')
 
-      this.pickups = data?.value || []
+      const array = data?.value || []
+      this.deliveryTypes = []
+
+      if (array.length) {
+        array.forEach((item, i) => {
+          if (item.id === 'flat_rate') {
+            this.deliveryTypes.push({
+              label: item.name,
+              type: 'delivery'
+            })
+          } else if (item.id === 'local_pickup') {
+            const pickups = item.pickup_locations
+
+            if (pickups.length) {
+              this.pickups = pickups
+              this.deliveryTypes.push({
+                label: item.name,
+                type: 'pickup'
+              })
+            }
+          } else if (item.id === 'wcso_booking') {
+            const restaurants = item.restaurants
+
+            if (restaurants.length) {
+              this.lounges = restaurants
+              this.deliveryTypes.push({
+                label: item.name,
+                type: 'lounge'
+              })
+            }
+          }
+        })
+      }
     },
 
     async getDelivery () {
@@ -72,6 +108,16 @@ export const useCommonStore = defineStore('commonStore', {
             zone: zone && zone[1] || '',
           }
         }).filter(item => item)
+      }
+    },
+
+    async getBanners () {
+      const { data } = await useFetch('/api/banners-json')
+
+      const obj = data?.value || []
+    
+      if (obj.length) {
+        this.slides = obj.filter(item => item.gallery === 'desctop_slider')
       }
     },
 
@@ -122,15 +168,25 @@ export const useCommonStore = defineStore('commonStore', {
 
   getters: {
     pickupLocations: (state) => {
-      const array = state.pickups.find(item => item.id === 'local_pickup')?.pickup_locations || []
-
-      return array.map(item => {
-        return {
-          ...item,
-          id: item.id.toString(),
-          coordinates: trimStr(item.coord).split(',').reverse().map(item => item * 1)
+      return (type) => {
+        let arr = null
+        if (type === 'pickup') {
+          arr = state.pickups
+        } else if (type === 'lounge') {
+          arr = state.lounges
         }
-      })
+
+        if (!!arr) {
+          return arr.map(item => {
+            return {
+              ...item,
+              id: item.id.toString(),
+              coordinates: trimStr(item.coord).split(',').reverse().map(item => item * 1)
+            }
+          })
+        }
+        return []
+      }
     }
   },
 

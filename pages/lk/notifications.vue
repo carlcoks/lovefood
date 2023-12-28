@@ -49,8 +49,6 @@
 
 <style lang="scss" scoped>
 .page-lk-notifications {
-  max-width: 775px;
-
   display: grid;
   grid-gap: 40px;
 

@@ -2,6 +2,7 @@ import { useCommonStore } from '@/store/common'
 
 interface State {
   cart: cartItem[]
+  promocode: Promocode | null
   isShowCartModal: boolean
 }
 
@@ -27,9 +28,16 @@ interface Supplement {
   count: number
 }
 
+interface Promocode {
+  value: string
+  type: string
+  amount: number
+}
+
 export const useCartStore = defineStore('cartStore', {
   state: (): State => ({
     cart: [],
+    promocode: null,
     isShowCartModal: false,
   }),
 
@@ -101,6 +109,10 @@ export const useCartStore = defineStore('cartStore', {
 
     toggleShowCartModal (value: boolean) {
       this.isShowCartModal = value
+    },
+
+    setPromocode (value: Promocode | null) {
+      this.promocode = value
     },
   },
 

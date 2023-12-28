@@ -27,9 +27,9 @@ te<template>
           </a>
         </div>
 
-        <div class="modal-receipt__tabs">
+        <div :class="`modal-receipt__tabs modal-receipt__tabs--${deliveryTypes.length}`">
           <button
-            v-for="(item, i) in types"
+            v-for="(item, i) in deliveryTypes"
             :key="i"
             :class="['modal-receipt__tab modal-receipt-tab', { 'active' : currentType === item.type }]"
             @click.prevent="currentType = item.type"
@@ -52,14 +52,15 @@ te<template>
               @close="closeModal()"
             />
             <ModalsReceiptPickup
-              v-else-if="currentType === 'pickup'"
+              v-else-if="currentType === 'pickup' || currentType === 'lounge'"
+              :current-type="currentType"
               :current-address="currentAddress"
               @update="currentAddress = $event"
               @close="closeModal()"
             />
-            <ModalsReceiptLounge
+            <!-- <ModalsReceiptLounge
               v-else-if="currentType === 'lounge'"
-            />
+            /> -->
           </transition>
         </div>
       </div>
@@ -83,7 +84,8 @@ te<template>
           @close="closeModal()"
         />
         <ModalsReceiptPickupMobile
-          v-else-if="currentType === 'pickup'"
+          v-else-if="currentType === 'pickup' ||  currentType === 'lounge'"
+          :current-type="currentType"
           :current-address="currentAddress"
           @update="currentAddress = $event"
           @close="closeModal()"
@@ -103,14 +105,8 @@ import { useCommonStore } from '@/store/common'
 
 const commonStore = useCommonStore()
 
-const types = [
-  { label: 'Доставка', type: 'delivery' },
-  { label: 'Самовывоз', type: 'pickup' },
-  // { label: 'В зале', type: 'lounge' },
-]
-
 const isShow = ref(true)
-const currentType = ref('delivery')
+const currentType = ref(null)
 
 const currentAddress = ref(null)
 
@@ -123,6 +119,7 @@ watch(() => currentType.value, () => {
 
 // <!-- Computed -->
 const deliveryType = computed(() => commonStore.deliveryType)
+const deliveryTypes = computed(() => commonStore.deliveryTypes)
 const selectedLocation = computed(() => commonStore.selectedLocation)
 const isShowMissedProductsModal = computed(() => !!commonStore.missedProductsModal)
 
@@ -134,6 +131,8 @@ const closeModal = () => {
 onMounted(() => {
   if (deliveryType.value) {
     currentType.value = deliveryType.value
+  } else {
+    currentType.value = deliveryTypes.value[0].type
   }
 
   if (selectedLocation.value && deliveryType.value === 'pickup') {
@@ -222,8 +221,6 @@ onMounted(() => {
 
     display: grid;
     align-items: center;
-    grid-template-columns: repeat(2, 1fr);
-    // grid-template-columns: repeat(3, 1fr);
 
     padding: 5px;
     
@@ -232,6 +229,14 @@ onMounted(() => {
 
     @include mq($bp-small) {
       margin-bottom: 30px;
+    }
+
+    &--2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    &--3 {
+      grid-template-columns: repeat(3, 1fr);
     }
   }
 
