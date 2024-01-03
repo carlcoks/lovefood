@@ -12,6 +12,17 @@ import { useCatalogStore } from '@/store/catalog'
 
 const catalogStore = useCatalogStore()
 const commonStore = useCommonStore()
+const route = useRoute()
+
+// <!-- Computed -->
+
+// <!-- Methods -->
+const checkProductId = () => {
+  const { product_id } = route.query
+  if (product_id) {
+    catalogStore.setProduct(+product_id)
+  }
+}
 
 const setWindowStore = () => {
   // commonStore.isMobile = window.innerWidth < 700;
@@ -23,6 +34,7 @@ const setWindowStore = () => {
 }
 
 onMounted(() => {
+  checkProductId()
   setWindowStore()
   window.addEventListener('resize', setWindowStore)
 })

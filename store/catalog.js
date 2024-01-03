@@ -10,7 +10,7 @@ export const useCatalogStore = defineStore('catalogStore', {
 
   actions: {
     async getCatalog () {
-      const { data } = await useFetch('/api/wp-content/uploads/app_sync/prodcat.json')
+      const { data } = await useLazyAsyncData('catalog', () => $fetch('/api/wp-content/uploads/app_sync/prodcat.json'))
 
       const catalog = (data?.value || []).map(item => {
         const products = item.products.map(product => {

@@ -8,6 +8,7 @@
       <UIButton
         color="yellow"
         class="pages-lk-addresses__button"
+        @click="addNewAddress()"
       >
         <UIIcon name="add" />
         Добавить новый адрес
@@ -25,73 +26,35 @@
       v-else-if="!isLoading && addresses.length"
       class="pages-lk-addresses__list"
     >
-      <!-- {{ addresses }} -->
-      <!-- <div class="pages-lk-address">
-        <div class="pages-lk-address__icon">
-          <UIIcon name="house" />
-        </div>
-        <div class="pages-lk-address__content">
-          <div class="pages-lk-address__info">
-            <p class="pages-lk-address__name">
-              Дом
-            </p>
-            <p class="pages-lk-address__address">
-              г. Москва, Ул. Стандартная, 21к1
-            </p>
-          </div>
-          <a
-            href="#"
-            class="pages-lk-address__edit"
-            @click.prevent=""
-          >
-            <UIIcon name="pencil" />
-          </a>
-        </div>
-      </div> -->
-      <!-- <div class="pages-lk-address">
-        <div class="pages-lk-address__icon">
-          <UIIcon name="briefcase" />
-        </div>
-        <div class="pages-lk-address__content">
-          <div class="pages-lk-address__info">
-            <p class="pages-lk-address__name">
-              Работа
-            </p>
-            <p class="pages-lk-address__address">
-              г. Москва, Ул. Стандартная, 21к1
-            </p>
-          </div>
-          <a
-            href="#"
-            class="pages-lk-address__edit"
-            @click.prevent=""
-          >
-            <UIIcon name="pencil" />
-          </a>
-        </div>
-      </div>
-      <div class="pages-lk-address">
+      <div
+        v-for="item in addresses"
+        :key="item.id"
+        class="pages-lk-address"
+      >
         <div class="pages-lk-address__icon">
           <UIIcon name="metka" />
         </div>
         <div class="pages-lk-address__content">
           <div class="pages-lk-address__info">
-            <p class="pages-lk-address__name">
-              Ул. Стандартная, 21к1
+            <p
+              v-if="item.name"
+              class="pages-lk-address__name"
+            >
+              {{ item.name }}
             </p>
             <p class="pages-lk-address__address">
-              г. Москва
+              {{ item.address }}
             </p>
           </div>
-          <a
-            href="#"
+          <button
+            type="button"
             class="pages-lk-address__edit"
-            @click.prevent=""
+            @click.stop.prevent="editAddress(item.id)"
           >
             <UIIcon name="pencil" />
-          </a>
+          </button>
         </div>
-      </div> -->
+      </div>
     </div>
 
     <div
@@ -105,29 +68,26 @@
 
 <script setup>
 import { useUserStore } from '@/store/user'
+import { useCommonStore } from '@/store/common'
 
 const userStore = useUserStore()
+const commonStore = useCommonStore()
 
 const isLoading = ref(false)
-const addresses = ref([])
 
-const getAddresses = async () => {
-  isLoading.value = true
+// <!-- Computed -->
+const addresses = computed(() => userStore.addresses)
 
-  const { data } = await useFetch('/api/wp-json/wc/auth/user/get_addresses', {
-    query: {
-      token: userStore.token
-    }
-  })
-
-  isLoading.value = false
-
-  if (data?.value) {
-    addresses.value = data.value
-  }
+// <!-- Methods -->
+const addNewAddress = () => {
+  commonStore.toggleNewAddress(null)
+  commonStore.toggleShowReceiptModal(true)
 }
 
-getAddresses()
+const editAddress = (id) => {
+  commonStore.toggleNewAddress(id)
+  commonStore.toggleShowReceiptModal(true)
+}
 </script>
 
 <style lang="scss" scoped>

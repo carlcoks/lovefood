@@ -3,6 +3,8 @@ export const useUserStore = defineStore("userStore", {
     token: null,
     user: null,
     deliveryForm: null,
+
+    addresses: [],
   }),
 
   actions: {
@@ -23,6 +25,32 @@ export const useUserStore = defineStore("userStore", {
 
     setDeliveryForm (value) {
       this.deliveryForm = value
+    },
+
+    async getUserAddresses () {
+      const { data } = await useFetch('/api/wp-json/wc/auth/user/get_addresses', {
+        query: {
+          token: this.token,
+        }
+      })
+    },
+
+    addAddress (value) {
+      this.addresses.push(value)
+    },
+
+    editAddress (value) {
+      this.addresses.find((item, i) => {
+        if (item.id === value.id) {
+          this.addresses[i] = {
+            ...item,
+            ...value
+          }
+          return true
+        }
+
+        return false
+      })
     },
   },
 

@@ -1,9 +1,10 @@
 <template>
-  <div :class="['index-menu-card', { 'index-menu-card--promo' : isPromo }]">
-    <div
-      class="index-menu-card__image"
-      @click.prevent="openProduct()"
-    >
+  <a
+    :href="`?product_id=${item.id}`"
+    :class="['index-menu-card', { 'index-menu-card--promo' : isPromo }]"
+    @click.prevent="openProduct()"
+  >
+    <div class="index-menu-card__image">
       <img
         :data-src="productImage"
         :alt="item.name"
@@ -41,10 +42,7 @@
     </div>
 
     <div class="index-menu-card__content">
-      <p
-        class="index-menu-card__name"
-        @click="openProduct()"
-      >
+      <p class="index-menu-card__name">
         {{ item.name }}
       </p>
 
@@ -94,7 +92,7 @@
         class="index-menu-card__button"
       />
     </div>
-  </div>
+  </a>
 </template>
 
 <script setup>
@@ -106,6 +104,7 @@ import imageSize from '@/utils/imageSize'
 const catalog = useCatalogStore()
 const cart = useCartStore()
 const userStore = useUserStore()
+const router = useRouter()
 
 const { productInCart } = storeToRefs(cart)
 const { isProductFavorite } = storeToRefs(catalog)
@@ -193,7 +192,15 @@ const toggleFavorite = () => {
 }
 
 const openProduct = () => {
-  catalog.setProduct(+props.item.id)
+  const productId = +props.item.id
+
+  catalog.setProduct(productId)
+
+  router.push({
+    query: {
+      product_id: productId
+    }
+  })
 }
 
 const addToCart = () => {

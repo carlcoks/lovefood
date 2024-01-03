@@ -1,7 +1,7 @@
 te<template>
   <ModalsOverlay
     :is-show="isShow"
-    @close="commonStore.toggleShowReceiptModal(false)"
+    @close="close()"
   >
     <div class="modal-receipt">
       <a
@@ -12,58 +12,72 @@ te<template>
         <UIIcon name="close" />
       </a>
 
-      <div class="modal-receipt__main">
-        <div class="modal-receipt-header">
-          <p class="modal-receipt-header__title">
-            Укажите адрес
-          </p>
+      <transition
+        mode="out-in"
+        name="slide-right"
+      >
+        <ModalsReceiptAddNewAddress
+          v-if="commonStore.newAddress !== false"
+          :delivery-coords="deliveryCoords"
+          :delivery-zone="deliveryZone"
+          @setDeliveryCoords="deliveryCoords = $event"
+        />
+        <div
+          v-else
+          class="modal-receipt__main"
+        >
+          <div class="modal-receipt-header">
+            <p class="modal-receipt-header__title">
+              Укажите адрес
+            </p>
 
-          <a
-            href="#"
-            class="modal-receipt__close modal-receipt__close--mobile"
-            @click.prevent="closeModal()"
-          >
-            <UIIcon name="close" />
-          </a>
-        </div>
+            <a
+              href="#"
+              class="modal-receipt__close modal-receipt__close--mobile"
+              @click.prevent="closeModal()"
+            >
+              <UIIcon name="close" />
+            </a>
+          </div>
 
-        <div :class="`modal-receipt__tabs modal-receipt__tabs--${deliveryTypes.length}`">
-          <button
-            v-for="(item, i) in deliveryTypes"
-            :key="i"
-            :class="['modal-receipt__tab modal-receipt-tab', { 'active' : currentType === item.type }]"
-            @click.prevent="currentType = item.type"
-          >
-            <UIIcon :name="item.type" />
-            {{ item.label }}
-          </button>
-        </div>
+          <div :class="`modal-receipt__tabs modal-receipt__tabs--${deliveryTypes.length}`">
+            <button
+              v-for="(item, i) in deliveryTypes"
+              :key="i"
+              :class="['modal-receipt__tab modal-receipt-tab', { 'active' : currentType === item.type }]"
+              @click.prevent="currentType = item.type"
+            >
+              <UIIcon :name="item.type" />
+              {{ item.label }}
+            </button>
+          </div>
 
-        <div class="modal-receipt__content">
-          <transition
-            name="fade"
-            mode="out-in"
-          >
-            <ModalsReceiptDelivery
-              v-if="currentType === 'delivery'"
-              :delivery-coords="deliveryCoords"
-              :delivery-zone="deliveryZone"
-              @setDeliveryCoords="deliveryCoords = $event"
-              @close="closeModal()"
-            />
-            <ModalsReceiptPickup
-              v-else-if="currentType === 'pickup' || currentType === 'lounge'"
-              :current-type="currentType"
-              :current-address="currentAddress"
-              @update="currentAddress = $event"
-              @close="closeModal()"
-            />
-            <!-- <ModalsReceiptLounge
-              v-else-if="currentType === 'lounge'"
-            /> -->
-          </transition>
+          <div class="modal-receipt__content">
+            <transition
+              name="fade"
+              mode="out-in"
+            >
+              <ModalsReceiptDelivery
+                v-if="currentType === 'delivery'"
+                :delivery-coords="deliveryCoords"
+                :delivery-zone="deliveryZone"
+                @setDeliveryCoords="deliveryCoords = $event"
+                @close="closeModal()"
+              />
+              <ModalsReceiptPickup
+                v-else-if="currentType === 'pickup' || currentType === 'lounge'"
+                :current-type="currentType"
+                :current-address="currentAddress"
+                @update="currentAddress = $event"
+                @close="closeModal()"
+              />
+              <!-- <ModalsReceiptLounge
+                v-else-if="currentType === 'lounge'"
+              /> -->
+            </transition>
+          </div>
         </div>
-      </div>
+      </transition>
 
       <ModalsReceiptMap
         :delivery-type="currentType"
@@ -124,12 +138,19 @@ const selectedLocation = computed(() => commonStore.selectedLocation)
 const isShowMissedProductsModal = computed(() => !!commonStore.missedProductsModal)
 
 // <!-- Methods -->
+const close = () => {
+  commonStore.toggleNewAddress(false)
+  commonStore.toggleShowReceiptModal(false)
+}
+
 const closeModal = () => {
   isShow.value = false
 }
 
-onMounted(() => {
-  if (deliveryType.value) {
+const setDefault = () => {
+  if (commonStore.newAddress !== false) {
+    currentType.value = 'delivery'
+  } else if (deliveryType.value) {
     currentType.value = deliveryType.value
   } else {
     currentType.value = deliveryTypes.value[0].type
@@ -138,7 +159,9 @@ onMounted(() => {
   if (selectedLocation.value && deliveryType.value === 'pickup') {
     currentAddress.value = selectedLocation.value
   }
-})
+}
+
+setDefault()
 </script>
 
 <style lang="scss" scoped>

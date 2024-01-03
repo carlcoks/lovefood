@@ -254,6 +254,8 @@ const getUser = async (token: string) => {
         id: +user.ID,
       })
 
+      userStore.getUserAddresses()
+
       navigateTo('/lk')
       closeModal()
     }

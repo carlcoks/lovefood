@@ -18,6 +18,7 @@ export const useCommonStore = defineStore('commonStore', {
     selectedLocation: null, // выбранная локация
 
     isShowReceiptModal: false,
+    newAddress: false, // false - hidden, null - visible and empty, { id } - visible and find address by id
     isShowAuthModal: false,
     isShowSettingsModal: false,
     isShowAcceptCityModal: false,
@@ -32,7 +33,7 @@ export const useCommonStore = defineStore('commonStore', {
 
   actions: {
     async getPickups () {
-      const { data } = await useFetch('/api/wp-json/systeminfo/v1/shipping_methods')
+      const { data } = await useLazyAsyncData('methods', () => $fetch('/api/wp-json/systeminfo/v1/shipping_methods'))
 
       const array = data?.value || []
       this.deliveryTypes = []
@@ -71,8 +72,8 @@ export const useCommonStore = defineStore('commonStore', {
 
     async getDelivery () {
       const data = await Promise.allSettled([
-        useFetch('/api/wp-json/systeminfo/v1/delivery'),
-        useFetch('/api/wp-json/system/map')
+        useLazyAsyncData('delivery', () => $fetch('/api/wp-json/systeminfo/v1/delivery')),
+        useLazyAsyncData('map', () => $fetch('/api/wp-json/system/map'))
       ])
 
       const delivery = data[0]?.value?.data?.value || null
@@ -112,7 +113,7 @@ export const useCommonStore = defineStore('commonStore', {
     },
 
     async getBanners () {
-      const { data } = await useFetch('/api/banners-json')
+      const { data } = await useLazyAsyncData('banners', () => $fetch('/api/banners-json'))
 
       const obj = data?.value || []
     
@@ -139,6 +140,10 @@ export const useCommonStore = defineStore('commonStore', {
 
     toggleShowReceiptModal (value) {
       this.isShowReceiptModal = value
+    },
+
+    toggleNewAddress (value) {
+      this.newAddress = value
     },
 
     toggleShowAuthModal (value) {

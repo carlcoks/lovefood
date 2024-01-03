@@ -293,6 +293,8 @@ import { useUserStore } from '@/store/user'
 const catalogStore = useCatalogStore()
 const cart = useCartStore()
 const userStore = useUserStore()
+const router = useRouter()
+const route = useRoute()
 
 const { selectedProduct, relatedItems, isProductFavorite } = storeToRefs(catalogStore)
 const { productInCart } = storeToRefs(cart)
@@ -537,6 +539,12 @@ const closeModal = () => {
 
 const close = () => {
   catalogStore.setProduct(null)
+
+  const query = { ...route.query }
+  delete query.product_id
+  router.push({
+    query
+  })
 }
 
 const setVariationIds = () => {

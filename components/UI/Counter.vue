@@ -2,7 +2,7 @@
   <div class="counter">
     <button
       class="counter__button"
-      @click.prevent="emits('decrement')"
+      @click.stop.prevent="emits('decrement')"
     >
       <UIIcon name="minus" />
     </button>
@@ -13,7 +13,7 @@
 
     <button
       class="counter__button"
-      @click.prevent="emits('increment')"
+      @click.stop.prevent="emits('increment')"
     >
       <UIIcon name="plus" />
     </button>

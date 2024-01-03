@@ -1,5 +1,8 @@
 <template>
-  <div class="modal-receipt-delivery">
+  <div
+    v-if="!isAuth"
+    class="modal-receipt-delivery"
+  >
     <div class="modal-receipt-delivery__main">
       <div class="modal-receipt-delivery__header">
         <p class="modal-receipt-delivery__title">
@@ -101,75 +104,10 @@
     </div>
 
     <div class="modal-receipt-delivery__footer">
-      <div class="modal-receipt-delivery__info modal-receipt-delivery-info">
-        <div class="modal-receipt-delivery-info__icon">
-          <UIIcon name="delivery" />
-        </div>
-        <div class="modal-receipt-delivery-info__content">
-          <div
-            v-if="!addressError && !condition"
-            class="modal-receipt-delivery-info__line"
-          >
-            <p class="modal-receipt-delivery-info__value">
-              Укажите адрес доставки
-            </p>
-          </div>
-
-          <div
-            v-if="addressError"
-            class="modal-receipt-delivery-info__line"
-          >
-            <p class="modal-receipt-delivery-info__value">
-              Невозможно определить стоимость доставки
-            </p>
-          </div>
-          <div
-            v-if="addressError"
-            class="modal-receipt-delivery-info__line"
-          >
-            <p class="modal-receipt-delivery-info__value modal-receipt-delivery-info__value--red">
-              Выберите корректный адрес
-            </p>
-          </div>
-
-          <div
-            v-if="condition"
-            class="modal-receipt-delivery-info__line"
-          >
-            <p class="modal-receipt-delivery-info__value">
-              Доставка
-            </p>
-            <p class="modal-receipt-delivery-info__value">
-              {{ condition.time_deliv }} мин
-            </p>
-          </div>
-
-          <div
-            v-if="condition"
-            class="modal-receipt-delivery-info__line"
-          >
-            <p
-              v-for="(item, i) in condition.sum"
-              :key="i"
-              :class="[
-                'modal-receipt-delivery-info__value',
-                {
-                  'modal-receipt-delivery-info__value--green' : +item.deliv_price === 0
-                }
-              ]"
-            >
-              <template
-                v-if="+item.deliv_price === 0"
-              >
-                Бесплатно от {{ item.min_sum_order }} ₽
-              </template>
-              <template v-else>
-                {{ item.deliv_price }} ₽
-              </template>
-            </p>
-          </div>
-        </div>
-      </div>
+      <ModalsReceiptDeliveryInfo
+        :is-error="addressError"
+        :condition="condition"
+      />
 
       <UIButton
         :disabled="isButtonDisabled"
@@ -181,6 +119,77 @@
       </UIButton>
     </div>
   </div>
+
+  <div  
+    v-else
+    class="modal-receipt-addresses"
+  >
+    <div class="modal-receipt-addresses__main">
+      <p class="modal-receipt-addresses__title">
+        Сохраненные адреса
+      </p>
+
+      <div
+        v-if="addresses.length"
+        class="modal-receipt-addresses__list"
+      >
+        <div
+          v-for="item in addresses"
+          :key="item.id"
+          :class="[
+            'modal-receipt-addresses-item modal-receipt-addresses__item',
+            {
+              'modal-receipt-addresses-item--active' : item.id === commonStore.selectedLocation?.id
+            }
+          ]"
+          @click.prevent="selectAddress(item)"
+        >
+          <div class="modal-receipt-addresses-item__icon">
+            <UIIcon name="metka" />
+          </div>
+          <div class="modal-receipt-addresses-item__block">
+            <div class="modal-receipt-addresses-item__content">
+              <p
+                v-if="item.name"
+                class="modal-receipt-addresses-item__name"
+              >
+                {{ item.name }}
+              </p>
+
+              <p class="modal-receipt-addresses-item__address">
+                {{ item.address }}
+              </p>
+            </div>
+
+            <button
+              type="button"
+              class="modal-receipt-addresses-item__edit"
+              @click.prevent.stop="editAddress(item.id)"
+            >
+              <UIIcon name="pencil" />
+            </button>
+          </div>
+        </div>
+      </div>
+      <p
+        v-else
+        class="modal-receipt-addresses__empty"
+      >
+        Нет добавленных адресов
+      </p>
+    </div>
+
+    <div class="modal-receipt-addresses__footer">
+      <UIButton
+        color="yellow"
+        class="modal-receipt-addresses__button"
+        @click="addNewAddress()"
+      >
+        <UIIcon name="add" />
+        Добавить новый адрес
+      </UIButton>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -189,6 +198,7 @@ import { useUserStore } from '@/store/user'
 
 const commonStore = useCommonStore()
 const userStore = useUserStore()
+const { isAuth } = storeToRefs(userStore)
 
 const props = defineProps({
   deliveryCoords: {
@@ -202,7 +212,7 @@ const props = defineProps({
   },
 })
 
-const emits = defineEmits(['close', 'setDeliveryCoords'])
+const emits = defineEmits(['close', 'setDeliveryCoords', 'addNewAddress'])
 
 const form = reactive({
   address: '',
@@ -223,6 +233,8 @@ watch(() => props.deliveryCoords, (data) => {
 })
 
 // <!-- Computed -->
+const addresses = computed(() => userStore.addresses)
+
 const addressError = computed(() => {
   if (props.deliveryCoords && !props.deliveryZone) {
     return true
@@ -248,6 +260,14 @@ const isButtonDisabled = computed(() => {
 })
 
 // <!-- Methods -->
+const addNewAddress = () => {
+  commonStore.toggleNewAddress(null)
+}
+
+const editAddress = (id) => {
+  commonStore.toggleNewAddress(id)
+}
+
 const searchAddress = async () => {
   isShowResults.value = true
   results.value = []
@@ -302,6 +322,24 @@ const submit = () => {
   if (useChangeLocation('delivery', obj)) {
     emits('close')
   }
+}
+
+const selectAddress = (item) => {
+  emits('setDeliveryCoords', item.coords)
+
+  nextTick(() => {
+    const obj = {
+      ...item,
+      warehouse_id: condition.value.warehouse_id,
+      zone: condition.value
+    }
+    
+    userStore.setDeliveryForm(obj)
+
+    if (useChangeLocation('delivery', obj)) {
+      emits('close')
+    }
+  })
 }
 
 const setDefault = () => {
@@ -444,76 +482,6 @@ setDefault()
   }
 }
 
-.modal-receipt-delivery-info {
-  display: flex;
-  align-items: center;
-  grid-gap: 16px;
-
-  padding: 12px 16px;
-
-  border-radius: 20px;
-
-  &__icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 40px;
-    height: 40px;
-
-    background: $grayBg2;
-    border-radius: 50%;
-  }
-
-  &__content {
-    display: flex;
-    flex-direction: column;
-    grid-gap: 5px;
-  }
-
-  &__line {
-    display: flex;
-    align-items: center;
-  }
-
-  &__value {
-    display: flex;
-    align-items: center;
-
-    @include text_small;
-    font-weight: 500;
-
-    &:last-child {
-      &:after {
-        display: none;
-      }
-    }
-
-    &:after {
-      content: '';
-
-      width: 3px;
-      height: 3px;
-
-      margin: 0 5px;
-
-      background: $grayText;
-      border-radius: 50%;
-
-      opacity: 0.3;
-    }
-
-    &--green {
-      color: $green;
-    }
-
-    &--red {
-      @include text_mini;
-      color: $red;
-    }
-  }
-}
-
 .modal-receipt-delivery-form-input {
   position: relative;
   width: 100%;
@@ -592,6 +560,123 @@ setDefault()
     &:hover {
       background: $grayText;
     }
+  }
+}
+
+.modal-receipt-addresses {
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  grid-gap: 20px;
+
+  &__main {
+    flex: 1 1 auto;
+
+    display: flex;
+    flex-direction: column;
+    grid-gap: 20px;
+
+    overflow: hidden;
+  }
+
+  &__title {
+    @include text_large;
+    font-weight: 700;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 4px;
+
+    overflow-y: auto;
+
+    @include custom-scrollbar;
+  }
+
+  &__empty {
+    @include text_normal;
+    font-weight: 600;
+    color: $grayText;
+  }
+
+  &__footer {
+    flex: 0 0 auto;
+  }
+
+  &__button {
+    width: 100%;
+    font-weight: 500;
+  }
+}
+
+.modal-receipt-addresses-item {
+  display: grid;
+  align-items: center;
+  grid-template-columns: 40px 1fr;
+  grid-gap: 16px;
+
+  cursor: pointer;
+
+  &--active {
+    .modal-receipt-addresses-item {
+      &__icon {
+        ::v-deep(.ui-icon) svg path {
+          fill: #383838;
+        }
+      }
+
+      &__block {
+        border-color: $yellowDark;
+      }
+
+      &__edit {
+        ::v-deep(.ui-icon) svg path {
+          fill: $blackText3;
+        }
+      }
+    }
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 40px;
+    height: 40px;
+  }
+
+  &__block {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    grid-gap: 12px;
+
+    padding: 12px 0;
+
+    border-bottom: 1px solid $grayText2;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 4px;
+  }
+
+  &__name {
+    @include overflow-text;
+    @include text_normal;
+    font-weight: 600;
+  }
+
+  &__address {
+    @include overflow-text;
+    @include text_small;
+    font-weight: 500;
+    color: $grayText;
   }
 }
 </style>

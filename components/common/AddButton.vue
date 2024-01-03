@@ -18,7 +18,7 @@
         'add-button--small' : isSmall
       }
     ]"
-    @click.prevent="click()"
+    @click.stop.prevent="click()"
   >
     {{ buttonLabel }}
     <UIIcon
